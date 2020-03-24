@@ -1,0 +1,39 @@
+<h1 class="contract">reg</h1>
+
+---
+spec_version: "0.2.0"
+title: Register Token information
+summary: 'Register Token information'
+icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
+---
+Register Token information
+
+
+
+<h1 class="contract">reglog</h1>
+---
+spec_version: "0.2.0"
+title: Register Token information
+summary: 'Register Token information'
+icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
+---
+Register Token information
+<h1 class="contract">update</h1>
+
+
+---
+spec_version: "0.2.0"
+title: 'Update Token information'
+summary: 'Create a new token'
+icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
+---
+Update Token information
+
+<h1 class="contract">remove</h1>
+
+---
+spec_version: "0.2.0"
+title: Remove Token information
+summary: 'Remove Token information'
+icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
+---
