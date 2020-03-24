@@ -1,0 +1,427 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "dappconf",
+            "base": "",
+            "fields": [
+                {
+                    "name": "dappramm",
+                    "type": "uint64"
+                },
+                {
+                    "name": "dappcpu",
+                    "type": "uint64"
+                },
+                {
+                    "name": "dappnet",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "dappreg",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "migration",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "avatar",
+                    "type": "string"
+                },
+                {
+                    "name": "verified",
+                    "type": "bool"
+                },
+                {
+                    "name": "date",
+                    "type": "uint64"
+                },
+                {
+                    "name": "data",
+                    "type": "string"
+                },
+                {
+                    "name": "primary",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "pair_string_uint8",
+            "base": "",
+            "fields": [
+                {
+                    "name": "key",
+                    "type": "string"
+                },
+                {
+                    "name": "value",
+                    "type": "uint8"
+                }
+            ]
+        },
+        {
+            "name": "permission",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "createacc",
+                    "type": "uint8"
+                },
+                {
+                    "name": "vote",
+                    "type": "uint8"
+                },
+                {
+                    "name": "regprod",
+                    "type": "uint8"
+                },
+                {
+                    "name": "regproxy",
+                    "type": "uint8"
+                },
+                {
+                    "name": "setcontract",
+                    "type": "uint8"
+                },
+                {
+                    "name": "namebids",
+                    "type": "uint8"
+                },
+                {
+                    "name": "rex",
+                    "type": "uint8"
+                },
+                {
+                    "name": "delegate",
+                    "type": "uint8"
+                },
+                {
+                    "name": "undelegate",
+                    "type": "uint8"
+                },
+                {
+                    "name": "sellram",
+                    "type": "uint8"
+                },
+                {
+                    "name": "buyram",
+                    "type": "uint8"
+                }
+            ]
+        },
+        {
+            "name": "remove",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "reqperm",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "permission",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setdappconf",
+            "base": "",
+            "fields": [
+                {
+                    "name": "ram",
+                    "type": "uint64"
+                },
+                {
+                    "name": "cpu",
+                    "type": "uint64"
+                },
+                {
+                    "name": "net",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "setperm",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "perms",
+                    "type": "pair_string_uint8[]"
+                }
+            ]
+        },
+        {
+            "name": "setperm2",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "perms",
+                    "type": "uint8[]"
+                }
+            ]
+        },
+        {
+            "name": "setuserava",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "ava",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setuserdata",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "data",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "setusername",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "user_resources",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "net_weight",
+                    "type": "asset"
+                },
+                {
+                    "name": "cpu_weight",
+                    "type": "asset"
+                },
+                {
+                    "name": "ram_bytes",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "userinfo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "avatar",
+                    "type": "string"
+                },
+                {
+                    "name": "verified",
+                    "type": "bool"
+                },
+                {
+                    "name": "date",
+                    "type": "uint64"
+                },
+                {
+                    "name": "data",
+                    "type": "string"
+                },
+                {
+                    "name": "primary",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "userprimary",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "primary",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "userverify",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "verified",
+                    "type": "bool"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "dappreg",
+            "type": "dappreg",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "migration",
+            "type": "migration",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "remove",
+            "type": "remove",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "reqperm",
+            "type": "reqperm",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setdappconf",
+            "type": "setdappconf",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setperm",
+            "type": "setperm",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setperm2",
+            "type": "setperm2",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setuserava",
+            "type": "setuserava",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setuserdata",
+            "type": "setuserdata",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "setusername",
+            "type": "setusername",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "userprimary",
+            "type": "userprimary",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "userverify",
+            "type": "userverify",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "dappconf",
+            "type": "dappconf",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "permissions",
+            "type": "permission",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "userres",
+            "type": "user_resources",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "usersinfo",
+            "type": "userinfo",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}

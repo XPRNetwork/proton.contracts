@@ -1,0 +1,172 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "global",
+            "base": "",
+            "fields": [
+                {
+                    "name": "tid",
+                    "type": "uint64"
+                },
+                {
+                    "name": "spare1",
+                    "type": "uint64"
+                },
+                {
+                    "name": "spare2",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "reg",
+            "base": "",
+            "fields": [
+                {
+                    "name": "tcontract",
+                    "type": "name"
+                },
+                {
+                    "name": "tname",
+                    "type": "string"
+                },
+                {
+                    "name": "url",
+                    "type": "string"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
+                },
+                {
+                    "name": "iconurl",
+                    "type": "string"
+                },
+                {
+                    "name": "symbol",
+                    "type": "symbol"
+                }
+            ]
+        },
+        {
+            "name": "remove",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "token",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "tcontract",
+                    "type": "name"
+                },
+                {
+                    "name": "tname",
+                    "type": "string"
+                },
+                {
+                    "name": "url",
+                    "type": "string"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
+                },
+                {
+                    "name": "iconurl",
+                    "type": "string"
+                },
+                {
+                    "name": "symbol",
+                    "type": "symbol"
+                },
+                {
+                    "name": "blisted",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "update",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "tcontract",
+                    "type": "name"
+                },
+                {
+                    "name": "tname",
+                    "type": "string"
+                },
+                {
+                    "name": "url",
+                    "type": "string"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
+                },
+                {
+                    "name": "iconurl",
+                    "type": "string"
+                },
+                {
+                    "name": "symbol",
+                    "type": "symbol"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "reg",
+            "type": "reg",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Register Token information\nsummary: 'Register Token information'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nRegister Token information"
+        },
+        {
+            "name": "remove",
+            "type": "remove",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Remove Token information\nsummary: 'Remove Token information'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---"
+        },
+        {
+            "name": "update",
+            "type": "update",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: 'Update Token information'\nsummary: 'Create a new token'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nUpdate Token information"
+        }
+    ],
+    "tables": [
+        {
+            "name": "global",
+            "type": "global",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "tokens",
+            "type": "token",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}
