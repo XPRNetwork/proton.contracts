@@ -32,40 +32,6 @@
             ]
         },
         {
-            "name": "migration",
-            "base": "",
-            "fields": [
-                {
-                    "name": "acc",
-                    "type": "name"
-                },
-                {
-                    "name": "name",
-                    "type": "string"
-                },
-                {
-                    "name": "avatar",
-                    "type": "string"
-                },
-                {
-                    "name": "verified",
-                    "type": "bool"
-                },
-                {
-                    "name": "date",
-                    "type": "uint64"
-                },
-                {
-                    "name": "data",
-                    "type": "string"
-                },
-                {
-                    "name": "primary",
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "name": "pair_string_uint8",
             "base": "",
             "fields": [
@@ -302,20 +268,6 @@
             ]
         },
         {
-            "name": "userprimary",
-            "base": "",
-            "fields": [
-                {
-                    "name": "acc",
-                    "type": "name"
-                },
-                {
-                    "name": "primary",
-                    "type": "bool"
-                }
-            ]
-        },
-        {
             "name": "userverify",
             "base": "",
             "fields": [
@@ -334,11 +286,6 @@
         {
             "name": "dappreg",
             "type": "dappreg",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "migration",
-            "type": "migration",
             "ricardian_contract": ""
         },
         {
@@ -379,11 +326,6 @@
         {
             "name": "setusername",
             "type": "setusername",
-            "ricardian_contract": ""
-        },
-        {
-            "name": "userprimary",
-            "type": "userprimary",
             "ricardian_contract": ""
         },
         {

@@ -48,14 +48,6 @@ namespace eosio {
 			using userverify_action = eosio::action_wrapper<"userverify"_n, &eosioproton::userverify>;
 
 			[[eosio::action]]
-			void userprimary(name acc, bool  primary);
-			using userprimary_action = eosio::action_wrapper<"userprimary"_n, &eosioproton::userprimary>;
-
-			[[eosio::action]]
-			void migration(name acc, std::string name, std::string avatar, bool verified, uint64_t date, std::string data, bool primary);
-			using migration_action = eosio::action_wrapper<"migration"_n, &eosioproton::migration>;
-
-			[[eosio::action]]
 			void dappreg(name account);
 			using dappreg_action = eosio::action_wrapper<"dappreg"_n, &eosioproton::dappreg>;
 
@@ -95,26 +87,6 @@ namespace eosio {
 				return res;			
 			}
 
-			/*
-			static std::map<int,bool> get_priv( name contract_account, name acc ){
-
-			std::map<int,bool> res;
-			res[0] = 0; res[1] = 0; res[2] = 0; res[3] = 0;
-
-			permissions perm( contract_account, contract_account.value );
-			auto existing = perm.find( acc.value );
-			if ( existing != perm.end() ) {
-			res[0] = existing->createacc;
-			res[1] = existing->vote;
-			res[2] = existing->regprod;
-			res[3] = existing->regproxy;
-
-			}
-			return res;			
-			}
-			*/
-
-
 	private:
 
 		// 0 = none, 1 = on, 2 = pending, 3 = off, 4 = banned
@@ -145,7 +117,7 @@ namespace eosio {
 			bool			verified;
 			uint64_t		date;
 			std::string		data;
-			bool			primary;
+			bool			primary;  ///!!!!!!!!!!!!!! REMOVE On New CHAIN
 
 			uint64_t primary_key()const { return acc.value; }
 		};

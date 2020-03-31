@@ -147,7 +147,6 @@ namespace eosio {
 				p.verified = 0;
 				p.date = eosio::current_time_point().sec_since_epoch();;
 				p.data = "{}";
-				p.primary = 0;
 			});
 		}
 
@@ -177,7 +176,6 @@ namespace eosio {
 				p.verified = 0;
 				p.date = eosio::current_time_point().sec_since_epoch();;			
 				p.data = data;			
-				p.primary = 0;
 			});
 		}
 	}
@@ -207,7 +205,6 @@ namespace eosio {
 				p.verified = 0;
 				p.date = eosio::current_time_point().sec_since_epoch();;			
 				p.data = "{}";
-				p.primary = 0;
 			});
 		}
 
@@ -241,45 +238,13 @@ namespace eosio {
 				p.verified = verified;
 				p.date = eosio::current_time_point().sec_since_epoch();;			
 				p.data = "{}";
-				p.primary = 0;
 			});
 		}
 
 	}	
 
 
-	void eosioproton::userprimary(name acc, bool  primary ){
-
-		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
-		require_auth(permission_level("wlcm.proton"_n, "update"_n));
-
-		require_recipient( acc );
-		check( is_account( acc ), "Account does not exist.");
 		
-
-		usersinfo usrinf( _self, _self.value );
-		auto existing = usrinf.find( acc.value );
-		
-		if ( existing != usrinf.end() ) {
-			usrinf.modify( existing, _self, [&]( auto& p ){
-				p.primary = primary;
-				p.date = eosio::current_time_point().sec_since_epoch();;
-			});
-		} else {
-			usrinf.emplace( _self, [&]( auto& p ){				
-				p.acc = acc;
-				p.name = "";				
-				p.avatar = "";
-				p.verified = 0;
-				p.date = eosio::current_time_point().sec_since_epoch();;			
-				p.data = "{}";
-				p.primary = primary;
-			});
-		}
-
-	}	
-	
-	
 	void eosioproton::reqperm(name acc, std::string permission ){
 
 		require_auth( acc );
@@ -353,22 +318,7 @@ namespace eosio {
 	
     }
 
-    void eosioproton::migration(name acc, std::string name, std::string avatar, bool verified, uint64_t date, std::string data, bool primary) {
-        require_auth( _self );
-		
-		usersinfo usersinfo(_self, _self.value);
-
-        usersinfo.emplace(_self, [&](auto& s) {
-            s.acc      = acc;
-            s.name     = name;
-            s.avatar   = avatar;
-            s.verified = verified;
-            s.date     = date;
-            s.data     = data;
-			s.primary  = primary;
-        });		
-	}
-	
+    
 	void eosioproton::setdappconf(uint64_t ram, uint64_t cpu, uint64_t net){
 		
 		require_auth( _self );
@@ -485,4 +435,4 @@ namespace eosio {
 
 
 
-EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserdata)(setuserava)(userverify)(userprimary)(migration)(dappreg)(setdappconf))
+EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserdata)(setuserava)(userverify)(dappreg)(setdappconf))
