@@ -51,15 +51,8 @@ namespace eosio {
 			t.iconurl = iconurl;
 			t.symbol = symbol;
 			t.blisted = false;
-		});
-		
-		//SEND_INLINE_ACTION( *this, reglog, { {_self, "active"_n} }, { newid, tcontract, tname, url, desc, iconurl, symbol } );
-	
+		});	
 	}
-
-	//void tokenproton::reglog(uint64_t id, name tcontract, string tname, string url, string desc, string iconurl, symbol symbol){
-	//	require_auth(get_self());
-	//}
 		
 	void tokenproton::update(uint64_t id, name tcontract, string tname, string url, string desc, string iconurl, symbol symbol){
 		
@@ -80,8 +73,6 @@ namespace eosio {
 		
 		require_recipient( tcontract );
 
-
-		
 		tokens_.modify( itr, tcontract, [&]( auto& t ) {
 			t.tcontract = tcontract;
 			t.tname = tname;
@@ -98,9 +89,24 @@ namespace eosio {
 		tokens tokens_( _self, _self.value );		
 		auto itr = tokens_.require_find( id, string("id: " + to_string( id ) + " cannot be found").c_str() );		
 		require_auth( itr->tcontract );		
+		
+		check (!(itr->blisted), "Blacklisted tokens cannot be removed.");
 		tokens_.erase( itr );
 	}
 
+	
+	void tokenproton::updblacklist(uint64_t id, bool blisted){
+		
+		require_auth( _self );
+		
+		tokens tokens_( _self, _self.value );		
+		auto itr = tokens_.require_find( id, string("id: " + to_string( id ) + " cannot be found").c_str() );
+		
+		tokens_.modify( itr, _self, [&]( auto& t ) {
+			t.blisted = blisted;
+		});	
+
+	}
 
 	
 	uint64_t tokenproton::getid() {
@@ -120,4 +126,4 @@ namespace eosio {
 }
 
 
-EOSIO_DISPATCH( eosio::tokenproton, (reg)(update)(remove))  //(reglog)
+EOSIO_DISPATCH( eosio::tokenproton, (reg)(update)(remove)(updblacklist))  

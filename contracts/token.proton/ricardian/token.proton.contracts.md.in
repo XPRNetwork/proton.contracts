@@ -8,18 +8,7 @@ icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
 ---
 Register Token information
 
-
-
-<h1 class="contract">reglog</h1>
----
-spec_version: "0.2.0"
-title: Register Token information
-summary: 'Register Token information'
-icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
----
-Register Token information
 <h1 class="contract">update</h1>
-
 
 ---
 spec_version: "0.2.0"
@@ -35,5 +24,14 @@ Update Token information
 spec_version: "0.2.0"
 title: Remove Token information
 summary: 'Remove Token information'
+icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
+---
+
+<h1 class="contract">updblacklist</h1>
+
+---
+spec_version: "0.2.0"
+title: Update Token blacklisted status
+summary: 'Update Token blacklisted status'
 icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
 ---

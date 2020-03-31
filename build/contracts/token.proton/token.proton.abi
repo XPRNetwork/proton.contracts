@@ -132,6 +132,20 @@
                     "type": "symbol"
                 }
             ]
+        },
+        {
+            "name": "updblacklist",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "blisted",
+                    "type": "bool"
+                }
+            ]
         }
     ],
     "actions": [
@@ -149,6 +163,11 @@
             "name": "update",
             "type": "update",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: 'Update Token information'\nsummary: 'Create a new token'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nUpdate Token information"
+        },
+        {
+            "name": "updblacklist",
+            "type": "updblacklist",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Update Token blacklisted status\nsummary: 'Update Token blacklisted status'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---"
         }
     ],
     "tables": [

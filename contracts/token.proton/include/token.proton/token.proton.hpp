@@ -41,7 +41,11 @@ namespace eosio {
 			void remove(uint64_t id);
 			using remove_action = eosio::action_wrapper<"remove"_n, &tokenproton::remove>;
 
+			[[eosio::action]]
+			void updblacklist(uint64_t id, bool blisted);
+			using updblacklist_action = eosio::action_wrapper<"updblacklist"_n, &tokenproton::updblacklist>;
 
+			
 		private:
 			uint64_t getid( );
 			

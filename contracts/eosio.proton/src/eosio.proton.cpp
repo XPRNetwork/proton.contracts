@@ -125,8 +125,7 @@ namespace eosio {
 
 	void eosioproton::setuserava(name acc, std::string ava ){
 		
-		internal_use_do_not_use::require_auth2("wlcm.proton"_n.value, "update"_n.value );
-		//require_auth(acc);
+		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -157,8 +156,7 @@ namespace eosio {
 		
 	void eosioproton::setuserdata(name acc, std::string data ){
 
-		internal_use_do_not_use::require_auth2("wlcm.proton"_n.value, "update"_n.value );
-		//require_auth(acc);
+		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -187,8 +185,7 @@ namespace eosio {
 
 	void eosioproton::setusername(name acc, std::string name ){
 
-		internal_use_do_not_use::require_auth2("wlcm.proton"_n.value, "update"_n.value );
-		//require_auth(acc);
+		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -221,9 +218,8 @@ namespace eosio {
 	
 	void eosioproton::userverify(name acc, bool  verified ){
 
-		internal_use_do_not_use::require_auth2("wlcm.proton"_n.value, "newacc"_n.value );
-		//require_auth( _self );
-		//require_auth(acc);
+		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
+		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -254,9 +250,8 @@ namespace eosio {
 
 	void eosioproton::userprimary(name acc, bool  primary ){
 
-		internal_use_do_not_use::require_auth2("wlcm.proton"_n.value, "newacc"_n.value );
-		//require_auth( _self );
-		//require_auth(acc);
+		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
+		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -486,8 +481,6 @@ namespace eosio {
 	}
 	
 }
-
-
 
 
 
