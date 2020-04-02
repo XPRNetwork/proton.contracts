@@ -1,0 +1,50 @@
+<h1 class="contract">reg</h1>
+
+---
+spec_version: "0.2.0"
+title: Register Committee memeber
+summary: 'Register {{nowrap account}} as Committee memeber'
+icon: @ICON_BASE_URL@/@VOTING_ICON_URI@
+---
+Register {{account}} as Committee memeber
+
+<h1 class="contract">unreg</h1>
+
+---
+spec_version: "0.2.0"
+title: Unregister Committee memeber
+summary: 'Unregister {{nowrap account}}  Committee memeber'
+icon: @ICON_BASE_URL@/@VOTING_ICON_URI@
+---
+Unregister {{account}} Committee memeber
+
+<h1 class="contract">activate</h1>
+
+---
+spec_version: "0.2.0"
+title: Activate Committee memeber
+summary: 'Activate {{nowrap account}} Committee memeber'
+icon: @ICON_BASE_URL@/@VOTING_ICON_URI@
+---
+Activate {{account}} Committee memeber
+
+
+<h1 class="contract">claimreward</h1>
+---
+spec_version: "0.2.0"
+title: Claim Committee Rewards
+summary: '{{nowrap account}} claims Committee rewards'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+{{account}} claims Committee reward from the system.
+
+
+<h1 class="contract">process</h1>
+
+---
+spec_version: "0.2.0"
+title: sharing rewards  (internal)
+summary: 'sharing rewards (internal)'
+icon: @ICON_BASE_URL@/@VOTING_ICON_URI@
+---
+sharing rewards (internal)

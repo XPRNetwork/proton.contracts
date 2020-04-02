@@ -555,7 +555,7 @@ namespace eosiosystem {
       public:
          static constexpr eosio::name active_permission{"active"_n};
 	 static constexpr eosio::name proton_account{"eosio.proton"_n};      // PROTON
-		 
+	 static constexpr eosio::name cfund_account{"cfund.proton"_n};		 // PROTON
          static constexpr eosio::name token_account{"eosio.token"_n};
          static constexpr eosio::name ram_account{"eosio.ram"_n};
          static constexpr eosio::name ramfee_account{"eosio.ramfee"_n};
@@ -564,6 +564,7 @@ namespace eosiosystem {
          static constexpr eosio::name vpay_account{"eosio.vpay"_n};
          static constexpr eosio::name names_account{"eosio.names"_n};
          static constexpr eosio::name saving_account{"eosio.saving"_n};
+		 
          static constexpr eosio::name rex_account{"eosio.rex"_n};
          static constexpr eosio::name null_account{"eosio.null"_n};
          static constexpr symbol ramcore_symbol = symbol(symbol_code("RAMCORE"), 4);

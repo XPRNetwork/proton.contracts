@@ -97,10 +97,16 @@ namespace eosiosystem {
          int64_t new_tokens = (additional_inflation < 0.0) ? 0 : static_cast<int64_t>(additional_inflation);
 
          int64_t to_producers     = (new_tokens * uint128_t(pay_factor_precision)) / _gstate4.inflation_pay_factor;
-         int64_t to_savings       = new_tokens - to_producers;
+         
+		 int64_t savings		  = new_tokens - to_producers;  			//PROTON
+		 int64_t to_savings       = 2 * savings / 3;  	 					//PROTON
+		 int64_t to_cfund         = savings - to_savings;  					//PROTON
+		 
          int64_t to_per_block_pay = (to_producers * uint128_t(pay_factor_precision)) / _gstate4.votepay_factor;
          int64_t to_per_vote_pay  = to_producers - to_per_block_pay;
 
+		 //cfund_account
+		 
          if( new_tokens > 0 ) {
             {
                token::issue_action issue_act{ token_account, { {get_self(), active_permission} } };
@@ -113,6 +119,12 @@ namespace eosiosystem {
                   //transfer_act.send( get_self(), saving_account, asset(to_savings, core_symbol()), "unallocated inflation" ); //PROTON
 				  transfer_act.send( get_self(), saving_account, asset(to_savings, XPRsym), "unallocated inflation" ); //PROTON
                }
+			   
+               if( to_cfund > 0 ) { //PROTON
+				  transfer_act.send( get_self(), cfund_account, asset(to_cfund, XPRsym), "fund committee bucket" ); //PROTON
+               } //PROTON
+
+			   
                if( to_per_block_pay > 0 ) {
 				  //transfer_act.send( get_self(), bpay_account, asset(to_per_block_pay, core_symbol()), "fund per-block bucket" ); //PROTON
                   transfer_act.send( get_self(), bpay_account, asset(to_per_block_pay, XPRsym), "fund per-block bucket" ); //PROTON
