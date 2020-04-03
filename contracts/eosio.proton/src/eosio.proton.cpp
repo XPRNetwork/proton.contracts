@@ -215,7 +215,6 @@ namespace eosio {
 	
 	void eosioproton::userverify(name acc, bool  verified ){
 
-		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
 		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 
 		require_recipient( acc );
@@ -329,7 +328,7 @@ namespace eosio {
 		check (ram > 0 || cpu > 0 || net > 0, "Action values should be positive numbers");
 		check (ram < uint64_t(16*1024*1024)*1014 , "To much RAM");
 		
-		_dcstate.dappramm = ram;
+		_dcstate.dappram = ram;
 		_dcstate.dappcpu = cpu;
 		_dcstate.dappnet = net;
 		
@@ -396,7 +395,7 @@ namespace eosio {
 		uint64_t addCpu = 0;
 		uint64_t addNet = 0;
 
-		auto addRam = _dcstate.dappramm - ram;
+		auto addRam = _dcstate.dappram - ram;
 		if (_dcstate.dappcpu > cpu.amount)
 			addCpu = _dcstate.dappcpu - cpu.amount;
 		if (_dcstate.dappnet > net.amount)

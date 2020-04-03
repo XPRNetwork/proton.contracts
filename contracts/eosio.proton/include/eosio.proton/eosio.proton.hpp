@@ -117,7 +117,6 @@ namespace eosio {
 			bool			verified;
 			uint64_t		date;
 			std::string		data;
-			bool			primary;  ///!!!!!!!!!!!!!! REMOVE On New CHAIN
 
 			uint64_t primary_key()const { return acc.value; }
 		};
@@ -141,11 +140,11 @@ namespace eosio {
 		
 		TABLE dappconf {
 			dappconf(){}
-			uint64_t dappramm = 2 * 1024 * 1024;
+			uint64_t dappram = 2 * 1024 * 1024;
 			uint64_t dappcpu = 200000;
 			uint64_t dappnet = 200000;
 
-			EOSLIB_SERIALIZE( dappconf, (dappramm)(dappcpu)(dappnet))
+			EOSLIB_SERIALIZE( dappconf, (dappram)(dappcpu)(dappnet))
 		};
 		typedef eosio::singleton< "dappconf"_n, dappconf> dappconfig;
 		dappconf _dcstate;
