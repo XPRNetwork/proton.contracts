@@ -1,3 +1,12 @@
+/*##################################*\
+#
+#
+# Created by CryptoLions.io
+#
+#
+\*##################################*/
+
+
 #pragma once
 
 #include <eosio/eosio.hpp>
@@ -5,8 +14,11 @@
 #include <eosio/singleton.hpp>
 
 
+using namespace eosio;
+using namespace std;
+
 namespace eosiosystem {
-   class system_contract;
+	class system_contract;
 }
 
 namespace eosio {
@@ -36,16 +48,24 @@ namespace eosio {
 			using setuserava_action = eosio::action_wrapper<"setuserava"_n, &eosioproton::setuserava>;
 
 			[[eosio::action]]
-			void setuserdata(name acc, std::string data );
-			using setuserdata_action = eosio::action_wrapper<"setuserdata"_n, &eosioproton::setuserdata>;
-			
-			[[eosio::action]]
 			void setusername(name acc, std::string name );
 			using setusername_action = eosio::action_wrapper<"setusername"_n, &eosioproton::setusername>;
 			
 			[[eosio::action]]
-			void userverify(name acc, bool  verified);
+			void userverify(name acc, name verifier, bool  verified);
 			using userverify_action = eosio::action_wrapper<"userverify"_n, &eosioproton::userverify>;
+
+			[[eosio::action]]
+			void updateraccs(name acc, vector<name> raccs);
+			using updateraccs_action = eosio::action_wrapper<"updateraccs"_n, &eosioproton::updateraccs>;
+			
+			[[eosio::action]]
+			void updateaacts(name acc, vector<tuple<name, name>> aacts);
+			using updateaacts_action = eosio::action_wrapper<"updateaacts"_n, &eosioproton::updateaacts>;
+			
+			[[eosio::action]]
+			void updateac(name acc, vector<tuple<name, string>> ac);
+			using updateac_action = eosio::action_wrapper<"updateac"_n, &eosioproton::updateac>;
 
 			[[eosio::action]]
 			void dappreg(name account);
@@ -58,13 +78,13 @@ namespace eosio {
  
 			static std::map<std::string,uint8_t> get_priv( name contract_account, name acc ){
 				std::map<std::string,uint8_t> res;
-				
+
 				//exception for eosio account
 				if ( acc == "eosio"_n ) {
 					res["createacc"] = 1; res["vote"] = 1; res["regprod"] = 1; res["regproxy"] = 1; res["setcontract"] = 1; res["namebids"] = 1; res["rex"] = 1; res["delegate"] = 1; res["undelegate"] = 1; res["sellram"] = 1; res["buyram"] = 1;
-					return res;			
+					return res;
 				}
-				
+
 				res["createacc"] = 0; res["vote"] = 0; res["regprod"] = 0; res["regproxy"] = 0; res["setcontract"] = 0; res["namebids"] = 0; res["rex"] = 0; res["delegate"] = 0; res["undelegate"] = 0; res["sellram"] = 0; res["buyram"] = 0;
 
 				permissions perm( contract_account, contract_account.value );
@@ -77,18 +97,18 @@ namespace eosio {
 					res["setcontract"] = existing->setcontract;
 					res["namebids"] = existing->namebids;
 					res["rex"] = existing->rex;
-					
+
 					res["delegate"] = existing->delegate;
-					res["undelegate"] = existing->undelegate;					
+					res["undelegate"] = existing->undelegate;
 					res["sellram"] = existing->sellram;
-					res["buyram"] = existing->buyram;					
+					res["buyram"] = existing->buyram;
 					
 				}
-				return res;			
+				return res;
 			}
 
 	private:
-
+	
 		// 0 = none, 1 = on, 2 = pending, 3 = off, 4 = banned
 		struct [[eosio::table]] permission {
 			name		acc;
@@ -111,18 +131,25 @@ namespace eosio {
 
 
 		struct [[eosio::table]] userinfo {
-			name			acc;
-			std::string		name;			
-			std::string		avatar;
-			bool			verified;
-			uint64_t		date;
-			std::string		data;
+			name                                     acc;
+			std::string                              name;
+			std::string                              avatar;
+			bool                                     verified;
+			uint64_t                                 date;
+			uint64_t                                 verifiedon;
+			eosio::name                              verifier;
 
+			vector<eosio::name>                      raccs;
+			vector<tuple<eosio::name, eosio::name>>  aacts;
+			vector<tuple<eosio::name, string>>       ac;
+			
+			
 			uint64_t primary_key()const { return acc.value; }
 		};
 
 		typedef eosio::multi_index< "usersinfo"_n, userinfo > usersinfo;
-		
+
+
 		struct [[eosio::table]] user_resources {
 			name          owner;
 			asset         net_weight;
@@ -135,9 +162,9 @@ namespace eosio {
 			// explicit serialization macro is not necessary, used here only to improve compilation time
 			EOSLIB_SERIALIZE( user_resources, (owner)(net_weight)(cpu_weight)(ram_bytes) )
 		};
-		typedef eosio::multi_index< "userres"_n, user_resources >      user_resources_table;
-		
-		
+		typedef eosio::multi_index< "userres"_n, user_resources > user_resources_table;
+
+
 		TABLE dappconf {
 			dappconf(){}
 			uint64_t dappram = 2 * 1024 * 1024;
@@ -148,8 +175,6 @@ namespace eosio {
 		};
 		typedef eosio::singleton< "dappconf"_n, dappconf> dappconfig;
 		dappconf _dcstate;
-
-
 
 		//add singelton for producer pay config
 
