@@ -177,7 +177,7 @@ namespace eosio {
 
 	void eosioproton::userverify(name acc, name verifier, bool  verified ){
 
-		require_auth(permission_level("admin.proton"_n, "verifier"_n));
+		require_auth(permission_level("admin.proton"_n, "verifiers"_n));
 		require_auth(verifier);
 		check( is_account( acc ), "Account does not exist.");	
 		require_recipient( acc );
