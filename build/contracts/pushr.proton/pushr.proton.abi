@@ -1,0 +1,117 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "pushreq",
+            "base": "",
+            "fields": [
+                {
+                    "name": "requestor",
+                    "type": "name"
+                },
+                {
+                    "name": "signer",
+                    "type": "name"
+                },
+                {
+                    "name": "esr",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "tuple_name_name",
+            "base": "",
+            "fields": [
+                {
+                    "name": "field_0",
+                    "type": "name"
+                },
+                {
+                    "name": "field_1",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "tuple_name_string",
+            "base": "",
+            "fields": [
+                {
+                    "name": "field_0",
+                    "type": "name"
+                },
+                {
+                    "name": "field_1",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "userinfo",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "avatar",
+                    "type": "string"
+                },
+                {
+                    "name": "verified",
+                    "type": "bool"
+                },
+                {
+                    "name": "date",
+                    "type": "uint64"
+                },
+                {
+                    "name": "verifiedon",
+                    "type": "uint64"
+                },
+                {
+                    "name": "verifier",
+                    "type": "name"
+                },
+                {
+                    "name": "raccs",
+                    "type": "name[]"
+                },
+                {
+                    "name": "aacts",
+                    "type": "tuple_name_name[]"
+                },
+                {
+                    "name": "ac",
+                    "type": "tuple_name_string[]"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "pushreq",
+            "type": "pushreq",
+            "ricardian_contract": "---\nspec_version: \"0.1.0\"\ntitle: Submit push request\nsummary: 'Action in which a dapp can submit a push request'\nicon:\n---\nSubmit stateless push request"
+        }
+    ],
+    "tables": [
+        {
+            "name": "usersinfo",
+            "type": "userinfo",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}
