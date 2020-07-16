@@ -202,7 +202,14 @@ namespace eosiosystem {
       return new_votepay_share;
    }
 
+   // PROTON. action changed to work with XPR tokens. Original to vote with SYS ranamed to `voteprodsys`
    void system_contract::voteproducer( const name& voter_name, const name& proxy, const std::vector<name>& producers ) {
+      require_auth( voter_name );
+
+      update_xpr_votes( voter_name, voter_name, proxy, producers, true );
+   }
+   
+   void system_contract::voteprodsys( const name& voter_name, const name& proxy, const std::vector<name>& producers ) {
       require_auth( voter_name );
 
       check (checkPermission(voter_name, "vote")==1, "You are not authorised to Vote");  // PROTON Check Permissions
@@ -307,8 +314,8 @@ namespace eosiosystem {
             auto prod2 = _producers2.find( pd.first.value );
             if( prod2 != _producers2.end() ) {
                const auto last_claim_plus_3days = pitr->last_claim_time + microseconds(3 * useconds_per_day);
-               bool crossed_threshold       = (last_claim_plus_3days <= ct);
-               bool updated_after_threshold = (last_claim_plus_3days <= prod2->last_votepay_share_update);
+               const auto crossed_threshold       = (last_claim_plus_3days <= ct);
+               const auto updated_after_threshold = (last_claim_plus_3days <= prod2->last_votepay_share_update);
                // Note: updated_after_threshold implies cross_threshold
 
                double new_votepay_share = update_producer_votepay_share( prod2,
@@ -340,6 +347,162 @@ namespace eosiosystem {
       });
    }
 
+ 
+   
+   // PROTON 
+   void system_contract::update_xpr_votes( const name& from, const name& voter_name, const name& proxy, const std::vector<name>& producers, bool voting ) {
+      //validate input
+      if ( proxy ) {
+         check( producers.size() == 0, "cannot vote for producers and proxy at same time" );
+         check( voter_name != proxy, "cannot proxy to self" );
+      } else {
+         check( producers.size() <= _gstatesxpr.max_bp_per_vote , "attempt to vote for too many producers" ); // PROTON 
+         for( size_t i = 1; i < producers.size(); ++i ) {
+            check( producers[i-1] < producers[i], "producer votes must be unique and sorted" );
+         }
+      }
+
+      auto voter = _voters.require_find( voter_name.value, string("user must stake XPR before they can vote").c_str() );    
+      check( !proxy || !voter->is_proxy, "account registered as a proxy is not allowed to use a proxy" );
+  
+      auto new_vote_weight = stake2vote( voter->staked );
+      if( voter->is_proxy ) {
+         new_vote_weight += voter->proxied_vote_weight;
+      }
+
+      auto lastVotedBPs  = voter->producers;
+
+      std::map<name, std::pair<double, bool /*new*/> > producer_deltas;
+      if ( voter->last_vote_weight > 0 ) {
+         if( voter->proxy ) {
+            auto old_proxy = _voters.require_find( voter->proxy.value, string("old proxy not found").c_str() );
+            _voters.modify( old_proxy, same_payer, [&]( auto& vp ) {
+                  vp.proxied_vote_weight -= voter->last_vote_weight;
+               });
+            propagate_weight_change( *old_proxy );
+         } else {
+            for( const auto& p : voter->producers ) {
+               auto& d = producer_deltas[p];
+               d.first -= voter->last_vote_weight;
+               d.second = false;
+            }
+         }
+      }
+
+      if( proxy ) {
+         auto new_proxy = _voters.require_find( proxy.value, string("invalid proxy specified").c_str() );
+         check( !voting || new_proxy->is_proxy, "proxy not found" );
+         if ( new_vote_weight >= 0 ) {
+            _voters.modify( new_proxy, same_payer, [&]( auto& vp ) {
+                  vp.proxied_vote_weight += new_vote_weight;
+               });
+            propagate_weight_change( *new_proxy );
+         }
+      } else {
+         if( new_vote_weight >= 0 ) {
+            for( const auto& p : producers ) {
+               auto& d = producer_deltas[p];
+               d.first += new_vote_weight;
+               d.second = true;
+            }
+         }
+      }
+
+      const auto ct = current_time_point();
+      double delta_change_rate         = 0.0;
+      double total_inactive_vpay_share = 0.0;
+      for( const auto& pd : producer_deltas ) {
+         auto pitr = _producers.find( pd.first.value );
+         if( pitr != _producers.end() ) {
+            if( voting && !pitr->active() && pd.second.second /* from new set */ ) {
+               check( false, ( "producer " + pitr->owner.to_string() + " is not currently registered" ).data() );
+            }
+            double init_total_votes = pitr->total_votes;
+            _producers.modify( pitr, same_payer, [&]( auto& p ) {
+               p.total_votes += pd.second.first;
+               if ( p.total_votes < 0 ) { // floating point arithmetics can give small negative numbers
+                  p.total_votes = 0;
+               }
+               _gstate.total_producer_vote_weight += pd.second.first;
+               //check( p.total_votes >= 0, "something bad happened" );
+            });
+            auto prod2 = _producers2.find( pd.first.value );
+            if( prod2 != _producers2.end() ) {
+               const auto last_claim_plus_3days = pitr->last_claim_time + microseconds(3 * useconds_per_day);
+               bool crossed_threshold       = (last_claim_plus_3days <= ct);
+               bool updated_after_threshold = (last_claim_plus_3days <= prod2->last_votepay_share_update);
+               // Note: updated_after_threshold implies cross_threshold
+
+               double new_votepay_share = update_producer_votepay_share( prod2,
+                                             ct,
+                                             updated_after_threshold ? 0.0 : init_total_votes,
+                                             crossed_threshold && !updated_after_threshold // only reset votepay_share once after threshold
+                                          );
+
+               if( !crossed_threshold ) {
+                  delta_change_rate += pd.second.first;
+               } else if( !updated_after_threshold ) {
+                  total_inactive_vpay_share += new_votepay_share;
+                  delta_change_rate -= init_total_votes;
+               }
+            }
+         } else {
+            if( pd.second.second ) {
+               check( false, ( "producer " + pd.first.to_string() + " is not registered" ).data() );
+            }
+         }
+      }
+
+
+      auto voter_info_itr = vxpr_tbl.find( from.value );
+      optional<bool>   startqualif = std::nullopt;
+
+      //del_xpr_table     sxpr_tbl( get_self(), voter_name.value );
+      //auto sxpr_itr = sxpr_tbl.find( voter_name.value );
+
+      if (lastVotedBPs.size() < _gstatesxpr.min_bp_reward) {
+         if (producers.size() >= _gstatesxpr.min_bp_reward) {
+            //new qualified voter
+            _gstatesd.totalrstaked += voter->staked;
+            _gstatesd.totalrvoters++;
+            if ( voter_info_itr != vxpr_tbl.end() ){
+
+               vxpr_tbl.modify( voter_info_itr, same_payer, [&]( auto& dbo ){
+                   if (_gstatesd.isprocessing && _gstatesd.processFrom.value < from.value && dbo.startqualif == std::nullopt) {
+                      dbo.startqualif = voter_info_itr->isqualified; //std::nullopt;
+                   }
+
+                  dbo.isqualified = true;
+               });
+            }
+         }
+      } else {
+        if (producers.size() < _gstatesxpr.min_bp_reward) {
+           //remove qualified voter
+           _gstatesd.totalrstaked -= voter->staked;
+           _gstatesd.totalrvoters--;
+
+           if ( voter_info_itr != vxpr_tbl.end() ){
+              vxpr_tbl.modify( voter_info_itr, same_payer, [&]( auto& dbo ){
+                 if (_gstatesd.isprocessing && _gstatesd.processFrom.value < from.value && dbo.startqualif == std::nullopt) {
+                    dbo.startqualif = voter_info_itr->isqualified; //std::nullopt;
+                 }
+
+                 dbo.isqualified = false;
+              });
+           }
+        }
+      }
+
+      update_total_votepay_share( ct, -total_inactive_vpay_share, delta_change_rate );
+
+      _voters.modify( voter, same_payer, [&]( auto& av ) {
+         av.last_vote_weight = new_vote_weight;
+         av.producers = producers;
+         av.proxy     = proxy;
+      });
+   }
+   
    void system_contract::regproxy( const name& proxy, bool isproxy ) {
       require_auth( proxy );
 
@@ -419,5 +582,135 @@ namespace eosiosystem {
          }
       );
    }
+   
+   // PROTON
+   void system_contract::voterclaim( const name& owner ) {
+      require_auth( owner );
+      auto voter_info_itr = vxpr_tbl.require_find( owner.value, string("Voter not found.").c_str() );
+      
+      check ( current_time_point().sec_since_epoch() - voter_info_itr->lastclaim  > _gstatesxpr.voters_claim_interval, "Your last claim was less than 24h ago. Plaese wait " + timeToWait( abs((int)( _gstatesxpr.voters_claim_interval - (uint64_t)current_time_point().sec_since_epoch() + voter_info_itr->lastclaim)) ) );
+      check ( voter_info_itr->claimamount > 0, "Nothing to claim.");
 
+      token::transfer_action transfer_act{ token_account, { {saving_account, active_permission}, {owner, active_permission} } };
+      transfer_act.send( saving_account, voter_info_itr->owner, asset(voter_info_itr->claimamount, XPRsym), std::string("Voter claim reward") ); //PROTON
+
+      _gstatesd.notclaimed -= voter_info_itr->claimamount;
+
+      vxpr_tbl.modify(voter_info_itr, owner, [&](auto& s) {
+            s.claimamount = 0;
+            s.lastclaim = current_time_point().sec_since_epoch();
+      });
+   }
+
+   // PROTON
+   void system_contract::vrwrdsharing(  ) {
+      require_auth( get_self() );
+  
+      const auto now = current_time_point().sec_since_epoch();
+      bool isWork = false;
+
+      if (_gstatesd.isprocessing)  {
+         isWork = true;
+      } else if ( now - _gstatesd.processtime >=  _gstatesxpr.process_interval){
+         isWork = true;
+         _gstatesd.processtime = now;
+         _gstatesd.processQuant = _gstatesd.pool;
+         _gstatesd.pool = 0;
+         _gstatesd.isprocessing = true;
+         _gstatesd.processFrom = ""_n;
+         _gstatesd.processrstaked = _gstatesd.totalrstaked;
+      } else {
+         print ("No scheduled work");
+      }
+      if (isWork){
+          _gstatesd.processtimeupd = now;
+          
+         auto itr = vxpr_tbl.begin();
+         if (_gstatesd.processFrom.value) {
+            itr = vxpr_tbl.find(_gstatesd.processFrom.value);
+         }
+
+         uint64_t count = 0;
+
+         while ( itr != vxpr_tbl.end() && count < _gstatesxpr.process_by ){
+            count++;
+
+            optional<bool> userQualify = itr->isqualified;
+            if ( itr->startqualif != std::nullopt ) {
+               userQualify = itr->startqualif;
+            }
+
+            if ( userQualify ){
+               optional<uint64_t> userStake =itr->startstake != std::nullopt ? itr->startstake : itr->staked;
+               
+               uint64_t claim = 0;
+               if (_gstatesd.processrstaked != 0) {
+                  claim = _gstatesd.processQuant * userStake.value() / _gstatesd.processrstaked;
+               }   
+               
+               _gstatesd.processed += claim;
+
+               vxpr_tbl.modify(itr, get_self(), [&](auto& s) {
+                  s.claimamount += claim;
+                  s.startstake = std::nullopt;
+                  s.startqualif = std::nullopt;
+               });
+            }
+            itr++;
+         }
+
+         if ( itr != vxpr_tbl.end() ){
+            _gstatesd.processFrom = itr->owner;
+   
+         } else {
+            _gstatesd.isprocessing = false;
+            _gstatesd.processFrom = ""_n;
+            _gstatesd.processtimeupd = 0;
+
+            if (_gstatesd.processed < _gstatesd.processQuant){
+               _gstatesd.pool += _gstatesd.processQuant - _gstatesd.processed;
+            }
+
+            _gstatesd.processQuant = 0;
+            _gstatesd.processed = 0;
+            _gstatesd.processrstaked = 0;
+            
+         }
+         
+      }
+   }
+   
+
+   void system_contract::check_vote_sharing(  ) {
+      const auto now = current_time_point().sec_since_epoch();
+
+      if (_gstatesd.isprocessing)  {
+         if (now - _gstatesd.processtimeupd >  0) {
+             vrwrdsharing();
+         }
+         
+      } else {
+         if ( now - _gstatesd.processtime >=  _gstatesxpr.process_interval) {
+            vrwrdsharing();  
+         }
+      }
+   }
+   
+   
+   void system_contract::setxprvconf( const uint64_t&  max_bp_per_vote, const uint64_t& min_bp_reward, const uint64_t& unstake_period, const uint64_t& process_by, const uint64_t& process_interval, const uint64_t& voters_claim_interval ) {
+      require_auth( get_self() );
+      
+      check ( process_by <= 1000, "max 1000 for process_by" );
+      check ( max_bp_per_vote <= 50, "max 50 for max_bp_per_vote" );
+      check ( process_interval >= 10800, "min 10800 for process_interval" );
+      
+      _gstatesxpr.max_bp_per_vote = max_bp_per_vote;
+      _gstatesxpr.min_bp_reward = min_bp_reward;
+      _gstatesxpr.unstake_period = unstake_period;
+      _gstatesxpr.process_by = process_by;
+      _gstatesxpr.process_interval = process_interval;
+      _gstatesxpr.voters_claim_interval = voters_claim_interval;
+   
+   }
+   
 } /// namespace eosiosystem

@@ -67,70 +67,62 @@ namespace eosiosystem {
             }
          }
       }
+      
+      check_vote_sharing( ); // PROTON
    }
 
    void system_contract::claimrewards( const name& owner ) {
       require_auth( owner );
-
  
-      //check (false, "no claimrewards available");
-
       const auto& prod = _producers.get( owner.value );
       check( prod.active(), "producer does not have an active key" );
-
-      check( _gstate.thresh_activated_stake_time != time_point(),
-                    "cannot claim rewards until the chain is activated (at least 15% of all tokens participate in voting)" );
+      check( _gstate.thresh_activated_stake_time != time_point(), "cannot claim rewards until the chain is activated (at least 15% of all tokens participate in voting)" );
 
       const auto ct = current_time_point();
 
       check( ct - prod.last_claim_time > microseconds(useconds_per_day), "already claimed rewards within past day" );
 
-      //const asset token_supply   = token::get_supply(token_account, core_symbol().code() ); //PROTON
-	  const asset token_supply   = token::get_supply(token_account, XPRsym.code() ); //PROTON
-	  
+      const asset token_supply   = token::get_supply(token_account, XPRsym.code() ); //PROTON
       const auto usecs_since_last_fill = (ct - _gstate.last_pervote_bucket_fill).count();
 
       if( usecs_since_last_fill > 0 && _gstate.last_pervote_bucket_fill > time_point() ) {
          double additional_inflation = (_gstate4.continuous_rate * double(token_supply.amount) * double(usecs_since_last_fill)) / double(useconds_per_year);
          check( additional_inflation <= double(std::numeric_limits<int64_t>::max() - ((1ll << 10) - 1)),
-                "overflow in calculating new tokens to be issued; inflation rate is too high" );
+                                          "overflow in calculating new tokens to be issued; inflation rate is too high" );
          int64_t new_tokens = (additional_inflation < 0.0) ? 0 : static_cast<int64_t>(additional_inflation);
 
          int64_t to_producers     = (new_tokens * uint128_t(pay_factor_precision)) / _gstate4.inflation_pay_factor;
-         
-		 int64_t savings		  = new_tokens - to_producers;  			//PROTON
-		 int64_t to_savings       = 2 * savings / 3;  	 					//PROTON
-		 int64_t to_cfund         = savings - to_savings;  					//PROTON
-		 
+
+         int64_t savings         = new_tokens - to_producers;  //PROTON
+         int64_t to_savings      = 2 * savings / 3;            //PROTON
+         int64_t to_cfund        = savings - to_savings;       //PROTON
+
          int64_t to_per_block_pay = (to_producers * uint128_t(pay_factor_precision)) / _gstate4.votepay_factor;
          int64_t to_per_vote_pay  = to_producers - to_per_block_pay;
 
-		 //cfund_account
-		 
+         //cfund_account
+
          if( new_tokens > 0 ) {
             {
                token::issue_action issue_act{ token_account, { {get_self(), active_permission} } };
-               //issue_act.send( get_self(), asset(new_tokens, core_symbol()), "issue tokens for producer pay and savings" ); //PROTON
-			   issue_act.send( get_self(), asset(new_tokens, XPRsym), "issue tokens for producer pay and savings" ); //PROTON
+               issue_act.send( get_self(), asset(new_tokens, XPRsym), "issue tokens for producer pay and savings" ); //PROTON
             }
             {
                token::transfer_action transfer_act{ token_account, { {get_self(), active_permission} } };
                if( to_savings > 0 ) {
-                  //transfer_act.send( get_self(), saving_account, asset(to_savings, core_symbol()), "unallocated inflation" ); //PROTON
-				  transfer_act.send( get_self(), saving_account, asset(to_savings, XPRsym), "unallocated inflation" ); //PROTON
+                  transfer_act.send( get_self(), saving_account, asset(to_savings, XPRsym), "unallocated inflation" ); //PROTON
+                  _gstatesd.pool += to_savings;  //PROTON
+                  _gstatesd.notclaimed += to_savings;  //PROTON
                }
-			   
+
                if( to_cfund > 0 ) { //PROTON
-				  transfer_act.send( get_self(), cfund_account, asset(to_cfund, XPRsym), "fund committee bucket" ); //PROTON
+                  transfer_act.send( get_self(), cfund_account, asset(to_cfund, XPRsym), "fund committee bucket" ); //PROTON
                } //PROTON
 
-			   
                if( to_per_block_pay > 0 ) {
-				  //transfer_act.send( get_self(), bpay_account, asset(to_per_block_pay, core_symbol()), "fund per-block bucket" ); //PROTON
                   transfer_act.send( get_self(), bpay_account, asset(to_per_block_pay, XPRsym), "fund per-block bucket" ); //PROTON
                }
                if( to_per_vote_pay > 0 ) {
-				  //transfer_act.send( get_self(), vpay_account, asset(to_per_vote_pay, core_symbol()), "fund per-vote bucket" ); //PROTON
                   transfer_act.send( get_self(), vpay_account, asset(to_per_vote_pay, XPRsym), "fund per-vote bucket" ); //PROTON
                }
             }
@@ -205,15 +197,12 @@ namespace eosiosystem {
 
       if ( producer_per_block_pay > 0 ) {
          token::transfer_action transfer_act{ token_account, { {bpay_account, active_permission}, {owner, active_permission} } };
-         //transfer_act.send( bpay_account, owner, asset(producer_per_block_pay, core_symbol()), "producer block pay" ); //PROTON
-		 transfer_act.send( bpay_account, owner, asset(producer_per_block_pay, XPRsym), "producer block pay" ); //PROTON
+         transfer_act.send( bpay_account, owner, asset(producer_per_block_pay, XPRsym), "producer block pay" ); //PROTON
       }
       if ( producer_per_vote_pay > 0 ) {
          token::transfer_action transfer_act{ token_account, { {vpay_account, active_permission}, {owner, active_permission} } };
-         //transfer_act.send( vpay_account, owner, asset(producer_per_vote_pay, core_symbol()), "producer vote pay" ); //PROTON
-		 transfer_act.send( vpay_account, owner, asset(producer_per_vote_pay, XPRsym), "producer vote pay" ); //PROTON
+         transfer_act.send( vpay_account, owner, asset(producer_per_vote_pay, XPRsym), "producer vote pay" ); //PROTON
       }
-      
    }
 
 } //namespace eosiosystem

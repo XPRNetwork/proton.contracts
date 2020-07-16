@@ -350,8 +350,9 @@ namespace eosiosystem {
       }
 
       vote_stake_updater( from );
-      update_voting_power( from, stake_net_delta + stake_cpu_delta );
+      update_voting_power( from, stake_net_delta + stake_cpu_delta );   // PROTON !!!! Remove after voting system will be switched only to XPR
    }
+
 
    void system_contract::update_voting_power( const name& voter, const asset& total_update )
    {
@@ -423,6 +424,216 @@ namespace eosiosystem {
       transfer_act.send( stake_account, req->owner, req->net_amount + req->cpu_amount, "unstake" );
       refunds_tbl.erase( req );
    }
+   
+   
+   /* PROTON VOTING LOGIC */
+   
+   void system_contract::stakexpr ( const name& from, const name& receiver, const asset& stake_xpr_quantity){     
+      check( stake_xpr_quantity >= asset ( 0, XPRsym ), "must stake a positive amount" );      
+      check( stake_xpr_quantity.amount > 0, "must stake a positive amount" );
+
+      updstakexpr( from, receiver, stake_xpr_quantity);
+   }
+   
+   void system_contract::unstakexpr ( const name& from, const name& receiver, const asset& unstake_xpr_quantity ){
+      
+      check( unstake_xpr_quantity >= asset ( 0, XPRsym ), "must unstake a positive amount" );
+      check( unstake_xpr_quantity.amount > 0, "must unstake a positive amount" );
+
+      updstakexpr( from, receiver, -unstake_xpr_quantity);
+   }
+
+   void system_contract::updstakexpr( name from, const name& receiver, const asset& xpr_quantity )
+   {
+      require_auth( from );
+      check( xpr_quantity.amount != 0, "should stake non-zero amount" );
+      
+      check ( from == receiver, "At this point you can only stake to yourself" ); 
+
+      // update stake delegated from "from" to "receiver"
+      asset old_balance = asset(0, XPRsym);
+      
+      {
+         del_xpr_table     sxpr_tbl( get_self(), from.value );
+         auto itr = sxpr_tbl.find( receiver.value );
+
+         if ( itr == sxpr_tbl.end() ) {
+            itr = sxpr_tbl.emplace( from, [&]( auto& dbo ){
+                  dbo.from          = from;
+                  dbo.to            = receiver;
+                  dbo.quantity      = xpr_quantity;
+            });
+         } else {
+            old_balance = itr->quantity;
+            
+            sxpr_tbl.modify( itr, same_payer, [&]( auto& dbo ){
+               dbo.quantity    += xpr_quantity;
+            });
+         }
+
+         check( 0 <= itr->quantity.amount, "insufficient staked XPR tokens. You tried to unstake " + (-xpr_quantity).to_string() + " but available amount is " + old_balance.to_string());
+         
+         if ( itr->is_empty() ) {
+            sxpr_tbl.erase( itr );
+         }
+      } 
+
+      if ( xpr_stake_account != from ) { //for eosio both transfer and refund make no sense
+         xpr_refunds_table xpr_refunds_tbl( get_self(), from.value );
+         auto req = xpr_refunds_tbl.find( from.value );
+
+         //create/update/delete refund
+         auto xpr_balance = xpr_quantity;
+ 
+         auto need_deferred_trx = false;
+
+         const auto is_undelegating = xpr_balance.amount  < 0;
+         const auto is_delegating_to_self = (from == receiver);
+
+         if( is_delegating_to_self || is_undelegating ) {
+            if ( req != xpr_refunds_tbl.end() ) { //need to update refund
+               xpr_refunds_tbl.modify( req, same_payer, [&]( xpr_refund_request& r ) {
+                  if ( xpr_balance.amount < 0 ) {
+                     r.request_time = current_time_point();
+                  }
+
+                  r.quantity -= xpr_balance;
+                  if ( r.quantity.amount < 0 ) {
+                     xpr_balance = -r.quantity;
+                     r.quantity.amount = 0;
+                  } else {
+                     xpr_balance.amount = 0;
+                  }
+                  
+               });
+
+               check( 0 <= req->quantity.amount, "negative refund amount" ); //should never happen
+
+               if ( req->is_empty() ) {
+                  xpr_refunds_tbl.erase( req );
+               } else {
+                  need_deferred_trx = true;
+               }
+            } else if ( xpr_balance.amount < 0 ) { //need to create refund
+               xpr_refunds_tbl.emplace( from, [&]( xpr_refund_request& r ) {
+                  r.owner = from;
+                  if ( xpr_balance.amount < 0 ) {
+                     r.quantity = -xpr_balance;
+                     xpr_balance.amount = 0;
+                  } else {
+                     r.quantity = asset( 0, XPRsym );
+                  }
+                  r.request_time = current_time_point();
+               });
+               need_deferred_trx = true;
+            }
+         } 
+
+         if ( need_deferred_trx ) {
+            eosio::transaction out;
+            out.actions.emplace_back( permission_level{from, active_permission},
+                                      get_self(), "refundxpr"_n,
+                                      from
+            );
+            out.delay_sec = _gstatesxpr.unstake_period; //refund_delay_sec;
+            eosio::cancel_deferred( from.value );       // TODO: Remove this line when replacing deferred trxs is fixed
+            out.send( from.value, from, true );
+         } else {
+            eosio::cancel_deferred( from.value );
+         }
+
+         auto transfer_amount = xpr_balance;
+         if ( 0 < transfer_amount.amount ) {
+            token::transfer_action transfer_act{ token_account, { {from, active_permission} } };
+            transfer_act.send( from, xpr_stake_account, asset(transfer_amount), "stake bandwidth" );
+         }
+      }
+
+      update_xpr_voting_power( from, receiver, xpr_quantity );    // PROTON 
+   }
 
 
+   void system_contract::refundxpr( const name& owner ) {
+      require_auth( owner );
+
+      xpr_refunds_table xpr_refunds_tbl( get_self(), owner.value );
+      auto req = xpr_refunds_tbl.require_find( owner.value, string("refund request not found").c_str() );
+     
+      check(req->request_time + seconds(_gstatesxpr.unstake_period) < current_time_point(), "refund is not available yet. Please wait " + timeToWait(abs((int)( (uint64_t)( (uint64_t)req->request_time.sec_since_epoch() + _gstatesxpr.unstake_period) - (uint64_t)current_time_point().sec_since_epoch() )) ));   
+      token::transfer_action transfer_act{ token_account, { {xpr_stake_account, active_permission}, {req->owner, active_permission} } };
+      transfer_act.send( xpr_stake_account, req->owner, req->quantity, "unstake XPR" );
+      xpr_refunds_tbl.erase( req );
+   }
+   
+
+
+   
+   void system_contract::update_xpr_voting_power( const name& from, const name& voter, const asset& total_update )
+   {
+      auto voter_itr = _voters.find( voter.value );
+      auto voter_info_itr = vxpr_tbl.find( from.value );
+
+      auto               isqualified = false;
+      optional<bool>     startqualif = std::nullopt;
+      optional<uint64_t> startstake = std::nullopt;
+
+      if( voter_itr == _voters.end() ) {
+         voter_itr = _voters.emplace( voter, [&]( auto& v ) {
+            v.owner  = voter;
+            v.staked = total_update.amount;
+         });
+      } else {
+         _voters.modify( voter_itr, same_payer, [&]( auto& v ) {
+            v.staked += total_update.amount;
+         });
+      }
+
+      if ( voter_info_itr == vxpr_tbl.end() ) {
+         if ( voter_itr->producers.size() >= _gstatesxpr.min_bp_reward  && voter_itr->producers.size() <= _gstatesxpr.max_bp_per_vote ){
+            isqualified = true;
+         }
+         if (_gstatesd.isprocessing && _gstatesd.processFrom.value < from.value) {
+            startstake = 0;
+            startqualif = false;
+         }
+
+         voter_info_itr = vxpr_tbl.emplace( from, [&]( auto& v ) {
+            v.owner  = from;
+            v.staked = total_update.amount;
+            v.isqualified = isqualified;
+            v.claimamount = 0;
+            v.lastclaim = 0;
+            v.startstake =  startstake;
+            v.startqualif = startqualif;
+         });
+      } else {
+         vxpr_tbl.modify( voter_info_itr, same_payer, [&]( auto& v ) {
+            if (_gstatesd.isprocessing && _gstatesd.processFrom.value < from.value && v.startstake == std::nullopt) {
+               v.startstake    = voter_info_itr->staked;
+            }
+            v.staked += total_update.amount;
+         });
+      }
+
+      if ( voter_itr->producers.size() >= _gstatesxpr.min_bp_reward ) {
+         _gstatesd.totalrstaked += total_update.amount;
+      }
+
+      check( 0 <= voter_itr->staked, "stake for voting cannot be negative" );
+
+      _gstatesd.totalstaked += total_update.amount;
+
+      if( voter_itr->producers.size() || voter_itr->proxy ) {
+         update_xpr_votes( from, voter, voter_itr->proxy, voter_itr->producers, false );
+      }
+   }
+   
+   std::string system_contract::timeToWait( const uint64_t& time_in_seconds ){
+      uint64_t s, h, m = 0;
+      m = time_in_seconds / 60;
+      h = m / 60;
+      return std::to_string(int(h)) + " hours " + std::to_string(int(m % 60)) + " minutes " + std::to_string(int(time_in_seconds % 60)) + " seconds";
+   }
+   /* END PROTON VOTING LOGIC */
+   
 } //namespace eosiosystem

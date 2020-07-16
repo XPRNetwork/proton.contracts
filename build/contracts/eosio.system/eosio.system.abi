@@ -429,6 +429,24 @@
             ]
         },
         {
+            "name": "delegated_xpr",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "to",
+                    "type": "name"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
             "name": "deleteauth",
             "base": "",
             "fields": [
@@ -569,6 +587,106 @@
                 {
                     "name": "votepay_factor",
                     "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "eosio_global_statesd",
+            "base": "",
+            "fields": [
+                {
+                    "name": "totalstaked",
+                    "type": "int64"
+                },
+                {
+                    "name": "totalrstaked",
+                    "type": "int64"
+                },
+                {
+                    "name": "totalrvoters",
+                    "type": "int64"
+                },
+                {
+                    "name": "notclaimed",
+                    "type": "int64"
+                },
+                {
+                    "name": "pool",
+                    "type": "int64"
+                },
+                {
+                    "name": "processtime",
+                    "type": "int64"
+                },
+                {
+                    "name": "processtimeupd",
+                    "type": "int64"
+                },
+                {
+                    "name": "isprocessing",
+                    "type": "bool"
+                },
+                {
+                    "name": "processFrom",
+                    "type": "name"
+                },
+                {
+                    "name": "processQuant",
+                    "type": "uint64"
+                },
+                {
+                    "name": "processrstaked",
+                    "type": "uint64"
+                },
+                {
+                    "name": "processed",
+                    "type": "uint64"
+                },
+                {
+                    "name": "spare1",
+                    "type": "int64"
+                },
+                {
+                    "name": "spare2",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "eosio_global_statesxpr",
+            "base": "",
+            "fields": [
+                {
+                    "name": "max_bp_per_vote",
+                    "type": "uint64"
+                },
+                {
+                    "name": "min_bp_reward",
+                    "type": "uint64"
+                },
+                {
+                    "name": "unstake_period",
+                    "type": "uint64"
+                },
+                {
+                    "name": "process_by",
+                    "type": "uint64"
+                },
+                {
+                    "name": "process_interval",
+                    "type": "uint64"
+                },
+                {
+                    "name": "voters_claim_interval",
+                    "type": "uint64"
+                },
+                {
+                    "name": "spare1",
+                    "type": "uint64"
+                },
+                {
+                    "name": "spare2",
+                    "type": "uint64"
                 }
             ]
         },
@@ -931,6 +1049,16 @@
                 {
                     "name": "cpu_amount",
                     "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "refundxpr",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
                 }
             ]
         },
@@ -1467,6 +1595,54 @@
             ]
         },
         {
+            "name": "setxprvconf",
+            "base": "",
+            "fields": [
+                {
+                    "name": "max_bp_per_vote",
+                    "type": "uint64"
+                },
+                {
+                    "name": "min_bp_reward",
+                    "type": "uint64"
+                },
+                {
+                    "name": "unstake_period",
+                    "type": "uint64"
+                },
+                {
+                    "name": "process_by",
+                    "type": "uint64"
+                },
+                {
+                    "name": "process_interval",
+                    "type": "uint64"
+                },
+                {
+                    "name": "voters_claim_interval",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "stakexpr",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "receiver",
+                    "type": "name"
+                },
+                {
+                    "name": "stake_xpr_quantity",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
             "name": "undelegatebw",
             "base": "",
             "fields": [
@@ -1539,6 +1715,24 @@
             ]
         },
         {
+            "name": "unstakexpr",
+            "base": "",
+            "fields": [
+                {
+                    "name": "from",
+                    "type": "name"
+                },
+                {
+                    "name": "receiver",
+                    "type": "name"
+                },
+                {
+                    "name": "unstake_xpr_quantity",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
             "name": "updateauth",
             "base": "",
             "fields": [
@@ -1599,6 +1793,24 @@
                 {
                     "name": "ram_bytes",
                     "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "voteprodsys",
+            "base": "",
+            "fields": [
+                {
+                    "name": "voter",
+                    "type": "name"
+                },
+                {
+                    "name": "proxy",
+                    "type": "name"
+                },
+                {
+                    "name": "producers",
+                    "type": "name[]"
                 }
             ]
         },
@@ -1667,6 +1879,55 @@
             ]
         },
         {
+            "name": "voterclaim",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "voters_xpr",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "staked",
+                    "type": "uint64"
+                },
+                {
+                    "name": "isqualified",
+                    "type": "bool"
+                },
+                {
+                    "name": "claimamount",
+                    "type": "uint64"
+                },
+                {
+                    "name": "lastclaim",
+                    "type": "uint64"
+                },
+                {
+                    "name": "startstake",
+                    "type": "uint64?"
+                },
+                {
+                    "name": "startqualif",
+                    "type": "bool?"
+                }
+            ]
+        },
+        {
+            "name": "vrwrdsharing",
+            "base": "",
+            "fields": []
+        },
+        {
             "name": "wait_weight",
             "base": "",
             "fields": [
@@ -1690,6 +1951,24 @@
                 },
                 {
                     "name": "amount",
+                    "type": "asset"
+                }
+            ]
+        },
+        {
+            "name": "xpr_refund_request",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "request_time",
+                    "type": "time_point_sec"
+                },
+                {
+                    "name": "quantity",
                     "type": "asset"
                 }
             ]
@@ -1827,6 +2106,11 @@
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Unstaked Tokens\nsummary: 'Return previously unstaked tokens to {{nowrap owner}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nReturn previously unstaked tokens to {{owner}} after the unstaking period has elapsed."
         },
         {
+            "name": "refundxpr",
+            "type": "refundxpr",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Unstaked XPR Tokens\nsummary: 'Return previously unstaked XPR tokens to {{nowrap owner}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nReturn previously unstaked XPR tokens to {{owner}} after the unstaking period has elapsed."
+        },
+        {
             "name": "regproducer",
             "type": "regproducer",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Register as a Block Producer Candidate\nsummary: 'Register {{nowrap producer}} account as a block producer candidate'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/voting.png#db28cd3db6e62d4509af3644ce7d377329482a14bb4bfaca2aa5f1400d8e8a84\n---\n\nRegister {{producer}} account as a block producer candidate.\n\nURL: {{url}}\nLocation code: {{location}}\nBlock signing key: {{producer_key}}\n\n## Block Producer Agreement\n{{$clauses.BlockProducerAgreement}}"
@@ -1932,6 +2216,16 @@
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Adjust REX Pool Virtual Balance\nsummary: 'Adjust REX Pool Virtual Balance'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{$action.account}} adjusts REX loan rate by setting REX pool virtual balance to {{balance}}. No token transfer or issue is executed in this action."
         },
         {
+            "name": "setxprvconf",
+            "type": "setxprvconf",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Configuring Voters Rewards \nsummary: 'Configuring Voters Rewards'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\ninternal action."
+        },
+        {
+            "name": "stakexpr",
+            "type": "stakexpr",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Stake XPR Tokens\nsummary: 'Stake XPR tokens'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\nStake XPR tokens. Unstake period 14 days."
+        },
+        {
             "name": "undelegatebw",
             "type": "undelegatebw",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Unstake Tokens for NET and/or CPU\nsummary: 'Unstake tokens for NET and/or CPU from {{nowrap receiver}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\n{{from}} unstakes from {{receiver}} {{unstake_net_quantity}} for NET bandwidth and {{unstake_cpu_quantity}} for CPU bandwidth.\n\nThe sum of these two quantities will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 3 day period without further unstaking by {{from}}. After the uninterrupted 3 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refund action."
@@ -1952,6 +2246,11 @@
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Buy REX Tokens Using Staked Tokens\nsummary: '{{nowrap owner}} buys REX tokens in exchange for tokens currently staked to NET and/or CPU'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/rex.png#d229837fa62a464b9c71e06060aa86179adf0b3f4e3b8c4f9702f4f4b0c340a8\n---\n\n{{from_net}} and {{from_cpu}} are withdrawn from {{receiver}}’s NET and CPU bandwidths respectively. These funds are used to purchase REX tokens at the current market exchange rate. In order for the action to succeed, {{owner}} must have voted for a proxy or at least 21 block producers.\n\nA sell order of the purchased amount can only be initiated after waiting for the maturity period of 4 to 5 days to pass. Even then, depending on the market conditions, the initiated sell order may not be executed immediately."
         },
         {
+            "name": "unstakexpr",
+            "type": "unstakexpr",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Unstake XPR Tokens \nsummary: 'Unstake XPR tokens from {{nowrap receiver}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\n{{from}} unstakes from {{receiver}} {{unstake_xpr_quantity}}.\n\nThe quantity will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 14 day period without further unstaking by {{from}}. After the uninterrupted 14 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refundxpr action."
+        },
+        {
             "name": "updateauth",
             "type": "updateauth",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Modify Account Permission\nsummary: 'Add or update the {{nowrap permission}} permission of {{nowrap account}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nModify, and create if necessary, the {{permission}} permission of {{account}} to have a parent permission of {{parent}} and the following authority:\n{{to_json auth}}"
@@ -1967,9 +2266,24 @@
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Update System Contract Revision Number\nsummary: 'Update system contract revision number'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{$action.account}} advances the system contract revision number to {{revision}}."
         },
         {
+            "name": "voteprodsys",
+            "type": "voteprodsys",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Vote for Block Producers\nsummary: '{{nowrap voter}} votes for {{#if proxy}}the proxy {{nowrap proxy}}{{else}}up to 4 block producer candidates{{/if}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/voting.png#db28cd3db6e62d4509af3644ce7d377329482a14bb4bfaca2aa5f1400d8e8a84\n---\n\n{{#if proxy}}\n{{voter}} votes for the proxy {{proxy}}.\nAt the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the producers voted by {{proxy}}.\n{{else}}\n{{voter}} votes for the following block producer candidates:\n\n{{#each producers}}\n  + {{this}}\n{{/each}}\n\nAt the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the above producers.\n{{/if}}"
+        },
+        {
             "name": "voteproducer",
             "type": "voteproducer",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Vote for Block Producers\nsummary: '{{nowrap voter}} votes for {{#if proxy}}the proxy {{nowrap proxy}}{{else}}up to 30 block producer candidates{{/if}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/voting.png#db28cd3db6e62d4509af3644ce7d377329482a14bb4bfaca2aa5f1400d8e8a84\n---\n\n{{#if proxy}}\n{{voter}} votes for the proxy {{proxy}}.\nAt the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the producers voted by {{proxy}}.\n{{else}}\n{{voter}} votes for the following block producer candidates:\n\n{{#each producers}}\n  + {{this}}\n{{/each}}\n\nAt the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the above producers.\n{{/if}}"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Vote for Block Producers\nsummary: '{{nowrap voter}} votes for {{#if proxy}}the proxy {{nowrap proxy}}{{else}}up to 4 block producer candidates{{/if}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/voting.png#db28cd3db6e62d4509af3644ce7d377329482a14bb4bfaca2aa5f1400d8e8a84\n---\n\n{{#if proxy}}\n{{voter}} votes for the proxy {{proxy}}.\nAt the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the producers voted by {{proxy}}.\n{{else}}\n{{voter}} votes for the following block producer candidates:\n\n{{#each producers}}\n  + {{this}}\n{{/each}}\n\nAt the time of voting the full weight of voter’s staked XPR tokens will be cast towards each of the above producers.\n{{/if}}"
+        },
+        {
+            "name": "voterclaim",
+            "type": "voterclaim",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Voters Reward\nsummary: '{{nowrap owner}} claims voters rewards'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{owner}} claims voters rewards from the system."
+        },
+        {
+            "name": "vrwrdsharing",
+            "type": "vrwrdsharing",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Voters Rewards Sharing\nsummary: 'Voters Rewards Sharing'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\ninternal action."
         },
         {
             "name": "withdraw",
@@ -2007,6 +2321,13 @@
             "key_types": []
         },
         {
+            "name": "delxpr",
+            "type": "delegated_xpr",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
             "name": "global",
             "type": "eosio_global_state",
             "index_type": "i64",
@@ -2030,6 +2351,20 @@
         {
             "name": "global4",
             "type": "eosio_global_state4",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "globalsd",
+            "type": "eosio_global_statesd",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "globalsxpr",
+            "type": "eosio_global_statesxpr",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
@@ -2072,6 +2407,13 @@
         {
             "name": "refunds",
             "type": "refund_request",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "refundsxpr",
+            "type": "xpr_refund_request",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
@@ -2128,6 +2470,13 @@
         {
             "name": "voters",
             "type": "voter_info",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "votersxpr",
+            "type": "voters_xpr",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

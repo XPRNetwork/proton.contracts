@@ -324,8 +324,10 @@ namespace eosiosystem {
    typedef eosio::singleton< "global2"_n, eosio_global_state2 > global_state2_singleton;
 
    typedef eosio::singleton< "global3"_n, eosio_global_state3 > global_state3_singleton;
-
+   
    typedef eosio::singleton< "global4"_n, eosio_global_state4 > global_state4_singleton;
+
+
 
    struct [[eosio::table, eosio::contract("eosio.system")]] user_resources {
       name          owner;
@@ -340,6 +342,8 @@ namespace eosiosystem {
       EOSLIB_SERIALIZE( user_resources, (owner)(net_weight)(cpu_weight)(ram_bytes) )
    };
 
+   
+ 
    // Every user 'from' has a scope/table that uses every receipient 'to' as the primary key.
    struct [[eosio::table, eosio::contract("eosio.system")]] delegated_bandwidth {
       name          from;
@@ -355,6 +359,8 @@ namespace eosiosystem {
 
    };
 
+
+   
    struct [[eosio::table, eosio::contract("eosio.system")]] refund_request {
       name            owner;
       time_point_sec  request_time;
@@ -373,6 +379,107 @@ namespace eosiosystem {
    typedef eosio::multi_index< "delband"_n, delegated_bandwidth > del_bandwidth_table;
    typedef eosio::multi_index< "refunds"_n, refund_request >      refunds_table;
 
+   
+   // PROTON
+   // Every user 'from' has a scope/table that uses every receipient 'to' as the primary key.
+   struct [[eosio::table, eosio::contract("eosio.system")]] delegated_xpr {
+      name                from;
+      name                to;
+      asset               quantity;
+
+
+      bool is_empty()const { return quantity.amount == 0; }
+      uint64_t  primary_key()const { return to.value; }
+
+      // explicit serialization macro is not necessary, used here only to improve compilation time
+      EOSLIB_SERIALIZE( delegated_xpr, (from)(to)(quantity) )
+
+   };
+   typedef eosio::multi_index< "delxpr"_n, delegated_xpr > del_xpr_table;
+   
+
+   struct [[eosio::table, eosio::contract("eosio.system")]] voters_xpr {
+      name                owner;
+      uint64_t            staked;
+      bool                isqualified;
+      uint64_t            claimamount;
+      uint64_t            lastclaim;
+
+      optional<uint64_t>  startstake;
+      optional<bool>      startqualif;
+
+      bool is_empty()const { return staked == 0; }
+      uint64_t  primary_key()const { return owner.value; }
+
+      // explicit serialization macro is not necessary, used here only to improve compilation time
+      EOSLIB_SERIALIZE( voters_xpr, (owner)(staked)(isqualified)(claimamount)(lastclaim)(startstake)(startqualif) )
+
+   };
+   typedef eosio::multi_index< "votersxpr"_n, voters_xpr > voters_xpr_table;
+   
+   
+   
+   // PROTON
+   struct [[eosio::table, eosio::contract("eosio.system")]] xpr_refund_request {
+      name            owner;
+      time_point_sec  request_time;
+      eosio::asset    quantity;
+
+      bool is_empty()const { return quantity.amount == 0; }
+      uint64_t  primary_key()const { return owner.value; }
+
+      // explicit serialization macro is not necessary, used here only to improve compilation time
+      EOSLIB_SERIALIZE( xpr_refund_request, (owner)(request_time)(quantity) )
+   };
+   
+
+   typedef eosio::multi_index< "refundsxpr"_n, xpr_refund_request >  xpr_refunds_table;
+
+   
+   // PROTON
+   struct [[eosio::table("globalsxpr"), eosio::contract("eosio.system")]] eosio_global_statesxpr {
+      eosio_global_statesxpr() { }
+      uint64_t  max_bp_per_vote        = 4;                    // Max BPs allowed to vote from one account
+      uint64_t  min_bp_reward          = 4;                    // Min voted BPs to get voter reward
+      uint64_t  unstake_period         = 14 * 24 * 60 * 60;    // Unstake period for XPR tokens   14 * 24 * 60 * 60 = 14 days
+      uint64_t  process_by             = 50;                   // How many accounts process in one step during voters reward sharing   
+      uint64_t  process_interval       = 60 * 60 * 12;         // Time (sec) interval between voter reward sharing //      60 * 60 * 12;   = 12h 
+      uint64_t  voters_claim_interval  = 60 * 60 * 24;         // Time (sec) between voter claim rewards (24h def)
+      uint64_t  spare1                 = 0;
+      uint64_t  spare2                 = 0;
+
+
+      EOSLIB_SERIALIZE( eosio_global_statesxpr, (max_bp_per_vote)(min_bp_reward)(unstake_period)(process_by)(process_interval)(voters_claim_interval)(spare1)(spare2) )
+   };
+   typedef eosio::singleton< "globalsxpr"_n, eosio_global_statesxpr > global_statesxpr_singleton;
+
+   // PROTON
+   struct [[eosio::table("globalsd"), eosio::contract("eosio.system")]] eosio_global_statesd {
+      eosio_global_statesd() { }
+      
+      int64_t  totalstaked    = 0;      // total staked amount  
+      int64_t  totalrstaked   = 0;      // total staked amount by qualified voters 
+      int64_t  totalrvoters   = 0;      // total voters who qualify for reward
+      int64_t  notclaimed     = 0;      // reward not yet claimed by voters
+      int64_t  pool           = 0;      // token pool (not distributed yet)
+
+      int64_t  processtime    = 0;      // start distribution time. To keep track of distributuion process
+      int64_t  processtimeupd = 0;      // next distribution range time. To keep track of distributuion process
+      bool     isprocessing   = 0;      // distribution is started.  
+      name     processFrom    = ""_n;   // account name of last processed voter
+      uint64_t processQuant   = 0 ;
+      uint64_t processrstaked = 0 ;
+      uint64_t processed      = 0; 
+
+      int64_t  spare1 = 0;
+      int64_t  spare2 = 0;
+
+      EOSLIB_SERIALIZE( eosio_global_statesd, (totalstaked)(totalrstaked)(totalrvoters)(notclaimed)(pool)(processtime)(processtimeupd)(isprocessing)(processFrom)(processQuant)(processrstaked)(processed)(spare1)(spare2) )
+   };
+   typedef eosio::singleton< "globalsd"_n, eosio_global_statesd > global_statesd_singleton;
+   
+   
+   
    // `rex_pool` structure underlying the rex pool table. A rex pool table entry is defined by:
    // - `version` defaulted to zero,
    // - `total_lent` total amount of CORE_SYMBOL in open rex_loans
@@ -533,29 +640,36 @@ namespace eosiosystem {
    class [[eosio::contract("eosio.system")]] system_contract : public native {
 
       private:
-         voters_table             _voters;
-         producers_table          _producers;
-         producers_table2         _producers2;
-         global_state_singleton   _global;
-         global_state2_singleton  _global2;
-         global_state3_singleton  _global3;
-         global_state4_singleton  _global4;
-         eosio_global_state       _gstate;
-         eosio_global_state2      _gstate2;
-         eosio_global_state3      _gstate3;
-         eosio_global_state4      _gstate4;
-         rammarket                _rammarket;
-         rex_pool_table           _rexpool;
-         rex_return_pool_table    _rexretpool;
-         rex_return_buckets_table _rexretbuckets;
-         rex_fund_table           _rexfunds;
-         rex_balance_table        _rexbalance;
-         rex_order_table          _rexorders;
+         voters_table                  _voters;
+         producers_table               _producers;
+         producers_table2              _producers2;
+         global_state_singleton        _global;
+         global_state2_singleton       _global2;
+         global_state3_singleton       _global3;
+         global_state4_singleton       _global4;
+         global_statesxpr_singleton    _globalsxpr;     // PROTON
+         global_statesd_singleton      _globalsd;       // PROTON
+         voters_xpr_table              vxpr_tbl;        // PROTON
+         eosio_global_state            _gstate;
+         eosio_global_state2           _gstate2;
+         eosio_global_state3           _gstate3;
+         eosio_global_state4           _gstate4;
+         eosio_global_statesxpr        _gstatesxpr;     // PROTON
+         eosio_global_statesd          _gstatesd;       // PROTON
+         rammarket                     _rammarket;
+         rex_pool_table                _rexpool;
+         rex_return_pool_table         _rexretpool;
+         rex_return_buckets_table      _rexretbuckets;
+         rex_fund_table                _rexfunds;
+         rex_balance_table             _rexbalance;
+         rex_order_table               _rexorders;
 
       public:
          static constexpr eosio::name active_permission{"active"_n};
-	 static constexpr eosio::name proton_account{"eosio.proton"_n};      // PROTON
-	 static constexpr eosio::name cfund_account{"cfund.proton"_n};		 // PROTON
+         static constexpr eosio::name proton_account{"eosio.proton"_n};       // PROTON
+         static constexpr eosio::name cfund_account{"cfund.proton"_n};        // PROTON
+         static constexpr eosio::name xpr_stake_account{"stake.proton"_n};    // PROTON
+ 
          static constexpr eosio::name token_account{"eosio.token"_n};
          static constexpr eosio::name ram_account{"eosio.ram"_n};
          static constexpr eosio::name ramfee_account{"eosio.ramfee"_n};
@@ -564,7 +678,7 @@ namespace eosiosystem {
          static constexpr eosio::name vpay_account{"eosio.vpay"_n};
          static constexpr eosio::name names_account{"eosio.names"_n};
          static constexpr eosio::name saving_account{"eosio.saving"_n};
-		 
+
          static constexpr eosio::name rex_account{"eosio.rex"_n};
          static constexpr eosio::name null_account{"eosio.null"_n};
          static constexpr symbol ramcore_symbol = symbol(symbol_code("RAMCORE"), 4);
@@ -912,6 +1026,68 @@ namespace eosiosystem {
          [[eosio::action]]
          void closerex( const name& owner );
 
+
+         // PROTON stake XPR
+         [[eosio::action]]
+         void stakexpr ( const name& from, const name& receiver, const asset& stake_xpr_quantity);
+
+         // PROTON unstake XPR
+         [[eosio::action]]
+         void unstakexpr ( const name& from, const name& receiver, const asset& unstake_xpr_quantity);
+
+         // PROTON refund XPR
+         /**
+          * Refund XPR action, this action is called after the delegation-period to claim all pending
+          * unstaked tokens belonging to owner.
+          *
+          * @param owner - the owner of the tokens claimed.
+          */
+         [[eosio::action]]
+         void refundxpr( const name& owner );
+
+         // PROTON stake XPR
+         /**
+          * Voter Claim rewards action, claims voter reward.
+          * @param owner - voter who voted for 4 bps.
+          */
+         [[eosio::action]]
+         void voterclaim( const name& owner );
+ 
+         // PROTON process sharing vote rewards 
+         [[eosio::action]]
+         void vrwrdsharing( );
+
+         // PROTON set voting system config
+         [[eosio::action]]
+         void setxprvconf( const uint64_t&  max_bp_per_vote, const uint64_t& min_bp_reward, const uint64_t& unstake_period, const uint64_t& process_by, const uint64_t& process_interval, const uint64_t& voters_claim_interval );
+
+         /**
+          * Vote producer action, votes for a set of producers. This action updates the list of `producers` voted for,
+          * for `voter` account. If voting for a `proxy`, the producer votes will not change until the
+          * proxy updates their own vote. Voter can vote for a proxy __or__ a list of at most 30 producers.
+          * Storage change is billed to `voter`.
+          *
+          * @param voter - the account to change the voted producers for,
+          * @param proxy - the proxy to change the voted producers for,
+          * @param producers - the list of producers to vote for, a maximum of 30 producers is allowed.
+          *
+          * @pre Producers must be sorted from lowest to highest and must be registered and active
+          * @pre If proxy is set then no producers can be voted for
+          * @pre If proxy is set then proxy account must exist and be registered as a proxy
+          * @pre Every listed producer or proxy must have been previously registered
+          * @pre Voter must authorize this action
+          * @pre Voter must have previously staked some EOS for voting
+          * @pre Voter->staked must be up to date
+          *
+          * @post Every producer previously voted for will have vote reduced by previous vote weight
+          * @post Every producer newly voted for will have vote increased by new vote amount
+          * @post Prior proxy will proxied_vote_weight decremented by previous vote weight
+          * @post New proxy will proxied_vote_weight incremented by new vote weight
+          */
+         [[eosio::action]]
+         void voteproducer( const name& voter, const name& proxy, const std::vector<name>& producers );
+
+
          /**
           * Undelegate bandwitdh action, decreases the total tokens delegated by `from` to `receiver` and/or
           * frees the memory associated with the delegation if there is nothing
@@ -1069,7 +1245,7 @@ namespace eosiosystem {
           * @post New proxy will proxied_vote_weight incremented by new vote weight
           */
          [[eosio::action]]
-         void voteproducer( const name& voter, const name& proxy, const std::vector<name>& producers );
+         void voteprodsys( const name& voter, const name& proxy, const std::vector<name>& producers );
 
          /**
           * Register proxy action, sets `proxy` account as proxy.
@@ -1209,6 +1385,7 @@ namespace eosiosystem {
          using unregprod_action = eosio::action_wrapper<"unregprod"_n, &system_contract::unregprod>;
          using setram_action = eosio::action_wrapper<"setram"_n, &system_contract::setram>;
          using setramrate_action = eosio::action_wrapper<"setramrate"_n, &system_contract::setramrate>;
+         using voteprodsys_action = eosio::action_wrapper<"voteprodsys"_n, &system_contract::voteprodsys>;        //PROTON
          using voteproducer_action = eosio::action_wrapper<"voteproducer"_n, &system_contract::voteproducer>;
          using regproxy_action = eosio::action_wrapper<"regproxy"_n, &system_contract::regproxy>;
          using claimrewards_action = eosio::action_wrapper<"claimrewards"_n, &system_contract::claimrewards>;
@@ -1221,7 +1398,14 @@ namespace eosiosystem {
          using setparams_action = eosio::action_wrapper<"setparams"_n, &system_contract::setparams>;
          using setinflation_action = eosio::action_wrapper<"setinflation"_n, &system_contract::setinflation>;
 
-         static uint8_t checkPermission(name acc, std::string permission); //PROTON
+         using refundxpr_action = eosio::action_wrapper<"refundxpr"_n, &system_contract::refundxpr>;              // PROTON
+         using stakexpr_action = eosio::action_wrapper<"stakexpr"_n, &system_contract::stakexpr>;                 // PROTON
+         using unstakexpr_action = eosio::action_wrapper<"unstakexpr"_n, &system_contract::unstakexpr>;           // PROTON
+         using voterclaim_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;           // PROTON
+         using vrwrdsharing_action = eosio::action_wrapper<"vrwrdsharing"_n, &system_contract::vrwrdsharing>;     // PROTON
+
+
+         static uint8_t checkPermission(name acc, std::string permission);       //PROTON
       private:
          // Implementation details:
 
@@ -1275,9 +1459,11 @@ namespace eosiosystem {
          int64_t update_renewed_loan( Index& idx, const Iterator& itr, int64_t rented_tokens );
 
          // defined in delegate_bandwidth.cpp
-         void changebw( name from, const name& receiver,
-                        const asset& stake_net_quantity, const asset& stake_cpu_quantity, bool transfer );
+         void changebw( name from, const name& receiver, const asset& stake_net_quantity, const asset& stake_cpu_quantity, bool transfer );
+         void updstakexpr( name from, const name& receiver, const asset& xpr_quantity );
          void update_voting_power( const name& voter, const asset& total_update );
+         void update_xpr_voting_power( const name& from, const name& voter, const asset& total_update );  // PROTON
+         std::string timeToWait( const uint64_t& time_in_seconds );
 
          // defined in voting.cpp
          void register_producer( const name& producer, const eosio::block_signing_authority& producer_authority, const std::string& url, uint16_t location );
@@ -1289,6 +1475,9 @@ namespace eosiosystem {
                                                double shares_rate, bool reset_to_zero = false );
          double update_total_votepay_share( const time_point& ct,
                                             double additional_shares_delta = 0.0, double shares_rate_delta = 0.0 );
+
+         void update_xpr_votes( const name& from, const name& voter, const name& proxy, const std::vector<name>& producers, bool voting );      // PROTON
+         void check_vote_sharing(  ); // PROTON  voterawrd sharing check
 
          template <auto system_contract::*...Ptrs>
          class registration {

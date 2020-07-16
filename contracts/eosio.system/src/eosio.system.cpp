@@ -24,6 +24,9 @@ namespace eosiosystem {
     _global2(get_self(), get_self().value),
     _global3(get_self(), get_self().value),
     _global4(get_self(), get_self().value),
+    _globalsxpr(get_self(), get_self().value),   // PROTON
+    _globalsd(get_self(), get_self().value),    // PROTON
+    vxpr_tbl( get_self(), get_self().value ),   // PROTON
     _rammarket(get_self(), get_self().value),
     _rexpool(get_self(), get_self().value),
     _rexretpool(get_self(), get_self().value),
@@ -36,6 +39,9 @@ namespace eosiosystem {
       _gstate2 = _global2.exists() ? _global2.get() : eosio_global_state2{};
       _gstate3 = _global3.exists() ? _global3.get() : eosio_global_state3{};
       _gstate4 = _global4.exists() ? _global4.get() : get_default_inflation_parameters();
+
+      _gstatesxpr = _globalsxpr.exists() ? _globalsxpr.get() : eosio_global_statesxpr(); // PROTON
+      _gstatesd = _globalsd.exists() ? _globalsd.get() : eosio_global_statesd(); // PROTON
    }
 
    eosio_global_state system_contract::get_default_parameters() {
@@ -62,6 +68,9 @@ namespace eosiosystem {
       _global2.set( _gstate2, get_self() );
       _global3.set( _gstate3, get_self() );
       _global4.set( _gstate4, get_self() );
+ 
+      _globalsxpr.set( _gstatesxpr, get_self() );  // PROTON
+      _globalsd.set( _gstatesd, get_self() );      // PROTON
    }
 
    void system_contract::setram( uint64_t max_ram_size ) {
