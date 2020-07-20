@@ -640,16 +640,17 @@ namespace eosiosystem {
                userQualify = itr->startqualif;
             }
 
-            if ( userQualify ){
+            if ( userQualify == true){
                optional<uint64_t> userStake =itr->startstake != std::nullopt ? itr->startstake : itr->staked;
                
                uint64_t claim = 0;
-               if (_gstatesd.processrstaked != 0) {
-                  claim = _gstatesd.processQuant * userStake.value() / _gstatesd.processrstaked;
+               if (_gstatesd.processrstaked != 0) {                  
+                   claim = (uint128_t)((uint128_t)_gstatesd.processQuant * (uint128_t)userStake.value()) / _gstatesd.processrstaked;
                }   
                
                _gstatesd.processed += claim;
-
+               _gstatesd.notclaimed += claim;  
+               
                vxpr_tbl.modify(itr, get_self(), [&](auto& s) {
                   s.claimamount += claim;
                   s.startstake = std::nullopt;
@@ -710,6 +711,7 @@ namespace eosiosystem {
       _gstatesxpr.process_by = process_by;
       _gstatesxpr.process_interval = process_interval;
       _gstatesxpr.voters_claim_interval = voters_claim_interval;
+      
    
    }
    

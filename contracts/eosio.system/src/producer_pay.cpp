@@ -112,7 +112,7 @@ namespace eosiosystem {
                if( to_savings > 0 ) {
                   transfer_act.send( get_self(), saving_account, asset(to_savings, XPRsym), "unallocated inflation" ); //PROTON
                   _gstatesd.pool += to_savings;  //PROTON
-                  _gstatesd.notclaimed += to_savings;  //PROTON
+                  
                }
 
                if( to_cfund > 0 ) { //PROTON
