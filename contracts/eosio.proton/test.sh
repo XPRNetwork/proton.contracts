@@ -16,6 +16,8 @@
 
 #./cleos.sh push action eosio.proton remove '{"acc": "tester"}' -p wlcm.proton@update
 
+#./cleos.sh push action eosio.proton kickbp '{"producer": "tester"}' -p admin.proton@committee
+
 
 
 ### Users Actions ##################
@@ -27,6 +29,13 @@
 #./cleos.sh push action eosio.proton updateaacts '{"acc": "tester1", "aacts": [["eosio.token","transfer"], ["taskly", "markcheck"], ["taskly", "removecheck"]]}' -p tester1
 #./cleos.sh push action eosio.proton updateac '{"acc": "tester1", "ac": [["eosio.token","XPR"], ["eosio.token","XYZ"], ["usdtoken","USD"]]}' -p tester1
 
+
+## Committee KickBP Permissions ##################
+# ./cleos.sh push action eosio updateauth '{"account": "eosio", "permission": "committee",  "parent": "active",  "auth": { "threshold": 1, "keys": [], "waits": [], "accounts": [{ "weight": 1, "permission": {"actor": "admin.proton", "permission": "committee"} }] } } ' -p eosio
+# ./cleos.sh set action permission eosio eosio kickbp committee
+# ./cleos.sh set action permission eosio eosio.proton kickbp committee
+#
+# ./cleos.sh push action eosio kickbp '{"producer": "protonbpa"}' -p eosio@committee
 
 
 ### Tables ################

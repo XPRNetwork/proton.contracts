@@ -32,6 +32,16 @@
             ]
         },
         {
+            "name": "kickbp",
+            "base": "",
+            "fields": [
+                {
+                    "name": "producer",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "pair_string_uint8",
             "base": "",
             "fields": [
@@ -358,6 +368,11 @@
         {
             "name": "dappreg",
             "type": "dappreg",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "kickbp",
+            "type": "kickbp",
             "ricardian_contract": ""
         },
         {

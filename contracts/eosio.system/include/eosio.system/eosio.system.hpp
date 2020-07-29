@@ -1204,6 +1204,17 @@ namespace eosiosystem {
          [[eosio::action]]
          void unregprod( const name& producer );
 
+         
+         // PROTON
+         /**
+          * Kick producer action, deactivates the block producer with account name `producer` and remove permission for regproducer.
+          *
+          * Deactivate the block producer with account name `producer` and remove permission for regproducer.
+          * @param producer - the block producer account to unregister.
+          */
+         [[eosio::action]]
+         void kickbp( const name& producer );
+         
          /**
           * Set ram action sets the ram supply.
           * @param max_ram_size - the amount of ram supply to set.
@@ -1383,6 +1394,7 @@ namespace eosiosystem {
          using regproducer_action = eosio::action_wrapper<"regproducer"_n, &system_contract::regproducer>;
          using regproducer2_action = eosio::action_wrapper<"regproducer2"_n, &system_contract::regproducer2>;
          using unregprod_action = eosio::action_wrapper<"unregprod"_n, &system_contract::unregprod>;
+         using kickbp_action = eosio::action_wrapper<"kickbp"_n, &system_contract::kickbp>;                       //PROTON
          using setram_action = eosio::action_wrapper<"setram"_n, &system_contract::setram>;
          using setramrate_action = eosio::action_wrapper<"setramrate"_n, &system_contract::setramrate>;
          using voteprodsys_action = eosio::action_wrapper<"voteprodsys"_n, &system_contract::voteprodsys>;        //PROTON

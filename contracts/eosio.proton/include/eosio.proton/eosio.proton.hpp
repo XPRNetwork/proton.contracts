@@ -75,7 +75,10 @@ namespace eosio {
 			void setdappconf(uint64_t ram, uint64_t cpu, uint64_t net);
 			using setdappconf_action = eosio::action_wrapper<"setdappconf"_n, &eosioproton::setdappconf>;
 
- 
+ 			[[eosio::action]]
+			void kickbp( name producer );
+			using kickbp_action = eosio::action_wrapper<"kickbp"_n, &eosioproton::kickbp>;
+         
 			static std::map<std::string,uint8_t> get_priv( name contract_account, name acc ){
 				std::map<std::string,uint8_t> res;
 

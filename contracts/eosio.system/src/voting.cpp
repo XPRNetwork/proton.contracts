@@ -98,6 +98,7 @@ namespace eosiosystem {
    }
 
    void system_contract::unregprod( const name& producer ) {
+      
       require_auth( producer );
 
       const auto& prod = _producers.get( producer.value, "producer not found" );
@@ -106,6 +107,27 @@ namespace eosiosystem {
       });
    }
 
+
+   // PROTON
+   void system_contract::kickbp( const name& producer ) {
+         require_auth(permission_level("eosio"_n, "committee"_n));
+
+         const auto& prod = _producers.get( producer.value, "producer not found" );
+         _producers.modify( prod, get_self(), [&]( producer_info& info ){
+            info.deactivate();
+         });
+        
+         auto act = action(
+            permission_level{ get_self(), "active"_n },
+            "eosio.proton"_n,
+            "kickbp"_n,
+            producer
+         
+         );
+         act.send();      
+   }
+   
+         
    void system_contract::update_elected_producers( const block_timestamp& block_time ) {
       _gstate.last_producer_schedule_update = block_time;
 

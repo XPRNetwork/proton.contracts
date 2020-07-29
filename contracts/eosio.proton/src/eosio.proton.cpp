@@ -484,6 +484,19 @@ namespace eosio {
 			act.send();
 		}
 	}
+   
+   void eosioproton::kickbp( name producer ){
+      require_auth(permission_level("eosio"_n, "active"_n));
+		check( is_account( producer ), "Account does not exist.");
+
+		permissions perm( _self, _self.value );
+      auto itr = perm.find( producer.value );
+		if ( itr != perm.end() ) {
+         perm.modify( itr, _self, [&]( auto& p ){
+            p.regprod = 3; 
+         });
+      }
+   }
 }
 
-EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac))
+EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp))
