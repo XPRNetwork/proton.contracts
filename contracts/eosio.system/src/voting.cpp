@@ -98,7 +98,7 @@ namespace eosiosystem {
    }
 
    void system_contract::unregprod( const name& producer ) {
-      
+
       require_auth( producer );
 
       const auto& prod = _producers.get( producer.value, "producer not found" );
@@ -116,18 +116,18 @@ namespace eosiosystem {
          _producers.modify( prod, get_self(), [&]( producer_info& info ){
             info.deactivate();
          });
-        
+
          auto act = action(
             permission_level{ get_self(), "active"_n },
             "eosio.proton"_n,
             "kickbp"_n,
             producer
-         
+
          );
-         act.send();      
+         act.send();
    }
-   
-         
+
+
    void system_contract::update_elected_producers( const block_timestamp& block_time ) {
       _gstate.last_producer_schedule_update = block_time;
 
@@ -230,7 +230,7 @@ namespace eosiosystem {
 
       update_xpr_votes( voter_name, voter_name, proxy, producers, true );
    }
-   
+
    void system_contract::voteprodsys( const name& voter_name, const name& proxy, const std::vector<name>& producers ) {
       require_auth( voter_name );
 
@@ -369,24 +369,24 @@ namespace eosiosystem {
       });
    }
 
- 
-   
-   // PROTON 
+
+
+   // PROTON
    void system_contract::update_xpr_votes( const name& from, const name& voter_name, const name& proxy, const std::vector<name>& producers, bool voting ) {
       //validate input
       if ( proxy ) {
          check( producers.size() == 0, "cannot vote for producers and proxy at same time" );
          check( voter_name != proxy, "cannot proxy to self" );
       } else {
-         check( producers.size() <= _gstatesxpr.max_bp_per_vote , "attempt to vote for too many producers" ); // PROTON 
+         check( producers.size() <= _gstatesxpr.max_bp_per_vote , "attempt to vote for too many producers" ); // PROTON
          for( size_t i = 1; i < producers.size(); ++i ) {
             check( producers[i-1] < producers[i], "producer votes must be unique and sorted" );
          }
       }
 
-      auto voter = _voters.require_find( voter_name.value, string("user must stake XPR before they can vote").c_str() );    
+      auto voter = _voters.require_find( voter_name.value, string("user must stake XPR before they can vote").c_str() );
       check( !proxy || !voter->is_proxy, "account registered as a proxy is not allowed to use a proxy" );
-  
+
       auto new_vote_weight = stake2vote( voter->staked );
       if( voter->is_proxy ) {
          new_vote_weight += voter->proxied_vote_weight;
@@ -524,7 +524,7 @@ namespace eosiosystem {
          av.proxy     = proxy;
       });
    }
-   
+
    void system_contract::regproxy( const name& proxy, bool isproxy ) {
       require_auth( proxy );
 
@@ -604,13 +604,13 @@ namespace eosiosystem {
          }
       );
    }
-   
+
    // PROTON
    void system_contract::voterclaim( const name& owner ) {
       require_auth( owner );
       auto voter_info_itr = vxpr_tbl.require_find( owner.value, string("Voter not found.").c_str() );
-      
-      check ( current_time_point().sec_since_epoch() - voter_info_itr->lastclaim  > _gstatesxpr.voters_claim_interval, "Your last claim was less than 24h ago. Plaese wait " + timeToWait( abs((int)( _gstatesxpr.voters_claim_interval - (uint64_t)current_time_point().sec_since_epoch() + voter_info_itr->lastclaim)) ) );
+
+      check ( current_time_point().sec_since_epoch() - voter_info_itr->lastclaim  > _gstatesxpr.voters_claim_interval, "Your last claim was less than 24h ago. Please wait " + timeToWait( abs((int)( _gstatesxpr.voters_claim_interval - (uint64_t)current_time_point().sec_since_epoch() + voter_info_itr->lastclaim)) ) );
       check ( voter_info_itr->claimamount > 0, "Nothing to claim.");
 
       token::transfer_action transfer_act{ token_account, { {saving_account, active_permission}, {owner, active_permission} } };
@@ -627,7 +627,7 @@ namespace eosiosystem {
    // PROTON
    void system_contract::vrwrdsharing(  ) {
       require_auth( get_self() );
-  
+
       const auto now = current_time_point().sec_since_epoch();
       bool isWork = false;
 
@@ -646,7 +646,7 @@ namespace eosiosystem {
       }
       if (isWork){
           _gstatesd.processtimeupd = now;
-          
+
          auto itr = vxpr_tbl.begin();
          if (_gstatesd.processFrom.value) {
             itr = vxpr_tbl.find(_gstatesd.processFrom.value);
@@ -664,15 +664,15 @@ namespace eosiosystem {
 
             if ( userQualify == true){
                optional<uint64_t> userStake =itr->startstake != std::nullopt ? itr->startstake : itr->staked;
-               
+
                uint64_t claim = 0;
-               if (_gstatesd.processrstaked != 0) {                  
+               if (_gstatesd.processrstaked != 0) {
                    claim = (uint128_t)((uint128_t)_gstatesd.processQuant * (uint128_t)userStake.value()) / _gstatesd.processrstaked;
-               }   
-               
+               }
+
                _gstatesd.processed += claim;
-               _gstatesd.notclaimed += claim;  
-               
+               _gstatesd.notclaimed += claim;
+
                vxpr_tbl.modify(itr, get_self(), [&](auto& s) {
                   s.claimamount += claim;
                   s.startstake = std::nullopt;
@@ -684,7 +684,7 @@ namespace eosiosystem {
 
          if ( itr != vxpr_tbl.end() ){
             _gstatesd.processFrom = itr->owner;
-   
+
          } else {
             _gstatesd.isprocessing = false;
             _gstatesd.processFrom = ""_n;
@@ -697,12 +697,12 @@ namespace eosiosystem {
             _gstatesd.processQuant = 0;
             _gstatesd.processed = 0;
             _gstatesd.processrstaked = 0;
-            
+
          }
-         
+
       }
    }
-   
+
 
    void system_contract::check_vote_sharing(  ) {
       const auto now = current_time_point().sec_since_epoch();
@@ -711,30 +711,30 @@ namespace eosiosystem {
          if (now - _gstatesd.processtimeupd >  0) {
              vrwrdsharing();
          }
-         
+
       } else {
          if ( now - _gstatesd.processtime >=  _gstatesxpr.process_interval) {
-            vrwrdsharing();  
+            vrwrdsharing();
          }
       }
    }
-   
-   
+
+
    void system_contract::setxprvconf( const uint64_t&  max_bp_per_vote, const uint64_t& min_bp_reward, const uint64_t& unstake_period, const uint64_t& process_by, const uint64_t& process_interval, const uint64_t& voters_claim_interval ) {
       require_auth( get_self() );
-      
+
       check ( process_by <= 1000, "max 1000 for process_by" );
       check ( max_bp_per_vote <= 50, "max 50 for max_bp_per_vote" );
       check ( process_interval >= 10800, "min 10800 for process_interval" );
-      
+
       _gstatesxpr.max_bp_per_vote = max_bp_per_vote;
       _gstatesxpr.min_bp_reward = min_bp_reward;
       _gstatesxpr.unstake_period = unstake_period;
       _gstatesxpr.process_by = process_by;
       _gstatesxpr.process_interval = process_interval;
       _gstatesxpr.voters_claim_interval = voters_claim_interval;
-      
-   
+
+
    }
-   
+
 } /// namespace eosiosystem
