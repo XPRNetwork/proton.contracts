@@ -17,6 +17,17 @@
 using namespace eosio;
 using namespace std;
 
+
+struct kyc_prov {
+	name kyc_provider;
+	string kyc_level;
+	uint64_t kyc_date;
+};
+
+//--- REMOVE  (migration logic) -----
+const auto 	MIGRATION_STEP = 0;
+//-----------------------------------
+
 namespace eosiosystem {
 	class system_contract;
 }
@@ -110,6 +121,44 @@ namespace eosio {
 				return res;
 			}
 
+
+ 			// KYC Logic			
+ 			[[eosio::action]]
+			void addkyc( name acc, kyc_prov kyc );
+			using addkyc_action = eosio::action_wrapper<"addkyc"_n, &eosioproton::addkyc>;
+
+ 			[[eosio::action]]
+			void updatekyc( name acc, kyc_prov kyc );
+			using updatekyc_action = eosio::action_wrapper<"updatekyc"_n, &eosioproton::updatekyc>;
+
+ 			[[eosio::action]]
+			void removekyc( name acc, name kyc_provider );
+			using removekyc_action = eosio::action_wrapper<"removekyc"_n, &eosioproton::removekyc>;
+
+ 			[[eosio::action]]
+			void addkycprov( name kyc_provider, std::string desc, std::string url, std::string iconurl, std::string name );
+			using addkycprov_action = eosio::action_wrapper<"addkycprov"_n, &eosioproton::addkycprov>;
+
+			[[eosio::action]]
+			void blkycprov( name kyc_provider, bool state );
+			using blkycprov_action = eosio::action_wrapper<"blkycprov"_n, &eosioproton::blkycprov>;
+			
+ 			[[eosio::action]]
+			void rmvkycprov( name kyc_provider );
+			using rmvkycprov_action = eosio::action_wrapper<"rmvkycprov"_n, &eosioproton::rmvkycprov>;
+
+// ----- REMOVE (migration logic)-----
+/*
+			[[eosio::action]]
+			void migrate1( );
+			using migrate1_action = eosio::action_wrapper<"migrate1"_n, &eosioproton::migrate1>;
+
+			[[eosio::action]]
+			void migrate2( );
+			using migrate2_action = eosio::action_wrapper<"migrate2"_n, &eosioproton::migrate2>;
+*/
+//------------------------
+
 	private:
 	
 		// 0 = none, 1 = on, 2 = pending, 3 = off, 4 = banned
@@ -133,6 +182,8 @@ namespace eosio {
 		typedef eosio::multi_index< "permissions"_n, permission > permissions;
 
 
+
+
 		struct [[eosio::table]] userinfo {
 			name                                     acc;
 			std::string                              name;
@@ -145,12 +196,51 @@ namespace eosio {
 			vector<eosio::name>                      raccs;
 			vector<tuple<eosio::name, eosio::name>>  aacts;
 			vector<tuple<eosio::name, string>>       ac;
-			
+
+			vector<kyc_prov>                         kyc;
 			
 			uint64_t primary_key()const { return acc.value; }
 		};
 
 		typedef eosio::multi_index< "usersinfo"_n, userinfo > usersinfo;
+
+// ----- REMOVE (migration logic)-----
+/*
+		struct [[eosio::table]] userinfo2 {
+			name                                     acc;
+			std::string                              name;
+			std::string                              avatar;
+			bool                                     verified;
+			uint64_t                                 date;
+			uint64_t                                 verifiedon;
+			eosio::name                              verifier;
+
+			vector<eosio::name>                      raccs;
+			vector<tuple<eosio::name, eosio::name>>  aacts;
+			vector<tuple<eosio::name, string>>       ac;
+
+			vector<kyc_prov>                         kyc;
+			
+			uint64_t primary_key()const { return acc.value; }
+		};
+
+		typedef eosio::multi_index< "usersinfo2"_n, userinfo2 > usersinfo2;
+*/
+//--------------------------------
+
+		struct [[eosio::table]] kyc_providers_list {
+			//uint64_t index
+			name            kyc_provider;
+			std::string     desc;
+			std::string     url;
+			std::string     iconurl;
+			std::string     name;
+			bool            blisted;
+			
+			uint64_t primary_key()const { return kyc_provider.value; }
+		};
+
+		typedef eosio::multi_index< "kycproviders"_n, kyc_providers_list > kycproviders;
 
 
 		struct [[eosio::table]] user_resources {
