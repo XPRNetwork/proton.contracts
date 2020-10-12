@@ -122,6 +122,9 @@ namespace eosio {
 
 	void eosioproton::setuserava(name acc, std::string ava ){
 
+//---- REMOVE  (migration logic) ---------------------
+check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
+//-----------------------------
 		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -148,6 +151,10 @@ namespace eosio {
 	}
 
 	void eosioproton::setusername(name acc, std::string name ){
+//---- REMOVE (migration logic) ---------------------
+check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
+//-----------------------------
+		
 		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -176,7 +183,9 @@ namespace eosio {
 
 
 	void eosioproton::userverify(name acc, name verifier, bool  verified ){
-
+//---- REMOVE (migration logic) ---------------------
+check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
+//-----------------------------
 		require_auth(permission_level("admin.proton"_n, "verifiers"_n));
 		require_auth(verifier);
 		check( is_account( acc ), "Account does not exist.");	
@@ -219,6 +228,9 @@ namespace eosio {
 	}
 
 	void eosioproton::updateraccs(name acc, vector<name> raccs){
+//---- REMOVE (migration logic) ---------------------
+check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
+//-----------------------------
 		require_auth(acc);
 
 		require_recipient( acc );
@@ -251,6 +263,9 @@ namespace eosio {
 	}
 
 	void eosioproton::updateaacts(name acc, vector<tuple<name, name>> aacts){
+//---- REMOVE (migration logic) ---------------------
+check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
+//-----------------------------
 		require_auth(acc);
 
 		require_recipient( acc );
@@ -285,6 +300,9 @@ namespace eosio {
 	}
 
 	void eosioproton::updateac(name acc, vector<tuple<name, string>> ac){
+//---- REMOVE (migration logic) ---------------------
+check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
+//-----------------------------
 		require_auth(acc);
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -485,18 +503,241 @@ namespace eosio {
 		}
 	}
    
-   void eosioproton::kickbp( name producer ){
-      require_auth(permission_level("eosio"_n, "active"_n));
+	void eosioproton::kickbp( name producer ){
+		require_auth(permission_level("eosio"_n, "active"_n));
 		check( is_account( producer ), "Account does not exist.");
 
 		permissions perm( _self, _self.value );
-      auto itr = perm.find( producer.value );
+		auto itr = perm.find( producer.value );
 		if ( itr != perm.end() ) {
-         perm.modify( itr, _self, [&]( auto& p ){
-            p.regprod = 3; 
-         });
-      }
-   }
+			perm.modify( itr, _self, [&]( auto& p ){
+				p.regprod = 3; 
+			});
+		}
+	}
+
+	void eosioproton::addkyc( name acc, kyc_prov kyc ){
+		
+		require_auth(kyc.kyc_provider);
+		
+		kycproviders kps( _self, _self.value );		
+		auto itr_kycprov = kps.require_find(kyc.kyc_provider.value, string("KYC provider " + kyc.kyc_provider.to_string() + "  not found").c_str());		
+		
+		check (!itr_kycprov->blisted, "Account is blacklisted.");
+				
+		usersinfo usrinf( _self, _self.value );
+		auto itr_usrs = usrinf.require_find( acc.value, string("User " + acc.to_string() + " not found").c_str() );
+
+		for (auto i = 0; i < itr_usrs->kyc.size(); i++) {		
+			if ( itr_usrs->kyc[i].kyc_provider == kyc.kyc_provider) {		
+				check (false, string("There is already approval from " + kyc.kyc_provider.to_string()).c_str());
+				break;
+			}						
+		}
+		
+		usrinf.modify( itr_usrs, _self, [&]( auto& p ){
+			p.kyc.push_back(kyc);			
+		});
+	}
+	
+	void eosioproton::updatekyc( name acc, kyc_prov kyc ){
+		
+		require_auth(kyc.kyc_provider);
+		
+		kycproviders kps( _self, _self.value );
+				
+		auto itr_kycprov = kps.require_find(kyc.kyc_provider.value, string("KYC provider " + kyc.kyc_provider.to_string() + "  not found").c_str());		
+		
+		check (!itr_kycprov->blisted, "Account is blacklisted.");
+				
+		usersinfo usrinf( _self, _self.value );
+		auto itr_usrs = usrinf.require_find( acc.value, string("User " + acc.to_string() + " not found").c_str() );
+
+
+		vector<kyc_prov> new_kyc = itr_usrs->kyc;
+		bool modified = false;
+		for (auto i = 0; i < new_kyc.size(); i++) {
+		
+			if ( new_kyc[i].kyc_provider == kyc.kyc_provider) {
+				new_kyc[i].kyc_level = kyc.kyc_level;
+				new_kyc[i].kyc_date = kyc.kyc_date;
+				modified = true;
+				break;
+			}						
+
+		}
+		check (modified, string("KYC from " + kyc.kyc_provider.to_string() + " not found").c_str());
+		
+		usrinf.modify( itr_usrs, _self, [&]( auto& p ){
+			p.kyc = new_kyc;			
+		});
+		
+	}	
+
+	void eosioproton::removekyc( name acc, name kyc_provider ){
+		
+		require_auth(kyc_provider);		
+		kycproviders kps( _self, _self.value );
+		
+		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());		
+		
+		check (!itr_kycprov->blisted, "Account is blacklisted.");
+
+		usersinfo usrinf( _self, _self.value );
+		auto itr_usrs = usrinf.require_find( acc.value, string("User " + acc.to_string() + " not found").c_str() );
+		
+		vector<kyc_prov> new_kyc = itr_usrs->kyc;
+		bool removed = false;
+		
+		for (auto i = 0; i < new_kyc.size(); i++) {	
+			if ( new_kyc[i].kyc_provider == kyc_provider) {
+				new_kyc.erase(new_kyc.begin() + i);
+				removed = true;
+				break;
+			}
+		}
+		
+		check (removed, string("KYC from " + kyc_provider.to_string() + " not found").c_str());
+		
+		usrinf.modify( itr_usrs, _self, [&]( auto& p ){
+			p.kyc = new_kyc;			
+		});
+	}
+
+	void eosioproton::addkycprov( name kyc_provider, std::string desc, std::string url, std::string iconurl, std::string name ){		
+		// --- !!! Replace Permission
+		//require_auth(permission_level("admin.proton"_n, "committee"_n));
+		require_auth(permission_level("admin.proton"_n, "light"_n));
+		
+		require_recipient( kyc_provider );
+		check( is_account( kyc_provider ), "Account does not exist.");
+
+		kycproviders kps( _self, _self.value );
+		auto itr_kycprov = kps.find( kyc_provider.value );
+
+		if ( itr_kycprov != kps.end() ) {
+			kps.modify( itr_kycprov, _self, [&]( auto& p ){			
+				p.desc = desc;
+				p.url = url;
+				p.iconurl = iconurl;
+				p.name = name;				
+			});
+		} else {
+			kps.emplace( _self, [&]( auto& p ){				
+				p.kyc_provider = kyc_provider;
+				p.desc = desc;
+				p.url = url;
+				p.iconurl = iconurl;
+				p.name = name;
+				p.blisted = false;
+			});
+		}	
+	}
+
+	void eosioproton::blkycprov( name kyc_provider, bool state ){
+		// --- !!! Replace Permission
+		//require_auth(permission_level("admin.proton"_n, "committee"_n));			
+		require_auth(permission_level("admin.proton"_n, "light"_n));
+		
+		kycproviders kps( _self, _self.value );
+		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());
+		
+		kps.modify( itr_kycprov, _self, [&]( auto& p ){			
+			p.blisted = state;
+		});
+	}
+
+	void eosioproton::rmvkycprov( name kyc_provider ){
+		// --- !!! Replace Permission
+		//require_auth(permission_level("admin.proton"_n, "committee"_n));	
+		require_auth(permission_level("admin.proton"_n, "light"_n));
+		
+		kycproviders kps( _self, _self.value );
+		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());		
+		kps.erase( itr_kycprov );
+	}
+	
+	
+
+// ----- !!! REMOVE  (migration logic) -------------------------   
+/*
+	void eosioproton::migrate1( ){
+		auto processBy = 100;
+		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
+		//require_auth(acc);
+		check ( MIGRATION_STEP == 1, "Migration Step1 not enabled" );
+		
+		usersinfo data1( _self, _self.value );
+		usersinfo2 data2( _self, _self.value );
+
+		uint64_t count = 0;
+
+		for(auto itr = data1.begin(); itr != data1.end() && count < processBy;) {
+				count++;
+
+				data2.emplace( _self, [&]( auto& p ){
+
+						print("ACC:", itr->acc);
+						
+						p.acc = itr->acc;
+						p.name = itr->name;
+						p.avatar = itr->avatar;
+						p.verified = itr->verified;
+						p.date = itr->date;
+						p.verifiedon = itr->verifiedon;
+						p.verifier = itr->verifier;
+						p.raccs = itr->raccs;
+						p.aacts = itr->aacts;
+						p.ac = itr->ac;
+				});
+
+				itr = data1.erase(itr);
+
+		}
+
+	}
+	void eosioproton::migrate2( ){
+		auto processBy = 100;
+		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
+		//require_auth(acc);
+		
+		check ( MIGRATION_STEP == 2, "Migration Step2 not enabled" );
+		
+		usersinfo data1( _self, _self.value );
+		usersinfo2 data2( _self, _self.value );
+
+		uint64_t count = 0;
+		for(auto itr = data2.begin(); itr != data2.end() && count < processBy;) {
+				count++;
+
+				data1.emplace( _self, [&]( auto& p ){
+					print("ACC:", itr->acc);
+					
+					p.acc = itr->acc;
+					p.name = itr->name;
+					p.avatar = itr->avatar;
+					p.verified = itr->verified;
+					p.date = itr->date;
+					p.verifiedon = itr->verifiedon;
+					p.verifier = itr->verifier;
+					p.raccs = itr->raccs;
+					p.aacts = itr->aacts;
+					p.ac = itr->ac;
+					p.kyc = itr->kyc;						
+				});
+
+				itr = data2.erase(itr);
+
+		}
+
+	}
+	*/
+// ------------------------------------------------------------
+
 }
 
-EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp))
+EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov)(updatekyc))
+
+// ----- RMOEVE  (migration logic) -----------------
+//EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov)(updkyc)(migrate1)(migrate2))
+//----------------------------------------------------

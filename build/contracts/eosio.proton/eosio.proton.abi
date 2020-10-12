@@ -4,6 +4,60 @@
     "types": [],
     "structs": [
         {
+            "name": "addkyc",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "kyc",
+                    "type": "kyc_prov"
+                }
+            ]
+        },
+        {
+            "name": "addkycprov",
+            "base": "",
+            "fields": [
+                {
+                    "name": "kyc_provider",
+                    "type": "name"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
+                },
+                {
+                    "name": "url",
+                    "type": "string"
+                },
+                {
+                    "name": "iconurl",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "blkycprov",
+            "base": "",
+            "fields": [
+                {
+                    "name": "kyc_provider",
+                    "type": "name"
+                },
+                {
+                    "name": "state",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
             "name": "dappconf",
             "base": "",
             "fields": [
@@ -38,6 +92,54 @@
                 {
                     "name": "producer",
                     "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "kyc_prov",
+            "base": "",
+            "fields": [
+                {
+                    "name": "kyc_provider",
+                    "type": "name"
+                },
+                {
+                    "name": "kyc_level",
+                    "type": "string"
+                },
+                {
+                    "name": "kyc_date",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "kyc_providers_list",
+            "base": "",
+            "fields": [
+                {
+                    "name": "kyc_provider",
+                    "type": "name"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
+                },
+                {
+                    "name": "url",
+                    "type": "string"
+                },
+                {
+                    "name": "iconurl",
+                    "type": "string"
+                },
+                {
+                    "name": "name",
+                    "type": "string"
+                },
+                {
+                    "name": "blisted",
+                    "type": "bool"
                 }
             ]
         },
@@ -120,6 +222,20 @@
             ]
         },
         {
+            "name": "removekyc",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "kyc_provider",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "reqperm",
             "base": "",
             "fields": [
@@ -130,6 +246,16 @@
                 {
                     "name": "permission",
                     "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "rmvkycprov",
+            "base": "",
+            "fields": [
+                {
+                    "name": "kyc_provider",
+                    "type": "name"
                 }
             ]
         },
@@ -264,6 +390,20 @@
             ]
         },
         {
+            "name": "updatekyc",
+            "base": "",
+            "fields": [
+                {
+                    "name": "acc",
+                    "type": "name"
+                },
+                {
+                    "name": "kyc",
+                    "type": "kyc_prov"
+                }
+            ]
+        },
+        {
             "name": "updateraccs",
             "base": "",
             "fields": [
@@ -342,6 +482,10 @@
                 {
                     "name": "ac",
                     "type": "tuple_name_string[]"
+                },
+                {
+                    "name": "kyc",
+                    "type": "kyc_prov[]"
                 }
             ]
         },
@@ -366,6 +510,21 @@
     ],
     "actions": [
         {
+            "name": "addkyc",
+            "type": "addkyc",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "addkycprov",
+            "type": "addkycprov",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "blkycprov",
+            "type": "blkycprov",
+            "ricardian_contract": ""
+        },
+        {
             "name": "dappreg",
             "type": "dappreg",
             "ricardian_contract": ""
@@ -381,8 +540,18 @@
             "ricardian_contract": ""
         },
         {
+            "name": "removekyc",
+            "type": "removekyc",
+            "ricardian_contract": ""
+        },
+        {
             "name": "reqperm",
             "type": "reqperm",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "rmvkycprov",
+            "type": "rmvkycprov",
             "ricardian_contract": ""
         },
         {
@@ -421,6 +590,11 @@
             "ricardian_contract": ""
         },
         {
+            "name": "updatekyc",
+            "type": "updatekyc",
+            "ricardian_contract": ""
+        },
+        {
             "name": "updateraccs",
             "type": "updateraccs",
             "ricardian_contract": ""
@@ -435,6 +609,13 @@
         {
             "name": "dappconf",
             "type": "dappconf",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "kycproviders",
+            "type": "kyc_providers_list",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
