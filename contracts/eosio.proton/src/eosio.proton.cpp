@@ -517,7 +517,6 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::addkyc( name acc, kyc_prov kyc ){
-		
 		require_auth(kyc.kyc_provider);
 		
 		kycproviders kps( _self, _self.value );		
@@ -541,7 +540,6 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 	
 	void eosioproton::updatekyc( name acc, kyc_prov kyc ){
-		
 		require_auth(kyc.kyc_provider);
 		
 		kycproviders kps( _self, _self.value );
@@ -571,11 +569,9 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 		usrinf.modify( itr_usrs, _self, [&]( auto& p ){
 			p.kyc = new_kyc;			
 		});
-		
 	}	
 
 	void eosioproton::removekyc( name acc, name kyc_provider ){
-		
 		require_auth(kyc_provider);		
 		kycproviders kps( _self, _self.value );
 		
@@ -694,7 +690,6 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 				itr = data1.erase(itr);
 
 		}
-
 	}
 	void eosioproton::migrate2( ){
 		auto processBy = 100;
@@ -731,13 +726,13 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 		}
 
 	}
-	*/
+*/
 // ------------------------------------------------------------
 
 }
 
-EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov)(updatekyc))
+EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
 
-// ----- RMOEVE  (migration logic) -----------------
-//EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov)(updkyc)(migrate1)(migrate2))
+// ----- REMOVE  (migration logic) -----------------
+//EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov)(migrate1)(migrate2))
 //----------------------------------------------------
