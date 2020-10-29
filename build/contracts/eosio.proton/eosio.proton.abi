@@ -512,97 +512,97 @@
         {
             "name": "addkyc",
             "type": "addkyc",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: addkyc\nsummary: 'addkyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\naddkyc"
         },
         {
             "name": "addkycprov",
             "type": "addkycprov",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: addkycprov\nsummary: 'addkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\naddkycprov"
         },
         {
             "name": "blkycprov",
             "type": "blkycprov",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: blkycprov\nsummary: 'blkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nblkycprov"
         },
         {
             "name": "dappreg",
             "type": "dappreg",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: dappreg\nsummary: 'dappreg'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\ndappreg"
         },
         {
             "name": "kickbp",
             "type": "kickbp",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: kickbp\nsummary: 'kickbp'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nkickbp"
         },
         {
             "name": "remove",
             "type": "remove",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: remove\nsummary: 'remove'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nremove"
         },
         {
             "name": "removekyc",
             "type": "removekyc",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: removekyc\nsummary: 'removekyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nremovekyc"
         },
         {
             "name": "reqperm",
             "type": "reqperm",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: reqperm\nsummary: 'reqperm'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nreqperm"
         },
         {
             "name": "rmvkycprov",
             "type": "rmvkycprov",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: rmvkycprov\nsummary: 'rmvkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nrmvkycprov"
         },
         {
             "name": "setdappconf",
             "type": "setdappconf",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setdappconf\nsummary: 'setdappconf'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetdappconf"
         },
         {
             "name": "setperm",
             "type": "setperm",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setperm\nsummary: 'setperm'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetperm"
         },
         {
             "name": "setperm2",
             "type": "setperm2",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setperm2\nsummary: 'setperm2'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetperm2"
         },
         {
             "name": "setuserava",
             "type": "setuserava",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setuserava\nsummary: 'setuserava'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetuserava"
         },
         {
             "name": "setusername",
             "type": "setusername",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setusername\nsummary: 'setusername'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetusername"
         },
         {
             "name": "updateaacts",
             "type": "updateaacts",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateaacts\nsummary: 'updateaacts'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdateaacts"
         },
         {
             "name": "updateac",
             "type": "updateac",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateac\nsummary: 'updateac'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdateac"
         },
         {
             "name": "updatekyc",
             "type": "updatekyc",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updatekyc\nsummary: 'updatekyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdatekyc"
         },
         {
             "name": "updateraccs",
             "type": "updateraccs",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateraccs\nsummary: 'updateraccs'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdateraccs"
         },
         {
             "name": "userverify",
             "type": "userverify",
-            "ricardian_contract": ""
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: userverify\nsummary: 'userverify'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nuserverify"
         }
     ],
     "tables": [
@@ -642,6 +642,63 @@
             "key_types": []
         }
     ],
-    "ricardian_clauses": [],
+    "ricardian_clauses": [
+        {
+            "id": "Warranty",
+            "body": "The invoker of the contract action shall uphold its Obligations under this Contract in a timely and workmanlike manner, using knowledge and recommendations for performing the services which meet generally acceptable standards set forth by EOS.IO Blockchain Block Producers."
+        },
+        {
+            "id": "Default",
+            "body": "The occurrence of any of the following shall constitute a material default under this Contract:"
+        },
+        {
+            "id": "Remedies",
+            "body": "In addition to any and all other rights a party may have available according to law, if a party defaults by failing to substantially perform any provision, term or condition of this Contract, the other party may terminate the Contract by providing written notice to the defaulting party. This notice shall describe with sufficient detail the nature of the default. The party receiving such notice shall promptly be removed from being a Block Producer and this Contract shall be automatically terminated."
+        },
+        {
+            "id": "ForceMajeure",
+            "body": "If performance of this Contract or any obligation under this Contract is prevented, restricted, or interfered with by causes beyond either party's reasonable control (\"Force Majeure\"), and if the party unable to carry out its obligations gives the other party prompt written notice of such event, then the obligations of the party invoking this provision shall be suspended to the extent necessary by such event. The term Force Majeure shall include, without limitation, acts of God, fire, explosion, vandalism, storm or other similar occurrence, orders or acts of military or civil authority, or by national emergencies, insurrections, riots, or wars, or strikes, lock-outs, work stoppages, or supplier failures. The excused party shall use reasonable efforts under the circumstances to avoid or remove such causes of non-performance and shall proceed to perform with reasonable dispatch whenever such causes are removed or ceased. An act or omission shall be deemed within the reasonable control of a party if committed, omitted, or caused by such party, or its employees, officers, agents, or affiliates."
+        },
+        {
+            "id": "DisputeResolution",
+            "body": "Any controversies or disputes arising out of or relating to this Contract will be resolved by binding arbitration under the default rules set forth by the EOS.IO Blockchain. The arbitrator's award will be final, and judgment may be entered upon it by any court having proper jurisdiction."
+        },
+        {
+            "id": "EntireAgreement",
+            "body": "This Contract contains the entire agreement of the parties, and there are no other promises or conditions in any other agreement whether oral or written concerning the subject matter of this Contract. This Contract supersedes any prior written or oral agreements between the parties."
+        },
+        {
+            "id": "Severability",
+            "body": "If any provision of this Contract will be held to be invalid or unenforceable for any reason, the remaining provisions will continue to be valid and enforceable. If a court finds that any provision of this Contract is invalid or unenforceable, but that by limiting such provision it would become valid and enforceable, then such provision will be deemed to be written, construed, and enforced as so limited."
+        },
+        {
+            "id": "Amendment",
+            "body": "This Contract may be modified or amended in writing by mutual agreement between the parties, if the writing is signed by the party obligated under the amendment."
+        },
+        {
+            "id": "GoverningLaw",
+            "body": "This Contract shall be construed in accordance with the Maxims of Equity."
+        },
+        {
+            "id": "Notice",
+            "body": "Any notice or communication required or permitted under this Contract shall be sufficiently given if delivered to a verifiable email address or to such other email address as one party may have publicly furnished in writing, or published on a broadcast contract provided by this blockchain for purposes of providing notices of this type."
+        },
+        {
+            "id": "WaiverOfContractualRight",
+            "body": "The failure of either party to enforce any provision of this Contract shall not be construed as a waiver or limitation of that party's right to subsequently enforce and compel strict compliance with every provision of this Contract."
+        },
+        {
+            "id": "ArbitratorsFees_",
+            "body": "In any action arising hereunder or any separate action pertaining to the validity of this Agreement, both sides shall pay half the initial cost of arbitration, and the prevailing party shall be awarded reasonable arbitrator's fees and costs."
+        },
+        {
+            "id": "ConstructionAndInterpretation",
+            "body": "The rule requiring construction or interpretation against the drafter is waived. The document shall be deemed as if it were drafted by both parties in a mutual effort."
+        },
+        {
+            "id": "InWitnessWhereof",
+            "body": "In witness whereof, the parties hereto have caused this Agreement to be executed by themselves or their duly authorized representatives as of the date of execution, and authorized as proven by the cryptographic signature on the transaction that invokes this contract."
+        }
+    ],
     "variants": []
 }

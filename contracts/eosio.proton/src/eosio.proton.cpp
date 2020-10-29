@@ -19,7 +19,6 @@ namespace eosio {
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 		
-
 		permissions perm( _self, _self.value );
 		auto existing = perm.find( acc.value );
 
@@ -95,6 +94,10 @@ namespace eosio {
 				p.setcontract = 0;
 				p.namebids = 0;
 				p.rex = 0;
+				p.delegate = 0;
+				p.undelegate = 0;
+				p.sellram = 0;
+				p.buyram = 0;
 				for (auto it=perms.begin(); it!=perms.end(); ++it){
 					if(it->first == "createacc") { p.createacc = it->second; }
 					if(it->first == "vote") { p.vote = it->second; }
@@ -108,13 +111,6 @@ namespace eosio {
 					if(it->first == "sellram") { p.sellram = it->second; }
 					if(it->first == "buyram") { p.buyram = it->second; }
 				}
-				//p.createacc = perms.find("createacc")->second ? perms.find("createacc")->second : 0;
-				//p.vote = perms.find("vote")->second ? perms.find("vote")->second : 0;
-				//p.regprod = perms.find("regprod")->second ? perms.find("regprod")->second : 0;
-				//p.regproxy = perms.find("regproxy")->second ? perms.find("regproxy")->second : 0;
-				//p.setcontract = perms.find("setcontract")->second ? perms.find("setcontract")->second : 0;
-				//p.namebids = perms.find("namebids")->second ? perms.find("namebids")->second : 0;
-				//p.rex = perms.find("rex")->second ? perms.find("rex")->second : 0;
 			});
 		}
 	}
@@ -122,9 +118,6 @@ namespace eosio {
 
 	void eosioproton::setuserava(name acc, std::string ava ){
 
-//---- REMOVE  (migration logic) ---------------------
-check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
-//-----------------------------
 		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -151,9 +144,6 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::setusername(name acc, std::string name ){
-//---- REMOVE (migration logic) ---------------------
-check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
-//-----------------------------
 		
 		require_auth(permission_level("wlcm.proton"_n, "update"_n));
 		require_recipient( acc );
@@ -162,12 +152,16 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 		usersinfo usrinf( _self, _self.value );
 		auto existing = usrinf.find( acc.value );
 
+		
+		
 		if ( existing != usrinf.end() ) {
+			check (existing->verified == 0, "Sorry, username cannot be changed after KYC verification");
+			
 			usrinf.modify( existing, _self, [&]( auto& p ){
 				p.name = name;
 				p.date = eosio::current_time_point().sec_since_epoch();;
 			});
-		} else {
+		} else {						
 			usrinf.emplace( _self, [&]( auto& p ){
 				p.acc = acc;
 				p.name = name;
@@ -183,9 +177,7 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 
 
 	void eosioproton::userverify(name acc, name verifier, bool  verified ){
-//---- REMOVE (migration logic) ---------------------
-check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
-//-----------------------------
+
 		require_auth(permission_level("admin.proton"_n, "verifiers"_n));
 		require_auth(verifier);
 		check( is_account( acc ), "Account does not exist.");	
@@ -228,9 +220,7 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::updateraccs(name acc, vector<name> raccs){
-//---- REMOVE (migration logic) ---------------------
-check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
-//-----------------------------
+
 		require_auth(acc);
 
 		require_recipient( acc );
@@ -263,9 +253,7 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::updateaacts(name acc, vector<tuple<name, name>> aacts){
-//---- REMOVE (migration logic) ---------------------
-check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
-//-----------------------------
+
 		require_auth(acc);
 
 		require_recipient( acc );
@@ -300,9 +288,7 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::updateac(name acc, vector<tuple<name, string>> ac){
-//---- REMOVE (migration logic) ---------------------
-check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
-//-----------------------------
+
 		require_auth(acc);
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
@@ -312,9 +298,7 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 
 		for (auto i = 0; i < ac.size(); i++) {
 			const auto &[n1, s1] = ac[i];
-			//print(n1);
-			check( is_account( n1 ), "ac account '" + n1.to_string() + "' does not exist.");
-			
+			check( is_account( n1 ), "ac account '" + n1.to_string() + "' does not exist.");	
 			symbol sym = symbol(s1, 4);
 			check( sym.is_valid(), "invalid symbol name " + s1 );
 		}
@@ -406,8 +390,8 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 		dappconfig dconfig(_self, _self.value);
 		_dcstate = dconfig.exists() ? dconfig.get() : dappconf{};
 
-		check (ram > 0 || cpu > 0 || net > 0, "Action values should be positive numbers");
-		check (ram < uint64_t(16*1024*1024)*1014 , "To much RAM");
+		check (ram > 0 && cpu > 0 && net > 0, "Action parameters should be positive numbers");
+		check (ram < uint64_t( 64 * 1024 * 1024 ) , "To much RAM"); //64 mb max limit for config
 
 		_dcstate.dappram = ram;
 		_dcstate.dappcpu = cpu;
@@ -467,7 +451,6 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 		asset net = ures->net_weight;
 		uint64_t ram = ures->ram_bytes;
 
-		//print("cpu: ", cpu, " net: ", net, " ram: ", ram);
 		uint64_t addCpu = 0;
 		uint64_t addNet = 0;
 
@@ -477,8 +460,7 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 		if (_dcstate.dappnet > net.amount)
 			addNet = _dcstate.dappnet - net.amount;
 
-		if (addRam > 10){
-			//SEND_INLINE_ACTION( eosio::eosio, buyrambytes, { {_self, "active"_n} }, { _self, account, 2 * 1024 * 1024 } );
+		if (addRam > 0){
 			auto act = action(
 				permission_level{ "wlcm.proton"_n, "newacc"_n },
 				"eosio"_n,
@@ -495,8 +477,8 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 				"delegatebw"_n,
 				std::make_tuple( "wlcm.proton"_n,
 					account,
-					asset(addNet, symbol("SYS", 4)),
-					asset(addCpu, symbol("SYS", 4)),
+					asset(addNet, SYSsym),
+					asset(addCpu, SYSsym),
 					0 )
 			);
 			act.send();
@@ -601,9 +583,8 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::addkycprov( name kyc_provider, std::string desc, std::string url, std::string iconurl, std::string name ){		
-		// --- !!! Replace Permission
-		//require_auth(permission_level("admin.proton"_n, "committee"_n));
-		require_auth(permission_level("admin.proton"_n, "light"_n));
+		require_auth(permission_level("admin.proton"_n, "committee"_n));
+		//require_auth(permission_level("admin.proton"_n, "light"_n));
 		
 		require_recipient( kyc_provider );
 		check( is_account( kyc_provider ), "Account does not exist.");
@@ -631,9 +612,8 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::blkycprov( name kyc_provider, bool state ){
-		// --- !!! Replace Permission
-		//require_auth(permission_level("admin.proton"_n, "committee"_n));			
-		require_auth(permission_level("admin.proton"_n, "light"_n));
+		require_auth(permission_level("admin.proton"_n, "committee"_n));			
+		//require_auth(permission_level("admin.proton"_n, "light"_n));
 		
 		kycproviders kps( _self, _self.value );
 		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());
@@ -644,95 +624,16 @@ check ( MIGRATION_STEP == 0, "Please wait, data migration in progress...");
 	}
 
 	void eosioproton::rmvkycprov( name kyc_provider ){
-		// --- !!! Replace Permission
-		//require_auth(permission_level("admin.proton"_n, "committee"_n));	
-		require_auth(permission_level("admin.proton"_n, "light"_n));
+		require_auth(permission_level("admin.proton"_n, "committee"_n));	
+		//require_auth(permission_level("admin.proton"_n, "light"_n));
 		
 		kycproviders kps( _self, _self.value );
 		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());		
 		kps.erase( itr_kycprov );
 	}
-	
-	
 
-// ----- !!! REMOVE  (migration logic) -------------------------   
-/*
-	void eosioproton::migrate1( ){
-		auto processBy = 100;
-		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
-		//require_auth(acc);
-		check ( MIGRATION_STEP == 1, "Migration Step1 not enabled" );
-		
-		usersinfo data1( _self, _self.value );
-		usersinfo2 data2( _self, _self.value );
-
-		uint64_t count = 0;
-
-		for(auto itr = data1.begin(); itr != data1.end() && count < processBy;) {
-				count++;
-
-				data2.emplace( _self, [&]( auto& p ){
-
-						print("ACC:", itr->acc);
-						
-						p.acc = itr->acc;
-						p.name = itr->name;
-						p.avatar = itr->avatar;
-						p.verified = itr->verified;
-						p.date = itr->date;
-						p.verifiedon = itr->verifiedon;
-						p.verifier = itr->verifier;
-						p.raccs = itr->raccs;
-						p.aacts = itr->aacts;
-						p.ac = itr->ac;
-				});
-
-				itr = data1.erase(itr);
-
-		}
-	}
-	void eosioproton::migrate2( ){
-		auto processBy = 100;
-		//require_auth(permission_level("wlcm.proton"_n, "newacc"_n));
-		//require_auth(acc);
-		
-		check ( MIGRATION_STEP == 2, "Migration Step2 not enabled" );
-		
-		usersinfo data1( _self, _self.value );
-		usersinfo2 data2( _self, _self.value );
-
-		uint64_t count = 0;
-		for(auto itr = data2.begin(); itr != data2.end() && count < processBy;) {
-				count++;
-
-				data1.emplace( _self, [&]( auto& p ){
-					print("ACC:", itr->acc);
-					
-					p.acc = itr->acc;
-					p.name = itr->name;
-					p.avatar = itr->avatar;
-					p.verified = itr->verified;
-					p.date = itr->date;
-					p.verifiedon = itr->verifiedon;
-					p.verifier = itr->verifier;
-					p.raccs = itr->raccs;
-					p.aacts = itr->aacts;
-					p.ac = itr->ac;
-					p.kyc = itr->kyc;						
-				});
-
-				itr = data2.erase(itr);
-
-		}
-
-	}
-*/
-// ------------------------------------------------------------
 
 }
 
 EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
 
-// ----- REMOVE  (migration logic) -----------------
-//EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov)(migrate1)(migrate2))
-//----------------------------------------------------
