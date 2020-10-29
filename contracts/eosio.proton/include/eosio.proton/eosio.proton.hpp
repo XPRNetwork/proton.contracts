@@ -17,6 +17,7 @@
 using namespace eosio;
 using namespace std;
 
+#define SYSsym symbol("SYS", 4)  // PROTON
 
 struct kyc_prov {
 	name kyc_provider;
@@ -24,9 +25,6 @@ struct kyc_prov {
 	uint64_t kyc_date;
 };
 
-//--- REMOVE  (migration logic) -----
-const auto 	MIGRATION_STEP = 0;
-//-----------------------------------
 
 namespace eosiosystem {
 	class system_contract;
@@ -147,18 +145,6 @@ namespace eosio {
 			void rmvkycprov( name kyc_provider );
 			using rmvkycprov_action = eosio::action_wrapper<"rmvkycprov"_n, &eosioproton::rmvkycprov>;
 
-// ----- REMOVE (migration logic)-----
-/*
-			[[eosio::action]]
-			void migrate1( );
-			using migrate1_action = eosio::action_wrapper<"migrate1"_n, &eosioproton::migrate1>;
-
-			[[eosio::action]]
-			void migrate2( );
-			using migrate2_action = eosio::action_wrapper<"migrate2"_n, &eosioproton::migrate2>;
-*/
-//------------------------
-
 	private:
 	
 		// 0 = none, 1 = on, 2 = pending, 3 = off, 4 = banned
@@ -203,30 +189,6 @@ namespace eosio {
 		};
 
 		typedef eosio::multi_index< "usersinfo"_n, userinfo > usersinfo;
-
-// ----- REMOVE (migration logic)-----
-/*
-		struct [[eosio::table]] userinfo2 {
-			name                                     acc;
-			std::string                              name;
-			std::string                              avatar;
-			bool                                     verified;
-			uint64_t                                 date;
-			uint64_t                                 verifiedon;
-			eosio::name                              verifier;
-
-			vector<eosio::name>                      raccs;
-			vector<tuple<eosio::name, eosio::name>>  aacts;
-			vector<tuple<eosio::name, string>>       ac;
-
-			vector<kyc_prov>                         kyc;
-			
-			uint64_t primary_key()const { return acc.value; }
-		};
-
-		typedef eosio::multi_index< "usersinfo2"_n, userinfo2 > usersinfo2;
-*/
-//--------------------------------
 
 		struct [[eosio::table]] kyc_providers_list {
 			//uint64_t index

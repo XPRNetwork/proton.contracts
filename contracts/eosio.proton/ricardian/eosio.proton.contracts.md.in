@@ -1,0 +1,200 @@
+<h1 class="contract">setperm</h1>
+
+---
+spec_version: "0.2.0"
+title: setperm
+summary: 'setperm'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+setperm
+
+<h1 class="contract">setperm2</h1>
+
+---
+spec_version: "0.2.0"
+title: setperm2
+summary: 'setperm2'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+setperm2
+
+<h1 class="contract">remove</h1>
+
+---
+spec_version: "0.2.0"
+title: remove
+summary: 'remove'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+remove
+
+<h1 class="contract">reqperm</h1>
+
+---
+spec_version: "0.2.0"
+title: reqperm
+summary: 'reqperm'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+reqperm
+
+<h1 class="contract">setuserava</h1>
+
+---
+spec_version: "0.2.0"
+title: setuserava
+summary: 'setuserava'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+setuserava
+
+<h1 class="contract">setusername</h1>
+
+---
+spec_version: "0.2.0"
+title: setusername
+summary: 'setusername'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+setusername
+
+<h1 class="contract">userverify</h1>
+
+---
+spec_version: "0.2.0"
+title: userverify
+summary: 'userverify'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+userverify
+
+
+<h1 class="contract">updateraccs</h1>
+
+---
+spec_version: "0.2.0"
+title: updateraccs
+summary: 'updateraccs'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+updateraccs
+
+
+<h1 class="contract">updateaacts</h1>
+
+---
+spec_version: "0.2.0"
+title: updateaacts
+summary: 'updateaacts'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+updateaacts
+
+
+<h1 class="contract">updateac</h1>
+
+---
+spec_version: "0.2.0"
+title: updateac
+summary: 'updateac'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+updateac
+
+
+<h1 class="contract">dappreg</h1>
+
+---
+spec_version: "0.2.0"
+title: dappreg
+summary: 'dappreg'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+dappreg
+
+<h1 class="contract">setdappconf</h1>
+
+---
+spec_version: "0.2.0"
+title: setdappconf
+summary: 'setdappconf'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+setdappconf
+
+
+<h1 class="contract">kickbp</h1>
+
+---
+spec_version: "0.2.0"
+title: kickbp
+summary: 'kickbp'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+kickbp
+
+
+<h1 class="contract">addkyc</h1>
+
+---
+spec_version: "0.2.0"
+title: addkyc
+summary: 'addkyc'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+addkyc
+
+
+<h1 class="contract">updatekyc</h1>
+
+---
+spec_version: "0.2.0"
+title: updatekyc
+summary: 'updatekyc'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+updatekyc
+
+
+<h1 class="contract">removekyc</h1>
+
+---
+spec_version: "0.2.0"
+title: removekyc
+summary: 'removekyc'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+removekyc
+
+
+<h1 class="contract">addkycprov</h1>
+
+---
+spec_version: "0.2.0"
+title: addkycprov
+summary: 'addkycprov'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+addkycprov
+
+
+<h1 class="contract">blkycprov</h1>
+
+---
+spec_version: "0.2.0"
+title: blkycprov
+summary: 'blkycprov'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+blkycprov
+
+<h1 class="contract">rmvkycprov</h1>
+
+---
+spec_version: "0.2.0"
+title: rmvkycprov
+summary: 'rmvkycprov'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+rmvkycprov
+
