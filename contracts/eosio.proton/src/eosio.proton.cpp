@@ -391,6 +391,7 @@ namespace eosio {
 		_dcstate = dconfig.exists() ? dconfig.get() : dappconf{};
 
 		check (ram > 0 && cpu > 0 && net > 0, "Action parameters should be positive numbers");
+		check (cpu < 100000000 && net < 100000000, "Bad values from CPU and NET");  // Max 10 000.0000 possible for CPU and NET
 		check (ram < uint64_t( 64 * 1024 * 1024 ) , "To much RAM"); //64 mb max limit for config
 
 		_dcstate.dappram = ram;
@@ -451,10 +452,10 @@ namespace eosio {
 		asset net = ures->net_weight;
 		uint64_t ram = ures->ram_bytes;
 
-		uint64_t addCpu = 0;
-		uint64_t addNet = 0;
+		int64_t addCpu = 0;
+		int64_t addNet = 0;
 
-		auto addRam = _dcstate.dappram - ram;
+		int64_t addRam = _dcstate.dappram - ram - 8; // -8 bytes to feet bancor algo
 		if (_dcstate.dappcpu > cpu.amount)
 			addCpu = _dcstate.dappcpu - cpu.amount;
 		if (_dcstate.dappnet > net.amount)
