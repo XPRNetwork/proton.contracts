@@ -10,15 +10,17 @@ void token::create( const name&   issuer,
     auto sym = maximum_supply.symbol;
     check( sym.is_valid(), "invalid symbol name" );
     check( maximum_supply.is_valid(), "invalid supply");
-    check( maximum_supply.amount > 0, "max-supply must be positive");
-
+	
+    //check( maximum_supply.amount > 0, "max-supply must be positive"); // PROTON
+	
     stats statstable( get_self(), sym.code().raw() );
     auto existing = statstable.find( sym.code().raw() );
     check( existing == statstable.end(), "token with symbol already exists" );
 
     statstable.emplace( get_self(), [&]( auto& s ) {
        s.supply.symbol = maximum_supply.symbol;
-       s.max_supply    = maximum_supply;
+       //s.max_supply    = maximum_supply;  // PROTON
+	   s.max_supply    = asset{0, sym};	    // PROTON
        s.issuer        = issuer;
     });
 }
@@ -41,10 +43,12 @@ void token::issue( const name& to, const asset& quantity, const string& memo )
     check( quantity.amount > 0, "must issue positive quantity" );
 
     check( quantity.symbol == st.supply.symbol, "symbol precision mismatch" );
-    check( quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");
+    //check( quantity.amount <= st.max_supply.amount - st.supply.amount, "quantity exceeds available supply");  // PROTON
+	check( quantity.amount + st.supply.amount <= MAX_AMOUNT, "quantity exceeds available supply");    			// PROTON
 
     statstable.modify( st, same_payer, [&]( auto& s ) {
-       s.supply += quantity;
+       s.max_supply = asset{0, st.supply.symbol};		// PROTON
+	   s.supply += quantity;
     });
 
     add_balance( st.issuer, quantity, st.issuer );
