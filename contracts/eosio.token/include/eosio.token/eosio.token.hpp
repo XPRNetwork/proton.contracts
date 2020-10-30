@@ -20,7 +20,7 @@ namespace eosio {
    class [[eosio::contract("eosio.token")]] token : public contract {
       public:
          using contract::contract;
-
+         const int64_t MAX_AMOUNT = eosio::asset::max_amount;
          /**
           * Allows `issuer` account to create a token in supply of `maximum_supply`. If validation is successful a new entry in statstable for token symbol scope gets created.
           *
