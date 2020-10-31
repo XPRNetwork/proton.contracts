@@ -1899,6 +1899,16 @@
             ]
         },
         {
+            "name": "voterclaimst",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "voters_xpr",
             "base": "",
             "fields": [
@@ -2294,6 +2304,11 @@
             "name": "voterclaim",
             "type": "voterclaim",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Voters Reward\nsummary: '{{nowrap owner}} claims voters rewards'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{owner}} claims voters rewards from the system."
+        },
+        {
+            "name": "voterclaimst",
+            "type": "voterclaimst",
+            "ricardian_contract": ""
         },
         {
             "name": "vrwrdsharing",

@@ -606,7 +606,16 @@ namespace eosiosystem {
    }
 
    // PROTON
+   void system_contract::voterclaimst( const name& owner ) {
+      voterclaim_internal( owner, true );   
+   }
+	  
+	  
    void system_contract::voterclaim( const name& owner ) {
+      voterclaim_internal( owner, false );   
+   }
+   
+   void system_contract::voterclaim_internal( const name& owner, const bool& tostake ) {
       require_auth( owner );
       auto voter_info_itr = vxpr_tbl.require_find( owner.value, string("Voter not found.").c_str() );
 
@@ -616,6 +625,11 @@ namespace eosiosystem {
       token::transfer_action transfer_act{ token_account, { {saving_account, active_permission}, {owner, active_permission} } };
       transfer_act.send( saving_account, voter_info_itr->owner, asset(voter_info_itr->claimamount, XPRsym), std::string("Voter claim reward") ); //PROTON
 
+      if ( tostake ) {
+         system_contract::stakexpr_action stake_act{ get_self(), { {owner, active_permission} } };
+         stake_act.send( owner, owner, asset(voter_info_itr->claimamount, XPRsym) ); //PROTON
+
+      }
       _gstatesd.notclaimed -= voter_info_itr->claimamount;
 
       vxpr_tbl.modify(voter_info_itr, owner, [&](auto& s) {
@@ -623,6 +637,7 @@ namespace eosiosystem {
             s.lastclaim = current_time_point().sec_since_epoch();
       });
    }
+   
 
    // PROTON
    void system_contract::vrwrdsharing(  ) {

@@ -115,7 +115,8 @@ namespace eosio {
 
 		sendClaim.send();
 
-		_gstate.notclaimed -= itr->claimamount;
+		if ( _gstate.notclaimed > itr->claimamount) // should be always greater .
+			_gstate.notclaimed -= itr->claimamount;
 		
 		users_.modify(itr, account, [&](auto& s) {
 			s.claimamount = 0;
@@ -168,7 +169,11 @@ namespace eosio {
 			while ( itr != users_.end() && count < _gstate.processBy ){
 				count++;
 				if ( itr->active ){
-					uint64_t claim =  _gstate.processQuant / _gstate.totalausr ;
+					uint64_t claim =  0;
+					if ( _gstate.totalausr > 0 ) {
+						claim = _gstate.processQuant / _gstate.totalausr ;
+					}
+					
 					_gstate.processed += claim;
 				
 					users_.modify(itr, get_self(), [&](auto& s) {

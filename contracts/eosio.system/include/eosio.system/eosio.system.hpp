@@ -1052,6 +1052,15 @@ namespace eosiosystem {
           */
          [[eosio::action]]
          void voterclaim( const name& owner );
+
+         // PROTON stake XPR
+         /**
+          * Voter Claim rewards action, claims voter reward and stake it.
+          * @param owner - voter who voted for 4 bps.
+          */
+         [[eosio::action]]
+         void voterclaimst( const name& owner );
+ 
  
          // PROTON process sharing vote rewards 
          [[eosio::action]]
@@ -1414,6 +1423,7 @@ namespace eosiosystem {
          using stakexpr_action = eosio::action_wrapper<"stakexpr"_n, &system_contract::stakexpr>;                 // PROTON
          using unstakexpr_action = eosio::action_wrapper<"unstakexpr"_n, &system_contract::unstakexpr>;           // PROTON
          using voterclaim_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;           // PROTON
+		 using voterclaimst_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;           // PROTON
          using vrwrdsharing_action = eosio::action_wrapper<"vrwrdsharing"_n, &system_contract::vrwrdsharing>;     // PROTON
 
 
@@ -1490,6 +1500,8 @@ namespace eosiosystem {
 
          void update_xpr_votes( const name& from, const name& voter, const name& proxy, const std::vector<name>& producers, bool voting );      // PROTON
          void check_vote_sharing(  ); // PROTON  voterawrd sharing check
+         void voterclaim_internal( const name& owner, const bool& tostake );  // PROTON stake XPR
+
 
          template <auto system_contract::*...Ptrs>
          class registration {
