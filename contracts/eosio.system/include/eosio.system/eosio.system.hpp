@@ -471,14 +471,21 @@ namespace eosiosystem {
       uint64_t processrstaked = 0 ;
       uint64_t processed      = 0; 
 
-      int64_t  spare1 = 0;
+      int64_t  spare1 = 0; //--> processstaked
       int64_t  spare2 = 0;
 
       EOSLIB_SERIALIZE( eosio_global_statesd, (totalstaked)(totalrstaked)(totalrvoters)(notclaimed)(pool)(processtime)(processtimeupd)(isprocessing)(processFrom)(processQuant)(processrstaked)(processed)(spare1)(spare2) )
    };
    typedef eosio::singleton< "globalsd"_n, eosio_global_statesd > global_statesd_singleton;
    
+   /*
    
+   globalspr {
+       poolspr
+       processedspr
+       processQspr
+
+   */
    
    // `rex_pool` structure underlying the rex pool table. A rex pool table entry is defined by:
    // - `version` defaulted to zero,
@@ -1423,11 +1430,12 @@ namespace eosiosystem {
          using stakexpr_action = eosio::action_wrapper<"stakexpr"_n, &system_contract::stakexpr>;                 // PROTON
          using unstakexpr_action = eosio::action_wrapper<"unstakexpr"_n, &system_contract::unstakexpr>;           // PROTON
          using voterclaim_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;           // PROTON
-		 using voterclaimst_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;           // PROTON
+         using voterclaimst_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;         // PROTON
          using vrwrdsharing_action = eosio::action_wrapper<"vrwrdsharing"_n, &system_contract::vrwrdsharing>;     // PROTON
 
 
          static uint8_t checkPermission(name acc, std::string permission);       //PROTON
+         [[eosio::on_notify("*::transfer")]] void ontransfer(name from, name to, asset quantity, string memo);    // PROTON
       private:
          // Implementation details:
 

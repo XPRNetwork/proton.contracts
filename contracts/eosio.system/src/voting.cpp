@@ -719,6 +719,7 @@ namespace eosiosystem {
    }
 
 
+   // PROTON
    void system_contract::check_vote_sharing(  ) {
       const auto now = current_time_point().sec_since_epoch();
 
@@ -735,6 +736,7 @@ namespace eosiosystem {
    }
 
 
+   // PROTON
    void system_contract::setxprvconf( const uint64_t&  max_bp_per_vote, const uint64_t& min_bp_reward, const uint64_t& unstake_period, const uint64_t& process_by, const uint64_t& process_interval, const uint64_t& voters_claim_interval ) {
       require_auth( get_self() );
 
@@ -748,8 +750,29 @@ namespace eosiosystem {
       _gstatesxpr.process_by = process_by;
       _gstatesxpr.process_interval = process_interval;
       _gstatesxpr.voters_claim_interval = voters_claim_interval;
-
-
    }
+
+
+   // PROTON
+   void system_contract::ontransfer(name from, name to, asset quantity, string memo) {
+      if (to != get_self()) {
+         return;
+      }
+      require_auth(from);
+      auto contract = get_first_receiver();
+
+      check ( contract == "eosio.token"_n, "Token is not supported");
+      //check (from == "swapfee"_n, "You are not allowed to transfer");         // Allow only swap fee contract to send here
+      check ( memo == "spf", "Wrong memo.");                                    // Allow transfers only with correct memo
+      if ( contract == "eosio.token"_n && quantity.symbol == XPRsym ){
+          
+         // transfer to savings account & add amount to votersreward pool
+         if ( quantity.amount > 0 ) {
+            token::transfer_action transfer_act{ token_account, { {get_self(), active_permission} } };
+            transfer_act.send( get_self(), saving_account, quantity, "spf" ); 
+            _gstatesd.pool += quantity.amount;
+         }
+      }
+}
 
 } /// namespace eosiosystem
