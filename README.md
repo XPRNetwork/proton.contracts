@@ -16,7 +16,6 @@ The following unprivileged contract(s) are also part of the system.
    * [eosio.proton](./contracts/eosio.proton)
    * [token.proton](./contracts/token.proton)
    * [cfund.proton](./contracts/cfund.proton)
-   * [pushr.proton](./contracts/pushr.proton)
 
 Dependencies:
 * [eosio.cdt v1.7.x](https://github.com/EOSIO/eosio.cdt/releases/tag/v1.7.0)
