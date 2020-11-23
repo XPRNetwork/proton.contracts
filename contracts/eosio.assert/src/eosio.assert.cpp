@@ -17,9 +17,9 @@ bytes get_action_bytes() {
 struct[[eosio::contract("eosio.assert")]] asserter : eosio::contract {
    using contract::contract;
 
-   manifests           manifest_table{_self, _self.value};
+   manifests           manifest_table{get_self(), get_self().value};
    manifests_id_index  manifest_id_idx = manifest_table.get_index<"id"_n>();
-   chains              chain_table{_self, _self.value};
+   chains              chain_table{get_self(), get_self().value};
    stored_chain_params chain = chain_table.get_or_default();
 
    [[eosio::action]] void setchain(ignore<checksum256> chain_id, ignore<string> chain_name, ignore<checksum256> icon) {
@@ -29,7 +29,7 @@ struct[[eosio::contract("eosio.assert")]] asserter : eosio::contract {
       _ds >> chain.chain_name;
       _ds >> chain.icon;
       chain.hash = hash;
-      chain_table.set(chain, _self);
+      chain_table.set(chain, get_self());
    };
 
    [[eosio::action("add.manifest")]] void add_manifest(
@@ -49,7 +49,7 @@ struct[[eosio::contract("eosio.assert")]] asserter : eosio::contract {
       auto it = manifest_id_idx.find(stored.id_key());
       check(it == manifest_id_idx.end(), "manifest already present");
       manifest_table.emplace(stored.account, [&](auto& x) { x = stored; });
-      chain_table.set(chain, _self);
+      chain_table.set(chain, get_self());
    };
 
    [[eosio::action("del.manifest")]] void del_manifest(checksum256 id) {

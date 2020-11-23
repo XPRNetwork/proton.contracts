@@ -17,16 +17,16 @@ namespace eosio {
 		require_auth( get_self() );
 		check( is_account( account ), "Account does not exist.");
 		
-		conf config(_self, _self.value);
+		conf config(get_self(), get_self().value);
 		_gstate = config.exists() ? config.get() : global{};
 
-		users users_( _self, _self.value );	
+		users users_( get_self(), get_self().value );	
 		auto itr = users_.find( account.value );
 		check ( itr == users_.end(), "committee already registered.");
 
 		// now = current_time_point().sec_since_epoch();			
 		if ( itr == users_.end() ) {
-			users_.emplace( _self, [&](auto& s) {
+			users_.emplace( get_self(), [&](auto& s) {
 				s.account = account;
 				s.rate = 100;
 				s.active = 1;
@@ -37,7 +37,7 @@ namespace eosio {
 			_gstate.totalusr++;
 			_gstate.totalausr++;
 			
-			config.set( _gstate, _self );
+			config.set( _gstate, get_self() );
 		}
 	}
 
@@ -46,10 +46,10 @@ namespace eosio {
 		
 		require_auth( get_self() );
 		
-		conf config(_self, _self.value);
+		conf config( get_self(), get_self().value);
 		_gstate = config.exists() ? config.get() : global{};
 		
-		users users_( _self, _self.value );
+		users users_( get_self(), get_self().value );
 		auto itr = users_.find( account.value );
 		
 		check(itr != users_.end(), "committee not registered.");	
@@ -61,17 +61,17 @@ namespace eosio {
 		users_.erase(itr);
 
 		_gstate.totalusr--;
-		config.set( _gstate, _self );
+		config.set( _gstate, get_self() );
 	}
 
 	
 	ACTION cfundproton::activate( const name& account, const bool& status ){
 		require_auth( get_self() );
 
-		conf config(_self, _self.value);
+		conf config( get_self(), get_self().value);
 		_gstate = config.exists() ? config.get() : global{};
 
-		users users_( _self, _self.value );
+		users users_( get_self(), get_self().value );
 		auto itr = users_.find( account.value );
 		
 		check(itr != users_.end(), "Committee not found.");	
@@ -88,17 +88,17 @@ namespace eosio {
 			s.active = status;
 		});	
 			
-		config.set( _gstate, _self );
+		config.set( _gstate, get_self() );
 	}
 	
 	
 	ACTION cfundproton::claimreward( const name& account){
 		require_auth( account );
 
-		conf config(_self, _self.value);
+		conf config( get_self(), get_self().value);
 		_gstate = config.exists() ? config.get() : global{};
 		
-		users users_( _self, _self.value );		
+		users users_( get_self(), get_self().value );		
 		auto itr = users_.find(account.value);
 
 		check(itr != users_.end(), "Committee not found.");	
@@ -123,17 +123,17 @@ namespace eosio {
 			s.lastclaim = current_time_point().sec_since_epoch();
 		});
 		
-		config.set( _gstate, _self );
+		config.set( _gstate, get_self() );
 	}
 
 
 	ACTION cfundproton::process( ){
 		require_auth( get_self() );
 
-		conf config(_self, _self.value);
+		conf config( get_self(), get_self().value);
 		_gstate = config.exists() ? config.get() : global{};
 		
-		users users_( _self, _self.value );
+		users users_( get_self(), get_self().value );
 		
 		uint64_t now = current_time_point().sec_since_epoch();
 		
@@ -151,9 +151,9 @@ namespace eosio {
 			
 			//Deferred for auto next call
 			eosio::transaction out;
-			out.actions.emplace_back( permission_level{get_self(), "active"_n}, _self, "process"_n, _self );
+			out.actions.emplace_back( permission_level{get_self(), "active"_n}, get_self(), "process"_n, get_self() );
 			out.delay_sec = processIntreval + 1;
-			out.send( _self.value, _self, true );		
+			out.send( get_self().value, get_self(), true );		
 		} else {
 			print("nothing to do.");
 		}
@@ -188,9 +188,9 @@ namespace eosio {
 				print("Not Finished. ");
 				//Deferred for auto next call
 				eosio::transaction out;
-				out.actions.emplace_back( permission_level{get_self(), "active"_n}, _self, "process"_n, _self );
+				out.actions.emplace_back( permission_level{get_self(), "active"_n}, get_self(), "process"_n, get_self() );
 				out.delay_sec = 0;
-				out.send( _self.value, _self, true );		
+				out.send( get_self().value, get_self(), true );		
 			} else {
 				_gstate.isprocessing = 0;
 				_gstate.processFrom = ""_n;
@@ -203,7 +203,7 @@ namespace eosio {
 				_gstate.processQuant = 0;
 				_gstate.processed = 0;
 			}		
-			config.set( _gstate, _self );
+			config.set( _gstate, get_self() );
 		}
 	}
 
@@ -222,13 +222,13 @@ namespace eosio {
 			return;
 		}
 		
-		conf config(_self, _self.value);
+		conf config(get_self(), get_self().value);
 		_gstate = config.exists() ? config.get() : global{};
 
 		_gstate.pool += quantity.amount;
 		_gstate.notclaimed += quantity.amount;
 
-		config.set( _gstate, _self );
+		config.set( _gstate, get_self() );
 	}
 	
 }

@@ -14,17 +14,17 @@ namespace eosio {
 
 	void eosioproton::setperm2(name acc, const std::vector<uint8_t>& perms ){
 
-		require_auth( _self );
+		require_auth( get_self() );
 		
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 		
-		permissions perm( _self, _self.value );
+		permissions perm( get_self(), get_self().value );
 		auto existing = perm.find( acc.value );
 
 		if ( existing != perm.end() ) {
 
-			perm.modify( existing, _self, [&]( auto& p ){
+			perm.modify( existing, get_self(), [&]( auto& p ){
 				p.createacc = perms[0];
 				p.vote = perms[1]; 
 				p.regprod = perms[2]; 
@@ -40,7 +40,7 @@ namespace eosio {
 
 			});
 		} else {
-			perm.emplace( _self, [&]( auto& p ){
+			perm.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.createacc = perms[0];
 				p.vote = perms[1]; 
@@ -59,16 +59,16 @@ namespace eosio {
 	
 
 	void eosioproton::setperm(name acc, const std::map<std::string,uint8_t>& perms ){
-		require_auth( _self );
+		require_auth( get_self() );
 
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
-		permissions perm( _self, _self.value );
+		permissions perm( get_self(), get_self().value );
 		auto existing = perm.find( acc.value );
 
 		if ( existing != perm.end() ) {
-			perm.modify( existing, _self, [&]( auto& p ){
+			perm.modify( existing, get_self(), [&]( auto& p ){
 				for (auto it=perms.begin(); it!=perms.end(); ++it){
 					if(it->first == "createacc") { p.createacc = it->second; }
 					if(it->first == "vote") { p.vote = it->second; }
@@ -85,7 +85,7 @@ namespace eosio {
 				}
 			});
 		} else {
-			perm.emplace( _self, [&]( auto& p ){
+			perm.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.createacc = 0;
 				p.vote = 0;
@@ -122,16 +122,16 @@ namespace eosio {
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto existing = usrinf.find( acc.value );
 
 		if ( existing != usrinf.end() ) {
-			usrinf.modify( existing, _self, [&]( auto& p ){
+			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.avatar = ava;
 				p.date = eosio::current_time_point().sec_since_epoch();;
 			});
 		} else {
-			usrinf.emplace( _self, [&]( auto& p ){
+			usrinf.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.name = "";
 				p.avatar = ava;
@@ -149,7 +149,7 @@ namespace eosio {
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto existing = usrinf.find( acc.value );
 
 		
@@ -157,12 +157,12 @@ namespace eosio {
 		if ( existing != usrinf.end() ) {
 			check (existing->verified == 0, "Sorry, username cannot be changed after KYC verification");
 			
-			usrinf.modify( existing, _self, [&]( auto& p ){
+			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.name = name;
 				p.date = eosio::current_time_point().sec_since_epoch();;
 			});
 		} else {						
-			usrinf.emplace( _self, [&]( auto& p ){
+			usrinf.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.name = name;
 				p.avatar = "";
@@ -183,12 +183,12 @@ namespace eosio {
 		check( is_account( acc ), "Account does not exist.");	
 		require_recipient( acc );
 
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto existing = usrinf.find( acc.value );
 
 		if ( existing != usrinf.end() ) {
 			check (existing->verified != verified, "This status alredy set");
-			usrinf.modify( existing, _self, [&]( auto& p ){
+			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.verified = verified;
 				if ( verified ) {
 					p.verifiedon = eosio::current_time_point().sec_since_epoch();
@@ -200,7 +200,7 @@ namespace eosio {
 				p.date = eosio::current_time_point().sec_since_epoch();
 			});
 		} else {
-			usrinf.emplace( _self, [&]( auto& p ){
+			usrinf.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.name = "";
 				p.avatar = "";
@@ -226,7 +226,7 @@ namespace eosio {
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto existing = usrinf.find( acc.value );
 		
 		for (auto i = 0; i < raccs.size(); i++) {
@@ -234,12 +234,12 @@ namespace eosio {
 		}
 
 		if ( existing != usrinf.end() ) {
-			usrinf.modify( existing, _self, [&]( auto& p ){
+			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.raccs = raccs;
 				p.date = eosio::current_time_point().sec_since_epoch();
 			});
 		} else {
-			usrinf.emplace( _self, [&]( auto& p ){
+			usrinf.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.name = "";
 				p.avatar = "";
@@ -259,7 +259,7 @@ namespace eosio {
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto existing = usrinf.find( acc.value );
 
 		for (auto i = 0; i < aacts.size(); i++) {
@@ -269,12 +269,12 @@ namespace eosio {
 		}
 
 		if ( existing != usrinf.end() ) {
-			usrinf.modify( existing, _self, [&]( auto& p ){
+			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.aacts = aacts;
 				p.date = eosio::current_time_point().sec_since_epoch();
 			});
 		} else {
-			usrinf.emplace( _self, [&]( auto& p ){
+			usrinf.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.name = "";
 				p.avatar = "";
@@ -293,7 +293,7 @@ namespace eosio {
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto existing = usrinf.find( acc.value );
 
 		for (auto i = 0; i < ac.size(); i++) {
@@ -304,12 +304,12 @@ namespace eosio {
 		}
 
 		if ( existing != usrinf.end() ) {
-			usrinf.modify( existing, _self, [&]( auto& p ){
+			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.ac = ac;
 				p.date = eosio::current_time_point().sec_since_epoch();
 			});
 		} else {
-			usrinf.emplace( _self, [&]( auto& p ){
+			usrinf.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.name = "";
 				p.avatar = "";
@@ -324,11 +324,11 @@ namespace eosio {
 
 	void eosioproton::reqperm(name acc, std::string permission ){
 		require_auth( acc );
-		permissions perm( _self, _self.value );
+		permissions perm( get_self(), get_self().value );
 		auto existing = perm.find( acc.value );
 
 		if ( existing != perm.end() ) {
-			perm.modify( existing, _self, [&]( auto& p ){
+			perm.modify( existing, get_self(), [&]( auto& p ){
 				if(permission == "createacc" && existing->createacc != 4 && existing->createacc != 1 ) { p.createacc = 2; }
 				if(permission == "vote" && existing->vote != 4 && existing->vote != 1 ) { p.vote = 2; }
 				if(permission == "regprod" && existing->regprod != 4 && existing->regprod != 1 ) { p.regprod = 2; }
@@ -342,7 +342,7 @@ namespace eosio {
 				if(permission == "buyram" && existing->buyram != 4 && existing->buyram != 1 ) { p.buyram = 2; }
 			});
 		} else {
-			perm.emplace( _self, [&]( auto& p ){
+			perm.emplace( get_self(), [&]( auto& p ){
 				p.acc = acc;
 				p.createacc = 0;
 				p.vote = 0;
@@ -373,9 +373,9 @@ namespace eosio {
 	}
 
 	void eosioproton::remove(name acc){
-		require_auth( _self );
+		require_auth( get_self() );
 		require_recipient( acc );
-		permissions perm( _self, _self.value );
+		permissions perm( get_self(), get_self().value );
 		auto existing = perm.find( acc.value );
 
 		check ( existing != perm.end(), "Account not found." );
@@ -386,8 +386,8 @@ namespace eosio {
 
 
 	void eosioproton::setdappconf(uint64_t ram, uint64_t cpu, uint64_t net){
-		require_auth( _self );
-		dappconfig dconfig(_self, _self.value);
+		require_auth( get_self() );
+		dappconfig dconfig(get_self(), get_self().value);
 		_dcstate = dconfig.exists() ? dconfig.get() : dappconf{};
 
 		check (ram > 0 && cpu > 0 && net > 0, "Action parameters should be positive numbers");
@@ -398,7 +398,7 @@ namespace eosio {
 		_dcstate.dappcpu = cpu;
 		_dcstate.dappnet = net;
 
-		dconfig.set( _dcstate, _self );
+		dconfig.set( _dcstate, get_self() );
 	}
 
 	void eosioproton::dappreg(name account){
@@ -409,18 +409,18 @@ namespace eosio {
 
 		require_auth( account );
 
-		permissions perm( _self, _self.value );
+		permissions perm( get_self(), get_self().value );
 		auto uperm = perm.find( account.value );
 
 		if ( uperm != perm.end() ) {
 			check ( uperm->setcontract != 4 , "Sorry, account banned." );
 			//check ( uperm->setcontract != 1, "Already registered" );
 
-			perm.modify( uperm, _self, [&]( auto& p ){
+			perm.modify( uperm, get_self(), [&]( auto& p ){
 				 p.setcontract = 1;
 			});
 		} else {
-			perm.emplace( _self, [&]( auto& p ){
+			perm.emplace( get_self(), [&]( auto& p ){
 				p.acc = account;
 				p.createacc = 0;
 				p.vote = 0;
@@ -440,12 +440,12 @@ namespace eosio {
 		auto ures = userres.find( account.value );
 		check ( ures != userres.end(), "Account not found." );
 
-		dappconfig dconfig(_self, _self.value);
+		dappconfig dconfig(get_self(), get_self().value);
 		if (dconfig.exists()){
 			dconfig.get();
 		} else {
 			dappconf{};
-			dconfig.set( _dcstate, _self );
+			dconfig.set( _dcstate, get_self() );
 		}
 
 		asset cpu = ures->cpu_weight;
@@ -490,10 +490,10 @@ namespace eosio {
 		require_auth(permission_level("eosio"_n, "active"_n));
 		check( is_account( producer ), "Account does not exist.");
 
-		permissions perm( _self, _self.value );
+		permissions perm( get_self(), get_self().value );
 		auto itr = perm.find( producer.value );
 		if ( itr != perm.end() ) {
-			perm.modify( itr, _self, [&]( auto& p ){
+			perm.modify( itr, get_self(), [&]( auto& p ){
 				p.regprod = 3; 
 			});
 		}
@@ -502,12 +502,12 @@ namespace eosio {
 	void eosioproton::addkyc( name acc, kyc_prov kyc ){
 		require_auth(kyc.kyc_provider);
 		
-		kycproviders kps( _self, _self.value );		
+		kycproviders kps( get_self(), get_self().value );		
 		auto itr_kycprov = kps.require_find(kyc.kyc_provider.value, string("KYC provider " + kyc.kyc_provider.to_string() + "  not found").c_str());		
 		
 		check (!itr_kycprov->blisted, "Account is blacklisted.");
 				
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto itr_usrs = usrinf.require_find( acc.value, string("User " + acc.to_string() + " not found").c_str() );
 
 		for (auto i = 0; i < itr_usrs->kyc.size(); i++) {		
@@ -517,7 +517,7 @@ namespace eosio {
 			}						
 		}
 		
-		usrinf.modify( itr_usrs, _self, [&]( auto& p ){
+		usrinf.modify( itr_usrs, get_self(), [&]( auto& p ){
 			p.kyc.push_back(kyc);			
 		});
 	}
@@ -525,13 +525,13 @@ namespace eosio {
 	void eosioproton::updatekyc( name acc, kyc_prov kyc ){
 		require_auth(kyc.kyc_provider);
 		
-		kycproviders kps( _self, _self.value );
+		kycproviders kps( get_self(), get_self().value );
 				
 		auto itr_kycprov = kps.require_find(kyc.kyc_provider.value, string("KYC provider " + kyc.kyc_provider.to_string() + "  not found").c_str());		
 		
 		check (!itr_kycprov->blisted, "Account is blacklisted.");
 				
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto itr_usrs = usrinf.require_find( acc.value, string("User " + acc.to_string() + " not found").c_str() );
 
 
@@ -549,20 +549,20 @@ namespace eosio {
 		}
 		check (modified, string("KYC from " + kyc.kyc_provider.to_string() + " not found").c_str());
 		
-		usrinf.modify( itr_usrs, _self, [&]( auto& p ){
+		usrinf.modify( itr_usrs, get_self(), [&]( auto& p ){
 			p.kyc = new_kyc;			
 		});
 	}	
 
 	void eosioproton::removekyc( name acc, name kyc_provider ){
 		require_auth(kyc_provider);		
-		kycproviders kps( _self, _self.value );
+		kycproviders kps( get_self(), get_self().value );
 		
 		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());		
 		
 		check (!itr_kycprov->blisted, "Account is blacklisted.");
 
-		usersinfo usrinf( _self, _self.value );
+		usersinfo usrinf( get_self(), get_self().value );
 		auto itr_usrs = usrinf.require_find( acc.value, string("User " + acc.to_string() + " not found").c_str() );
 		
 		vector<kyc_prov> new_kyc = itr_usrs->kyc;
@@ -578,7 +578,7 @@ namespace eosio {
 		
 		check (removed, string("KYC from " + kyc_provider.to_string() + " not found").c_str());
 		
-		usrinf.modify( itr_usrs, _self, [&]( auto& p ){
+		usrinf.modify( itr_usrs, get_self(), [&]( auto& p ){
 			p.kyc = new_kyc;			
 		});
 	}
@@ -590,18 +590,18 @@ namespace eosio {
 		require_recipient( kyc_provider );
 		check( is_account( kyc_provider ), "Account does not exist.");
 
-		kycproviders kps( _self, _self.value );
+		kycproviders kps( get_self(), get_self().value );
 		auto itr_kycprov = kps.find( kyc_provider.value );
 
 		if ( itr_kycprov != kps.end() ) {
-			kps.modify( itr_kycprov, _self, [&]( auto& p ){			
+			kps.modify( itr_kycprov, get_self(), [&]( auto& p ){			
 				p.desc = desc;
 				p.url = url;
 				p.iconurl = iconurl;
 				p.name = name;				
 			});
 		} else {
-			kps.emplace( _self, [&]( auto& p ){				
+			kps.emplace( get_self(), [&]( auto& p ){				
 				p.kyc_provider = kyc_provider;
 				p.desc = desc;
 				p.url = url;
@@ -616,10 +616,10 @@ namespace eosio {
 		require_auth(permission_level("admin.proton"_n, "committee"_n));			
 		//require_auth(permission_level("admin.proton"_n, "light"_n));
 		
-		kycproviders kps( _self, _self.value );
+		kycproviders kps( get_self(), get_self().value );
 		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());
 		
-		kps.modify( itr_kycprov, _self, [&]( auto& p ){			
+		kps.modify( itr_kycprov, get_self(), [&]( auto& p ){			
 			p.blisted = state;
 		});
 	}
@@ -628,7 +628,7 @@ namespace eosio {
 		require_auth(permission_level("admin.proton"_n, "committee"_n));	
 		//require_auth(permission_level("admin.proton"_n, "light"_n));
 		
-		kycproviders kps( _self, _self.value );
+		kycproviders kps( get_self(), get_self().value );
 		auto itr_kycprov = kps.require_find(kyc_provider.value, string("KYC provider not found").c_str());		
 		kps.erase( itr_kycprov );
 	}

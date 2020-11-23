@@ -28,7 +28,7 @@ namespace eosio {
 		require_auth( tcontract );
 		require_recipient( tcontract );
 		
-		tokens tokens_( _self, _self.value );
+		tokens tokens_( get_self(), get_self().value );
 
 		auto tcontract_index = tokens_.template get_index< "tcontract"_n >();
 		for ( auto itro = tcontract_index.find( tcontract.value ); itro != tcontract_index.end(); itro++ ) {
@@ -59,7 +59,7 @@ namespace eosio {
 
 		check( symbol.is_valid(), "invalid symbol name" );
 
-		tokens tokens_( _self, _self.value );
+		tokens tokens_( get_self(), get_self().value );
 		auto itr = tokens_.require_find( id, string("id: " + to_string( id ) + " cannot be found").c_str() );
 
 		require_auth( tcontract );
@@ -80,7 +80,7 @@ namespace eosio {
 
 	void tokenproton::remove(uint64_t id){
 
-		tokens tokens_( _self, _self.value );
+		tokens tokens_( get_self(), get_self().value );
 		auto itr = tokens_.require_find( id, string("id: " + to_string( id ) + " cannot be found").c_str() );
 		require_auth( itr->tcontract );
 
@@ -91,12 +91,12 @@ namespace eosio {
 
 	void tokenproton::updblacklist(uint64_t id, bool blisted){
 
-		require_auth( _self );
+		require_auth( get_self() );
 
-		tokens tokens_( _self, _self.value );
+		tokens tokens_( get_self(), get_self().value );
 		auto itr = tokens_.require_find( id, string("id: " + to_string( id ) + " cannot be found").c_str() );
 
-		tokens_.modify( itr, _self, [&]( auto& t ) {
+		tokens_.modify( itr, get_self(), [&]( auto& t ) {
 			t.blisted = blisted;
 		});
 
@@ -106,12 +106,12 @@ namespace eosio {
 	uint64_t tokenproton::getid() {
 		uint64_t resid;
 
-		conf config( _self, _self.value );
+		conf config( get_self(), get_self().value );
 		_cstate = config.exists() ? config.get() : global{};
 
 		_cstate.tid++;
 		resid = _cstate.tid;
-		config.set( _cstate, _self );
+		config.set( _cstate, get_self() );
 
 		return resid;
 	}
