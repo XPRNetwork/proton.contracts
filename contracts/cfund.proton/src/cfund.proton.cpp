@@ -161,7 +161,7 @@ namespace eosio {
 		if (isWork ){
 			auto itr = users_.begin();
 			if (_gstate.processFrom.value) {
-				itr = users_.find(_gstate.processFrom.value);
+				itr = users_.lower_bound(_gstate.processFrom.value - 1);
 			}
 			
 			uint64_t count = 0;
