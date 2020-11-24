@@ -89,7 +89,7 @@ namespace eosio {
 				uint64_t 	pool = 0;
 				uint64_t 	processtime = 0;	
 				
-				bool	 	isprocessing = 0;
+				bool	 	isprocessing = false;
 				name 	 	processFrom = ""_n;
 				uint8_t  	processBy = 10;
 				uint64_t 	processQuant = 0;

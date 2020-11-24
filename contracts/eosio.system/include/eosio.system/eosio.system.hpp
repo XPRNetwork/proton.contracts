@@ -26,7 +26,8 @@
 // be set to 0.
 #define CHANNEL_RAM_AND_NAMEBID_FEES_TO_REX 0
 
-#define XPRsym symbol("XPR", 4)  // PROTON
+#define XPRsym symbol("XPR", 4)  // PROTON Main token 
+#define SYSsym symbol("SYS", 4)  // PROTON System token for resource allocation
 
 namespace eosiosystem {
 
@@ -397,7 +398,7 @@ namespace eosiosystem {
    };
    typedef eosio::multi_index< "delxpr"_n, delegated_xpr > del_xpr_table;
    
-
+   // PROTON
    struct [[eosio::table, eosio::contract("eosio.system")]] voters_xpr {
       name                owner;
       uint64_t            staked;
@@ -465,7 +466,7 @@ namespace eosiosystem {
 
       int64_t  processtime    = 0;      // start distribution time. To keep track of distributuion process
       int64_t  processtimeupd = 0;      // next distribution range time. To keep track of distributuion process
-      bool     isprocessing   = 0;      // distribution is started.  
+      bool     isprocessing   = false;  // distribution is started.  
       name     processFrom    = ""_n;   // account name of last processed voter
       uint64_t processQuant   = 0 ;
       uint64_t processrstaked = 0 ;
@@ -1035,10 +1036,24 @@ namespace eosiosystem {
 
 
          // PROTON stake XPR
+         /**
+          * Stake XPR action
+          *
+          * @param from
+          * @param receiver
+          * @param stake_xpr_quantity
+          */
          [[eosio::action]]
          void stakexpr ( const name& from, const name& receiver, const asset& stake_xpr_quantity);
 
          // PROTON unstake XPR
+         /**
+          * Unstake XPR action
+          *
+          * @param from
+          * @param receiver
+          * @param unstake_xpr_quantity
+          */
          [[eosio::action]]
          void unstakexpr ( const name& from, const name& receiver, const asset& unstake_xpr_quantity);
 
@@ -1070,10 +1085,22 @@ namespace eosiosystem {
  
  
          // PROTON process sharing vote rewards 
+         /**
+          * Voters reward sharing. Internal action.
+          */
          [[eosio::action]]
          void vrwrdsharing( );
 
          // PROTON set voting system config
+         /**
+          * Set XPR votting module config
+          * @param max_bp_per_vote
+          * @param min_bp_reward
+          * @param unstake_period
+          * @param process_by
+          * @param process_interval
+          * @param voters_claim_interval
+          */
          [[eosio::action]]
          void setxprvconf( const uint64_t&  max_bp_per_vote, const uint64_t& min_bp_reward, const uint64_t& unstake_period, const uint64_t& process_by, const uint64_t& process_interval, const uint64_t& voters_claim_interval );
 
@@ -1410,10 +1437,10 @@ namespace eosiosystem {
          using regproducer_action = eosio::action_wrapper<"regproducer"_n, &system_contract::regproducer>;
          using regproducer2_action = eosio::action_wrapper<"regproducer2"_n, &system_contract::regproducer2>;
          using unregprod_action = eosio::action_wrapper<"unregprod"_n, &system_contract::unregprod>;
-         using kickbp_action = eosio::action_wrapper<"kickbp"_n, &system_contract::kickbp>;                       //PROTON
+         using kickbp_action = eosio::action_wrapper<"kickbp"_n, &system_contract::kickbp>;                       // PROTON
          using setram_action = eosio::action_wrapper<"setram"_n, &system_contract::setram>;
          using setramrate_action = eosio::action_wrapper<"setramrate"_n, &system_contract::setramrate>;
-         using voteprodsys_action = eosio::action_wrapper<"voteprodsys"_n, &system_contract::voteprodsys>;        //PROTON
+         using voteprodsys_action = eosio::action_wrapper<"voteprodsys"_n, &system_contract::voteprodsys>;        // PROTON
          using voteproducer_action = eosio::action_wrapper<"voteproducer"_n, &system_contract::voteproducer>;
          using regproxy_action = eosio::action_wrapper<"regproxy"_n, &system_contract::regproxy>;
          using claimrewards_action = eosio::action_wrapper<"claimrewards"_n, &system_contract::claimrewards>;
@@ -1434,7 +1461,7 @@ namespace eosiosystem {
          using vrwrdsharing_action = eosio::action_wrapper<"vrwrdsharing"_n, &system_contract::vrwrdsharing>;     // PROTON
 
 
-         static uint8_t checkPermission(name acc, std::string permission);       //PROTON
+         static uint8_t checkPermission(name acc, std::string permission);                                        // PROTON
          [[eosio::on_notify("*::transfer")]] void ontransfer(name from, name to, asset quantity, string memo);    // PROTON
       private:
          // Implementation details:

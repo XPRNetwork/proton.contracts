@@ -105,38 +105,6 @@ icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 
 {{owner}} claims block and vote rewards from the system.
 
-<h1 class="contract">voterclaim</h1>
-
----
-spec_version: "0.2.0"
-title: Claim Voters Reward
-summary: '{{nowrap owner}} claims voters rewards'
-icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
----
-
-{{owner}} claims voters rewards from the system.
-
-<h1 class="contract">vrwrdsharing</h1>
-
----
-spec_version: "0.2.0"
-title: Voters Rewards Sharing
-summary: 'Voters Rewards Sharing'
-icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
----
-
-internal action.
-
-<h1 class="contract">setxprvconf</h1>
-
----
-spec_version: "0.2.0"
-title: Configuring Voters Rewards 
-summary: 'Configuring Voters Rewards'
-icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
----
-
-internal action.
 
 <h1 class="contract">closerex</h1>
 
@@ -212,19 +180,6 @@ Staked tokens will also be transferred to {{receiver}}. The sum of these two qua
 
 The sum of these two quantities add to the vote weight of {{from}}.
 {{/if}}
-
-<h1 class="contract">stakexpr</h1>
-
----
-spec_version: "0.2.0"
-title: Stake XPR Tokens
-summary: 'Stake XPR tokens'
-icon: @ICON_BASE_URL@/@RESOURCE_ICON_URI@
----
-
-Stake XPR tokens. Unstake period 14 days.
-   
-
 
 <h1 class="contract">deleteauth</h1>
 
@@ -344,16 +299,7 @@ icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
 
 Return previously unstaked tokens to {{owner}} after the unstaking period has elapsed.
 
-<h1 class="contract">refundxpr</h1>
 
----
-spec_version: "0.2.0"
-title: Claim Unstaked XPR Tokens
-summary: 'Return previously unstaked XPR tokens to {{nowrap owner}}'
-icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
----
-
-Return previously unstaked XPR tokens to {{owner}} after the unstaking period has elapsed.
 
 <h1 class="contract">regproducer</h1>
 
@@ -655,19 +601,6 @@ icon: @ICON_BASE_URL@/@RESOURCE_ICON_URI@
 
 The sum of these two quantities will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 3 day period without further unstaking by {{from}}. After the uninterrupted 3 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refund action.
 
-<h1 class="contract">unstakexpr</h1>
-
----
-spec_version: "0.2.0"
-title: Unstake XPR Tokens 
-summary: 'Unstake XPR tokens from {{nowrap receiver}}'
-icon: @ICON_BASE_URL@/@RESOURCE_ICON_URI@
----
-
-{{from}} unstakes from {{receiver}} {{unstake_xpr_quantity}}.
-
-The quantity will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 14 day period without further unstaking by {{from}}. After the uninterrupted 14 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refundxpr action.
-
 
 <h1 class="contract">unlinkauth</h1>
 
@@ -740,6 +673,167 @@ icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
 
 {{$action.account}} advances the system contract revision number to {{revision}}.
 
+
+<h1 class="contract">withdraw</h1>
+
+---
+spec_version: "0.2.0"
+title: Withdraw from REX Fund
+summary: 'Withdraw {{nowrap amount}} from {{nowrap owner}}’s REX fund by transferring to {{owner}}’s liquid balance'
+icon: @ICON_BASE_URL@/@REX_ICON_URI@
+---
+
+Withdraws {{amount}} from {{owner}}’s REX fund and transfer them to {{owner}}’s liquid balance.
+
+
+<h1 class="contract">buyresult</h1>
+--
+spec_version: "0.2.0"
+title: REX action
+summary: 'REX action'
+icon: @ICON_BASE_URL@/@REX_ICON_URI@
+---
+REX action
+
+<h1 class="contract">sellresult</h1>
+--
+spec_version: "0.2.0"
+title: REX action
+summary: 'REX action'
+icon: @ICON_BASE_URL@/@REX_ICON_URI@
+---
+REX action
+
+<h1 class="contract">orderresult</h1>
+--
+spec_version: "0.2.0"
+title: REX action
+summary: 'REX action'
+icon: @ICON_BASE_URL@/@REX_ICON_URI@
+---
+REX action
+
+<h1 class="contract">rentresult</h1>
+--
+spec_version: "0.2.0"
+title: REX action
+summary: 'REX action'
+icon: @ICON_BASE_URL@/@REX_ICON_URI@
+---
+REX action
+
+<h1 class="contract">onerror</h1>
+--
+spec_version: "0.2.0"
+title: REX action
+summary: 'REX action'
+icon: @ICON_BASE_URL@/@REX_ICON_URI@
+---
+REX action
+
+<h1 class="contract">onblock</h1>
+--
+spec_version: "0.2.0"
+title: REX action
+summary: 'REX action'
+icon: @ICON_BASE_URL@/@REX_ICON_URI@
+---
+REX action
+
+
+
+<h1 class="contract">voterclaim</h1>
+
+---
+spec_version: "0.2.0"
+title: Claim Voters Reward
+summary: '{{nowrap owner}} claims voters rewards'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+{{owner}} claims voters rewards from the system.
+
+<h1 class="contract">voterclaimst</h1>
+---
+spec_version: "0.2.0"
+title: Claim Voters Reward to stake
+summary: '{{nowrap owner}} claims voters rewards to stake'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+{{owner}} claims voters rewards from the system and stake it.
+
+
+<h1 class="contract">kickbp</h1>
+---
+spec_version: "0.2.0"
+title: kickbp action
+summary: 'kickbp action'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+Committee action.
+
+
+<h1 class="contract">vrwrdsharing</h1>
+
+---
+spec_version: "0.2.0"
+title: Voters Rewards Sharing
+summary: 'Voters Rewards Sharing'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+internal action.
+
+<h1 class="contract">setxprvconf</h1>
+
+---
+spec_version: "0.2.0"
+title: Configuring Voters Rewards 
+summary: 'Configuring Voters Rewards'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+internal action.
+
+<h1 class="contract">stakexpr</h1>
+
+---
+spec_version: "0.2.0"
+title: Stake XPR Tokens
+summary: 'Stake XPR tokens'
+icon: @ICON_BASE_URL@/@RESOURCE_ICON_URI@
+---
+
+Stake XPR tokens. Unstake period 14 days.
+
+
+<h1 class="contract">refundxpr</h1>
+
+---
+spec_version: "0.2.0"
+title: Claim Unstaked XPR Tokens
+summary: 'Return previously unstaked XPR tokens to {{nowrap owner}}'
+icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
+---
+
+Return previously unstaked XPR tokens to {{owner}} after the unstaking period has elapsed.
+
+<h1 class="contract">unstakexpr</h1>
+
+---
+spec_version: "0.2.0"
+title: Unstake XPR Tokens 
+summary: 'Unstake XPR tokens from {{nowrap receiver}}'
+icon: @ICON_BASE_URL@/@RESOURCE_ICON_URI@
+---
+
+{{from}} unstakes from {{receiver}} {{unstake_xpr_quantity}}.
+
+The quantity will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 14 day period without further unstaking by {{from}}. After the uninterrupted 14 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refundxpr action.
+
+
 <h1 class="contract">voteproducer</h1>
 
 ---
@@ -785,13 +879,3 @@ At the time of voting the full weight of voter’s staked (CPU + NET) tokens wil
 At the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the above producers.
 {{/if}}
 
-<h1 class="contract">withdraw</h1>
-
----
-spec_version: "0.2.0"
-title: Withdraw from REX Fund
-summary: 'Withdraw {{nowrap amount}} from {{nowrap owner}}’s REX fund by transferring to {{owner}}’s liquid balance'
-icon: @ICON_BASE_URL@/@REX_ICON_URI@
----
-
-Withdraws {{amount}} from {{owner}}’s REX fund and transfer them to {{owner}}’s liquid balance.
