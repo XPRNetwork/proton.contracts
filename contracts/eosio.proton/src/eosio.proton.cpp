@@ -135,7 +135,7 @@ namespace eosio {
 				p.acc = acc;
 				p.name = "";
 				p.avatar = ava;
-				p.verified = 0;
+				p.verified = false;
 				p.verifiedon = 0;
 				p.verifier = ""_n;
 				p.date = eosio::current_time_point().sec_since_epoch();
@@ -155,7 +155,7 @@ namespace eosio {
 		
 		
 		if ( existing != usrinf.end() ) {
-			check (existing->verified == 0, "Sorry, username cannot be changed after KYC verification");
+			check (existing->verified == false, "Sorry, username cannot be changed after KYC verification");
 			
 			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.name = name;
@@ -166,7 +166,7 @@ namespace eosio {
 				p.acc = acc;
 				p.name = name;
 				p.avatar = "";
-				p.verified = 0;
+				p.verified = false;
 				p.verifiedon = 0;
 				p.verifier = ""_n;
 				p.date = eosio::current_time_point().sec_since_epoch();
@@ -243,7 +243,7 @@ namespace eosio {
 				p.acc = acc;
 				p.name = "";
 				p.avatar = "";
-				p.verified = 0;	
+				p.verified = false;	
 				p.verifiedon = 0;
 				p.verifier = ""_n;
 				p.raccs = raccs;
@@ -278,7 +278,7 @@ namespace eosio {
 				p.acc = acc;
 				p.name = "";
 				p.avatar = "";
-				p.verified = 0;	
+				p.verified = false;	
 				p.verifiedon = 0;
 				p.verifier = ""_n;
 				p.aacts = aacts;
@@ -313,7 +313,7 @@ namespace eosio {
 				p.acc = acc;
 				p.name = "";
 				p.avatar = "";
-				p.verified = 0;	
+				p.verified = false;	
 				p.verifiedon = 0;
 				p.verifier = ""_n;
 				p.ac = ac;

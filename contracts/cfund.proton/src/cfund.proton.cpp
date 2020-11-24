@@ -29,7 +29,7 @@ namespace eosio {
 			users_.emplace( get_self(), [&](auto& s) {
 				s.account = account;
 				s.rate = 100;
-				s.active = 1;
+				s.active = true;
 				s.claimamount = 0;
 				s.lastclaim = 0;
 			});			
@@ -104,7 +104,7 @@ namespace eosio {
 		check(itr != users_.end(), "Committee not found.");	
 		check ( current_time_point().sec_since_epoch() - itr->lastclaim  > claimInterval, "You last claim was less than 24h ago.");
 		check ( itr->claimamount > 0, "Nothing to claim.");
-		check ( itr->active == 1, "committee member is not activated.");
+		check ( itr->active == true, "committee member is not activated.");
 		
 		auto sendClaim = action(
 			permission_level{ get_self(), "active"_n },
@@ -139,14 +139,14 @@ namespace eosio {
 		
 		bool isWork = false;
 
-		if (_gstate.isprocessing == 1)  {
+		if (_gstate.isprocessing == true)  {
 			isWork = true;
 		} else if ( now - _gstate.processtime >=  processIntreval){
 			isWork = true;
 			_gstate.processtime = now;
 			_gstate.processQuant = _gstate.pool;
 			_gstate.pool = 0;
-			_gstate.isprocessing = 1;
+			_gstate.isprocessing = true;
 			_gstate.processFrom = ""_n;
 			
 			//Deferred for auto next call
@@ -192,7 +192,7 @@ namespace eosio {
 				out.delay_sec = 0;
 				out.send( get_self().value, get_self(), true );		
 			} else {
-				_gstate.isprocessing = 0;
+				_gstate.isprocessing = false;
 				_gstate.processFrom = ""_n;
 				
 				if (_gstate.processed < _gstate.processQuant){
