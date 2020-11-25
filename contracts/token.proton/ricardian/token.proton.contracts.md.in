@@ -6,7 +6,9 @@ title: Register Token information
 summary: 'Register Token information'
 icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
 ---
-Register Token information
+Register Token information for {{symbol}} token on contract {{tcontract}}
+
+
 
 <h1 class="contract">update</h1>
 
@@ -16,7 +18,9 @@ title: 'Update Token information'
 summary: 'Create a new token'
 icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
 ---
-Update Token information
+Update Token information for {{symbol}} token on contract {{tcontract}}
+
+
 
 <h1 class="contract">remove</h1>
 
@@ -26,6 +30,8 @@ title: Remove Token information
 summary: 'Remove Token information'
 icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
 ---
+Remove token information by token id
+
 
 <h1 class="contract">updblacklist</h1>
 
@@ -35,3 +41,4 @@ title: Update Token blacklisted status
 summary: 'Update Token blacklisted status'
 icon: @ICON_BASE_URL@/@TOKEN_ICON_URI@
 ---
+Update add or edit entries to token blacklist
