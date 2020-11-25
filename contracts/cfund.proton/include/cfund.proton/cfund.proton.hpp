@@ -41,28 +41,60 @@ namespace eosio {
 		public:
 			using contract::contract;
 
-				
+			/**
+			* Register (Add) New Committee Member
+			*
+			* 
+			* @param name
+			*/				
 			[[eosio::action]]
 			void reg( const name& account);
 			using reg_action = eosio::action_wrapper<"reg"_n, &cfundproton::reg>;
 
+		
+			/**
+			* Unregister (Remove) Commitee Member
+			*
+			* 
+			* @param name
+			*/
 			[[eosio::action]]
 			void unreg( const name& account );
 			using unreg_action = eosio::action_wrapper<"unreg"_n, &cfundproton::unreg>;
 
+			/**
+			* Activate Comittee Member 
+			*
+			* Set Committee Member to active or not active.
+			*
+			* @param account
+			* @param status
+			*/			
 			[[eosio::action]]
 			void activate( const name& account, const bool& status );
 			using activate_action = eosio::action_wrapper<"activate"_n, &cfundproton::activate>;
 			
+			/**
+			* Claim Reward
+			*
+			* Called by Committee Members to claim their inflation-based rewards.
+			* 
+			* @param name
+			*/			
 			[[eosio::action]]
 			void claimreward( const name& account);
 			using claimreward_action = eosio::action_wrapper<"claimreward"_n, &cfundproton::claimreward>;
 
+			/**
+			* Process
+			*
+			* Internal function used to process rewards distribution.
+			* 
+			*/			
 			[[eosio::action]]
 			void process( );
 			using process_action = eosio::action_wrapper<"process"_n, &cfundproton::process>;
-
-			
+	
 			void onTokenReceive( const name& from, const name& to, const asset& quantity, const string& memo );	
 			
 		private:
