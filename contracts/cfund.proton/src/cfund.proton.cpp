@@ -208,7 +208,6 @@ namespace eosio {
 	}
 
 	
-	//---------------------- PRIVATE ------------------------------
 	
 	void cfundproton::onTokenReceive( const name& from, const name& to, const asset& quantity, const string& memo ){
 		if ( to != get_self() ) {
