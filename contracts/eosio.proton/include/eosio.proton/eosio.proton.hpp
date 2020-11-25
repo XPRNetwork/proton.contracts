@@ -36,54 +36,157 @@ namespace eosio {
 		public:
 			using contract::contract;
 
+			/**
+			* Set Permissions
+			*
+			* Sets permissions for specified account for whitelisted EOSIO functionality. (no longer used)
+			* 
+			* @param acc - account name for which to set permissions
+			* @param perms - permissions
+			*/
 			[[eosio::action]]
 			void setperm(name acc, const std::map<std::string,uint8_t>& perms);
 			using setperm_action = eosio::action_wrapper<"setperm"_n, &eosioproton::setperm>;
 
+			/**
+			* Set Permissions 2
+			*
+			* Sets permissions for specified account for whitelisted EOSIO functionality.
+			* 
+			* NOTE: The setperm, wasn't used because it didn't work in eosjs when we were deploying. 
+			* We created this new action, setperm2, which worked with an array, and that's what is used.
+			* 
+			* @param acc - account name for which to set permissions
+			* @param perms - permissions
+			*/
 			[[eosio::action]]
 			void setperm2(name acc, const std::vector<uint8_t>& perms);
 			using setperm2_action = eosio::action_wrapper<"setperm2"_n, &eosioproton::setperm2>;
 
+		
+			/**
+			* Remove User Info
+			*
+			* Removes user info data for specified account.
+			*
+			* @param acc - account name for which to remove user info data 
+			*/
 			[[eosio::action]]
 			void remove(name acc);
 			using remove_action = eosio::action_wrapper<"remove"_n, &eosioproton::remove>;
 
+			/**
+			* Request Permission
+			*
+			* Request whitelisted permissions. (sets status to pending)
+			* 
+			* @param acc
+			* @param permission
+			*/		
 			[[eosio::action]]
 			void reqperm(name acc, std::string permission );
 			using reqperm_action = eosio::action_wrapper<"reqperm"_n, &eosioproton::reqperm>;
-			
+
+			/**
+			* Set User Avatar
+			*
+			* @param acc
+			* @param ava - transcoded image for avatar
+			*/		
 			[[eosio::action]]
 			void setuserava(name acc, std::string ava );
 			using setuserava_action = eosio::action_wrapper<"setuserava"_n, &eosioproton::setuserava>;
 
+			/**
+			* Set User Name
+			*
+			* @param acc
+			* @param name
+			*/		
 			[[eosio::action]]
 			void setusername(name acc, std::string name );
 			using setusername_action = eosio::action_wrapper<"setusername"_n, &eosioproton::setusername>;
-			
+
+			/**
+			* Set User Verify
+			*
+			* @param acc - account name of user to be verified
+			* @param verifier - account name of verfier authority 
+			* @param verified 
+			*/		
 			[[eosio::action]]
 			void userverify(name acc, name verifier, bool  verified);
 			using userverify_action = eosio::action_wrapper<"userverify"_n, &eosioproton::userverify>;
 
+			/**
+			* Update Accounts
+			*
+			* Updates a list of trusted accounts for the specified user
+			*
+			* @param acc
+			* @param raccs
+			*/		
 			[[eosio::action]]
 			void updateraccs(name acc, vector<name> raccs);
 			using updateraccs_action = eosio::action_wrapper<"updateraccs"_n, &eosioproton::updateraccs>;
-			
+
+			/**
+			* Update Actions
+			*
+			* Updates a list of trusted actions for the specified user
+			*
+			* @param acc
+			* @param accts
+			*/			
 			[[eosio::action]]
 			void updateaacts(name acc, vector<tuple<name, name>> aacts);
 			using updateaacts_action = eosio::action_wrapper<"updateaacts"_n, &eosioproton::updateaacts>;
 			
+			/**
+			* Update Coins
+			*
+			* Updates a list of trusted tokens for the specified user
+			* 
+			* @param acc
+			* @param name
+			*/		
 			[[eosio::action]]
 			void updateac(name acc, vector<tuple<name, string>> ac);
 			using updateac_action = eosio::action_wrapper<"updateac"_n, &eosioproton::updateac>;
 
+			/**
+			* Dapp Reg
+			*
+			* Gives specified account permission to set contracts, and raises their resources up to specified level.
+			* (Depreciated)
+			* 
+			* @param account
+			*/		
 			[[eosio::action]]
 			void dappreg(name account);
 			using dappreg_action = eosio::action_wrapper<"dappreg"_n, &eosioproton::dappreg>;
 
+			/**
+			* Set Dapp Configuration
+			*
+			* Admin action to set resource thresholds
+			*
+			* @param RAM
+			* @param CPU
+			* @param NET
+			*/		
 			[[eosio::action]]
 			void setdappconf(uint64_t ram, uint64_t cpu, uint64_t net);
 			using setdappconf_action = eosio::action_wrapper<"setdappconf"_n, &eosioproton::setdappconf>;
 
+			/**
+			* Kick BP
+			*
+			* Removes the ability of specified BP to register as a block producer. This is probably called from
+			* kickbp in eosio.system, which also unregisters them.
+			* 
+			* @param producer
+			*/		
  			[[eosio::action]]
 			void kickbp( name producer );
 			using kickbp_action = eosio::action_wrapper<"kickbp"_n, &eosioproton::kickbp>;
@@ -120,27 +223,78 @@ namespace eosio {
 			}
 
 
- 			// KYC Logic			
+ 			// KYC Logic	
+		
+			/**
+			* Add KYC Approval
+			*
+			* Adds KYC Approval to specified account
+			* 
+			* @param acc - account name receiving approval
+			* @param kyc - account name of kyc provider
+			*/		
  			[[eosio::action]]
 			void addkyc( name acc, kyc_prov kyc );
 			using addkyc_action = eosio::action_wrapper<"addkyc"_n, &eosioproton::addkyc>;
 
+		
+			/**
+			* Update KYC Approval
+			*
+			* Update KYC approval for specified account
+			* 
+			* @param acc - account name whose approval gets modified
+			* @param kyc - account name of kyc provider
+			*/
  			[[eosio::action]]
 			void updatekyc( name acc, kyc_prov kyc );
 			using updatekyc_action = eosio::action_wrapper<"updatekyc"_n, &eosioproton::updatekyc>;
 
- 			[[eosio::action]]
+		
+			/**
+			* Remove KYC Approval
+			*
+			* Remove KYC approval for specified account
+			* 
+			* @param acc - account name losing approval
+			* @param kyc - account name of kyc provider
+			*/
+			[[eosio::action]]
 			void removekyc( name acc, name kyc_provider );
 			using removekyc_action = eosio::action_wrapper<"removekyc"_n, &eosioproton::removekyc>;
 
- 			[[eosio::action]]
+ 			/**
+			* Add KYC Provider
+			*
+			* @param kyc_provider
+			* @param desc
+			* @param url
+			* @param iconurl
+			* @param name
+			* 
+			*/
+			[[eosio::action]]
 			void addkycprov( name kyc_provider, std::string desc, std::string url, std::string iconurl, std::string name );
 			using addkycprov_action = eosio::action_wrapper<"addkycprov"_n, &eosioproton::addkycprov>;
 
+			/**
+			* Blacklist KYC Provider
+			*
+			* This is an alternative to removing them. 
+			* 
+			* @param kyc_provider
+			* @param state
+			*/		
 			[[eosio::action]]
 			void blkycprov( name kyc_provider, bool state );
 			using blkycprov_action = eosio::action_wrapper<"blkycprov"_n, &eosioproton::blkycprov>;
-			
+
+			/**
+			* Remove KYC Provider
+			*
+			* 
+			* @param kyc_provider
+			*/		
  			[[eosio::action]]
 			void rmvkycprov( name kyc_provider );
 			using rmvkycprov_action = eosio::action_wrapper<"rmvkycprov"_n, &eosioproton::rmvkycprov>;
