@@ -665,7 +665,7 @@ namespace eosiosystem {
          auto itr = vxpr_tbl.begin();
          if (_gstatesd.processFrom.value) {
             //itr = vxpr_tbl.find(_gstatesd.processFrom.value);
-			itr = vxpr_tbl.lower_bound(_gstatesd.processFrom.value - 1);
+            itr = vxpr_tbl.lower_bound(_gstatesd.processFrom.value);
          }
 
          uint64_t count = 0;

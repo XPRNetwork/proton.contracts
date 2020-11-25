@@ -152,22 +152,22 @@
         {
             "name": "reg",
             "type": "reg",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Register Token information\nsummary: 'Register Token information'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nRegister Token information"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Register Token information\nsummary: 'Register Token information'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nRegister Token information for {{symbol}} token on contract {{tcontract}}"
         },
         {
             "name": "remove",
             "type": "remove",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Remove Token information\nsummary: 'Remove Token information'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Remove Token information\nsummary: 'Remove Token information'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nRemove token information by token id"
         },
         {
             "name": "update",
             "type": "update",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: 'Update Token information'\nsummary: 'Create a new token'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nUpdate Token information"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: 'Update Token information'\nsummary: 'Create a new token'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nUpdate Token information for {{symbol}} token on contract {{tcontract}}"
         },
         {
             "name": "updblacklist",
             "type": "updblacklist",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Update Token blacklisted status\nsummary: 'Update Token blacklisted status'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Update Token blacklisted status\nsummary: 'Update Token blacklisted status'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/token.png#207ff68b0406eaa56618b08bda81d6a0954543f36adc328ab3065f31a5c5d654\n---\nUpdate add or edit entries to token blacklist"
         }
     ],
     "tables": [
