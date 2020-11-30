@@ -512,97 +512,97 @@
         {
             "name": "addkyc",
             "type": "addkyc",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: addkyc\nsummary: 'addkyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\naddkyc"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: addkyc\nsummary: 'addkyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nAdds KYC approval to account {{acc}} from kyc provider {{kyc}}"
         },
         {
             "name": "addkycprov",
             "type": "addkycprov",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: addkycprov\nsummary: 'addkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\naddkycprov"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: addkycprov\nsummary: 'addkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nAdds {{kyc_provider}} as a kyc_provider"
         },
         {
             "name": "blkycprov",
             "type": "blkycprov",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: blkycprov\nsummary: 'blkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nblkycprov"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: blkycprov\nsummary: 'blkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nBlacklists KYC provider {{kyc_provider}}"
         },
         {
             "name": "dappreg",
             "type": "dappreg",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: dappreg\nsummary: 'dappreg'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\ndappreg"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: dappreg\nsummary: 'dappreg'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nGive {{account}} permission to set contracts, and raise their resources up to a ceiling level.  (Depreciated)"
         },
         {
             "name": "kickbp",
             "type": "kickbp",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: kickbp\nsummary: 'kickbp'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nkickbp"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: kickbp\nsummary: 'kickbp'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\nRemoves the ability of account {{producer}} to register as a block producer. This is probably called from kickbp in eosio.system."
         },
         {
             "name": "remove",
             "type": "remove",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: remove\nsummary: 'remove'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nremove"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: remove\nsummary: 'remove'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nRemoves user info data for {{acc}}"
         },
         {
             "name": "removekyc",
             "type": "removekyc",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: removekyc\nsummary: 'removekyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nremovekyc"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: removekyc\nsummary: 'removekyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nRemoves KYC approval for account {{acc}} from kyc provider {{kyc}}"
         },
         {
             "name": "reqperm",
             "type": "reqperm",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: reqperm\nsummary: 'reqperm'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nreqperm"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: reqperm\nsummary: 'reqperm'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nRequest Permissions for {{acc}} for whitelisted Proton actions"
         },
         {
             "name": "rmvkycprov",
             "type": "rmvkycprov",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: rmvkycprov\nsummary: 'rmvkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nrmvkycprov"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: rmvkycprov\nsummary: 'rmvkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nRemoves KYC provider {{kyc_provider}}"
         },
         {
             "name": "setdappconf",
             "type": "setdappconf",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setdappconf\nsummary: 'setdappconf'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetdappconf"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setdappconf\nsummary: 'setdappconf'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\nAdmin action to set resource thresholds."
         },
         {
             "name": "setperm",
             "type": "setperm",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setperm\nsummary: 'setperm'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetperm"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setperm\nsummary: 'setperm'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nInitializes permissions for account {{acc}} for whitelisted EOSIO functionality. (no longer used)"
         },
         {
             "name": "setperm2",
             "type": "setperm2",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setperm2\nsummary: 'setperm2'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetperm2"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setperm2\nsummary: 'setperm2'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nInitializes permissions for account {{acc}} for whitelisted EOSIO functionality."
         },
         {
             "name": "setuserava",
             "type": "setuserava",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setuserava\nsummary: 'setuserava'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetuserava"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setuserava\nsummary: 'setuserava'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nSet or update avatar for account {{acc}}"
         },
         {
             "name": "setusername",
             "type": "setusername",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setusername\nsummary: 'setusername'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nsetusername"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setusername\nsummary: 'setusername'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nSet or update nickname for account {{acc}}"
         },
         {
             "name": "updateaacts",
             "type": "updateaacts",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateaacts\nsummary: 'updateaacts'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdateaacts"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateaacts\nsummary: 'updateaacts'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nUpdates a whitelist of actions for user {{acc}} for additional security."
         },
         {
             "name": "updateac",
             "type": "updateac",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateac\nsummary: 'updateac'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdateac"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateac\nsummary: 'updateac'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nUpdates a whitelist of tokens for user {{acc}} for additional security."
         },
         {
             "name": "updatekyc",
             "type": "updatekyc",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updatekyc\nsummary: 'updatekyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdatekyc"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updatekyc\nsummary: 'updatekyc'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nUpdates KYC approval for account {{acc}} from kyc provider {{kyc}}"
         },
         {
             "name": "updateraccs",
             "type": "updateraccs",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateraccs\nsummary: 'updateraccs'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nupdateraccs"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: updateraccs\nsummary: 'updateraccs'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nUpdates a whitelist of accounts for user {{acc}} for additional security."
         },
         {
             "name": "userverify",
             "type": "userverify",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: userverify\nsummary: 'userverify'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nuserverify"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: userverify\nsummary: 'userverify'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nAdds identity verification for {{acc}} by verification authority {{verifier}}"
         }
     ],
     "tables": [

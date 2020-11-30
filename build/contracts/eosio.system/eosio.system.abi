@@ -2093,7 +2093,7 @@
         {
             "name": "kickbp",
             "type": "kickbp",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: kickbp action\nsummary: 'kickbp action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\nCommittee action."
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: kickbp action\nsummary: 'kickbp action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\nCommittee action which unregisters block producer {{producer}}.  (It also calls the kickbp action in eosio.proton which removes their ability to register.)"
         },
         {
             "name": "linkauth",
@@ -2243,12 +2243,12 @@
         {
             "name": "setxprvconf",
             "type": "setxprvconf",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Configuring Voters Rewards \nsummary: 'Configuring Voters Rewards'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\ninternal action."
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Configuring Voters Rewards \nsummary: 'Configuring Voters Rewards'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\nInternal action sets constants for XPR voting and voter reward rules."
         },
         {
             "name": "stakexpr",
             "type": "stakexpr",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Stake XPR Tokens\nsummary: 'Stake XPR tokens'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\nStake XPR tokens. Unstake period 14 days."
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Stake XPR Tokens\nsummary: 'Stake XPR tokens'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\nStake {{stake_xpr_quantity}} XPR tokens."
         },
         {
             "name": "undelegatebw",
@@ -2273,7 +2273,7 @@
         {
             "name": "unstakexpr",
             "type": "unstakexpr",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Unstake XPR Tokens \nsummary: 'Unstake XPR tokens from {{nowrap receiver}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\n{{from}} unstakes from {{receiver}} {{unstake_xpr_quantity}}.\n\nThe quantity will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 14 day period without further unstaking by {{from}}. After the uninterrupted 14 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refundxpr action."
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Unstake XPR Tokens \nsummary: 'Unstake XPR tokens from {{nowrap receiver}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n{{from}} unstakes from {{receiver}} {{unstake_xpr_quantity}}.\n\nThe quantity will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 14 day period without further unstaking by {{from}}. After the uninterrupted 14 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refundxpr action."
         },
         {
             "name": "updateauth",
@@ -2298,22 +2298,22 @@
         {
             "name": "voteproducer",
             "type": "voteproducer",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Vote for Block Producers\nsummary: '{{nowrap voter}} votes for {{#if proxy}}the proxy {{nowrap proxy}}{{else}}up to 4 block producer candidates{{/if}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/voting.png#db28cd3db6e62d4509af3644ce7d377329482a14bb4bfaca2aa5f1400d8e8a84\n---\n\n{{#if proxy}}\n{{voter}} votes for the proxy {{proxy}}.\nAt the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the producers voted by {{proxy}}.\n{{else}}\n{{voter}} votes for the following block producer candidates:\n\n{{#each producers}}\n  + {{this}}\n{{/each}}\n\nAt the time of voting the full weight of voter’s staked XPR tokens will be cast towards each of the above producers.\n{{/if}}"
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Vote for Block Producers\nsummary: '{{nowrap voter}} votes for {{#if proxy}}the proxy {{nowrap proxy}}{{else}}up to 4 block producer candidates{{/if}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/voting.png#db28cd3db6e62d4509af3644ce7d377329482a14bb4bfaca2aa5f1400d8e8a84\n---\n{{#if proxy}}\n{{voter}} votes for the proxy {{proxy}}.\nAt the time of voting the full weight of voter’s staked (CPU + NET) tokens will be cast towards each of the producers voted by {{proxy}}.\n{{else}}\n{{voter}} votes for the following block producer candidates:\n\n{{#each producers}}\n  + {{this}}\n{{/each}}\n\nAt the time of voting the full weight of voter’s staked XPR tokens will be cast towards each of the above producers.\n{{/if}}"
         },
         {
             "name": "voterclaim",
             "type": "voterclaim",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Voters Reward\nsummary: '{{nowrap owner}} claims voters rewards'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{owner}} claims voters rewards from the system."
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Voters Reward\nsummary: '{{nowrap owner}} claims voters rewards'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n{{owner}} claims voters rewards from the system."
         },
         {
             "name": "voterclaimst",
             "type": "voterclaimst",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Voters Reward to stake\nsummary: '{{nowrap owner}} claims voters rewards to stake'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{owner}} claims voters rewards from the system and stake it."
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Voters Reward to stake\nsummary: '{{nowrap owner}} claims voters rewards to stake'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n{{owner}} claims voters rewards from the system and stake it."
         },
         {
             "name": "vrwrdsharing",
             "type": "vrwrdsharing",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Voters Rewards Sharing\nsummary: 'Voters Rewards Sharing'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\ninternal action."
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Voters Rewards Sharing\nsummary: 'Voters Rewards Sharing'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\nInternal action involved with voter reward sharing."
         },
         {
             "name": "withdraw",
