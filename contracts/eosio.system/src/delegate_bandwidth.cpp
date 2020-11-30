@@ -545,7 +545,7 @@ namespace eosiosystem {
          auto transfer_amount = xpr_balance;
          if ( 0 < transfer_amount.amount ) {
             token::transfer_action transfer_act{ token_account, { {from, active_permission} } };
-            transfer_act.send( from, xpr_stake_account, asset(transfer_amount), "stake bandwidth" );
+            transfer_act.send( from, xpr_stake_account, asset(transfer_amount), "Stake" );
          }
       }
 
@@ -561,7 +561,7 @@ namespace eosiosystem {
      
       check(req->request_time + seconds(_gstatesxpr.unstake_period) < current_time_point(), "refund is not available yet. Please wait " + timeToWait(abs((int)( (uint64_t)( (uint64_t)req->request_time.sec_since_epoch() + _gstatesxpr.unstake_period) - (uint64_t)current_time_point().sec_since_epoch() )) ));   
       token::transfer_action transfer_act{ token_account, { {xpr_stake_account, active_permission}, {req->owner, active_permission} } };
-      transfer_act.send( xpr_stake_account, req->owner, req->quantity, "unstake XPR" );
+      transfer_act.send( xpr_stake_account, req->owner, req->quantity, "Unstake" );
       xpr_refunds_tbl.erase( req );
    }
    
