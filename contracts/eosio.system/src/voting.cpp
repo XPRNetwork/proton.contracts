@@ -759,6 +759,11 @@ namespace eosiosystem {
       if (to != get_self()) {
          return;
       }
+	  
+      if (from == stake_account) {
+         return;
+      }
+	  
       require_auth(from);
       auto contract = get_first_receiver();
 
