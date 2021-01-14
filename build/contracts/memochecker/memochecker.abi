@@ -56,17 +56,17 @@
         {
             "name": "addmemo",
             "type": "addmemo",
-            "ricardian_contract": ""
+            "ricardian_contract": "addmemo"
         },
         {
             "name": "delid",
             "type": "delid",
-            "ricardian_contract": ""
+            "ricardian_contract": "delid"
         },
         {
             "name": "delmemo",
             "type": "delmemo",
-            "ricardian_contract": ""
+            "ricardian_contract": "delmemo"
         }
     ],
     "tables": [

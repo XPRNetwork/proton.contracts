@@ -155,8 +155,6 @@ namespace eosio {
 		
 		
 		if ( existing != usrinf.end() ) {
-			check (existing->verified == false, "Sorry, username cannot be changed after KYC verification");
-			
 			usrinf.modify( existing, get_self(), [&]( auto& p ){
 				p.name = name;
 				p.date = eosio::current_time_point().sec_since_epoch();;

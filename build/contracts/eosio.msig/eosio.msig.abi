@@ -200,6 +200,10 @@
                 {
                     "name": "packed_transaction",
                     "type": "bytes"
+                },
+                {
+                    "name": "earliest_exec_time",
+                    "type": "time_point?$"
                 }
             ]
         },

@@ -1,3 +1,8 @@
-<h1 class="contract"> hi </h1>
+<h1 class="contract"> addmemo </h1>
+addmemo
 
-Stub for hi action's ricardian contract
+<h1 class="contract"> delmemo </h1>
+delmemo
+
+<h1 class="contract"> delid </h1>
+delid
