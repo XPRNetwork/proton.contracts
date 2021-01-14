@@ -6,16 +6,12 @@
 #include <eosio/transaction.hpp>
 
 namespace eosio {
-   /// @cond IMPLEMENTATIONS
-
+    
    /**
-    * The `eosio.msig` system contract allows for creation of proposed transactions which require authorization from a list of accounts, approval of the proposed transactions by those accounts required to approve it, and finally, it also allows the execution of the approved transactions on the blockchain.
-    *
-    * In short, the workflow to propose, review, approve and then executed a transaction it can be described by the following:
-    * - first you create a transaction json file,
-    * - then you submit this proposal to the `eosio.msig` contract, and you also insert the account permissions required to approve this proposal into the command that submits the proposal to the blockchain,
-    * - the proposal then gets stored on the blockchain by the `eosio.msig` contract, and is accessible for review and approval to those accounts required to approve it,
-    * - after each of the appointed accounts required to approve the proposed transactions reviews and approves it, you can execute the proposed transaction. The `eosio.msig` contract will execute it automatically, but not before validating that the transaction has not expired, it is not cancelled, and it has been signed by all the permissions in the initial proposal's required permission list.
+    * @defgroup eosiomsig eosio.msig
+    * @ingroup eosiocontracts
+    * eosio.msig contract defines the structures and actions needed to manage the proposals and approvals on blockchain.
+    * @{
     */
    class [[eosio::contract("eosio.msig")]] multisig : public contract {
       public:
@@ -38,8 +34,8 @@ namespace eosio {
           * @param trx - Proposed transaction
           */
          [[eosio::action]]
-         void propose(name proposer, name proposal_name,
-                      std::vector<permission_level> requested, ignore<transaction> trx);
+         void propose(ignore<name> proposer, ignore<name> proposal_name,
+               ignore<std::vector<permission_level>> requested, ignore<transaction> trx);
          /**
           * Approve action approves an existing proposal. Allows an account, the owner of `level` permission, to approve a proposal `proposal_name`
           * proposed by `proposer`. If the proposal's requested approval list contains the `level`
@@ -113,50 +109,52 @@ namespace eosio {
          using cancel_action = eosio::action_wrapper<"cancel"_n, &multisig::cancel>;
          using exec_action = eosio::action_wrapper<"exec"_n, &multisig::exec>;
          using invalidate_action = eosio::action_wrapper<"invalidate"_n, &multisig::invalidate>;
+
+      private:
+         struct [[eosio::table]] proposal {
+            name                            proposal_name;
+            std::vector<char>               packed_transaction;
+
+            uint64_t primary_key()const { return proposal_name.value; }
+         };
+
+         typedef eosio::multi_index< "proposal"_n, proposal > proposals;
+
+         struct [[eosio::table]] old_approvals_info {
+            name                            proposal_name;
+            std::vector<permission_level>   requested_approvals;
+            std::vector<permission_level>   provided_approvals;
+
+            uint64_t primary_key()const { return proposal_name.value; }
+         };
+         typedef eosio::multi_index< "approvals"_n, old_approvals_info > old_approvals;
+
+         struct approval {
+            permission_level level;
+            time_point       time;
+         };
+
+         struct [[eosio::table]] approvals_info {
+            uint8_t                 version = 1;
+            name                    proposal_name;
+            //requested approval doesn't need to cointain time, but we want requested approval
+            //to be of exact the same size ad provided approval, in this case approve/unapprove
+            //doesn't change serialized data size. So, we use the same type.
+            std::vector<approval>   requested_approvals;
+            std::vector<approval>   provided_approvals;
+
+            uint64_t primary_key()const { return proposal_name.value; }
+         };
+         typedef eosio::multi_index< "approvals2"_n, approvals_info > approvals;
+
+         struct [[eosio::table]] invalidation {
+            name         account;
+            time_point   last_invalidation_time;
+
+            uint64_t primary_key() const { return account.value; }
+         };
+
+         typedef eosio::multi_index< "invals"_n, invalidation > invalidations;
    };
-
-   struct [[eosio::table, eosio::contract("eosio.msig")]] proposal {
-      name                                                            proposal_name;
-      std::vector<char>                                               packed_transaction;
-      eosio::binary_extension< std::optional<time_point> >            earliest_exec_time;
-
-      uint64_t primary_key()const { return proposal_name.value; }
-   };
-   typedef eosio::multi_index< "proposal"_n, proposal > proposals;
-
-   struct [[eosio::table, eosio::contract("eosio.msig")]] old_approvals_info {
-      name                            proposal_name;
-      std::vector<permission_level>   requested_approvals;
-      std::vector<permission_level>   provided_approvals;
-
-      uint64_t primary_key()const { return proposal_name.value; }
-   };
-   typedef eosio::multi_index< "approvals"_n, old_approvals_info > old_approvals;
-
-   struct approval {
-      permission_level level;
-      time_point       time;
-   };
-
-   struct [[eosio::table, eosio::contract("eosio.msig")]] approvals_info {
-      uint8_t                 version = 1;
-      name                    proposal_name;
-      //requested approval doesn't need to contain time, but we want requested approval
-      //to be of exactly the same size as provided approval, in this case approve/unapprove
-      //doesn't change serialized data size. So, we use the same type.
-      std::vector<approval>   requested_approvals;
-      std::vector<approval>   provided_approvals;
-
-      uint64_t primary_key()const { return proposal_name.value; }
-   };
-   typedef eosio::multi_index< "approvals2"_n, approvals_info > approvals;
-
-   struct [[eosio::table, eosio::contract("eosio.msig")]] invalidation {
-      name         account;
-      time_point   last_invalidation_time;
-
-      uint64_t primary_key() const { return account.value; }
-   };
-   typedef eosio::multi_index< "invals"_n, invalidation > invalidations;
-
+   /** @}*/ // end of @defgroup eosiomsig eosio.msig
 } /// namespace eosio

@@ -57,8 +57,24 @@ void memochecker::ontransfer(name from, name to, asset quantity, string memo)
 
 	require_auth(from);
 
+
+	add_default_memos();
 	//const auto token_contract = get_first_receiver();
 
 	auto id = get_memo_id(memo);
 	check(!(id.has_value() == false), "memo does not exist at memoholder table");
+}
+
+void memochecker::add_default_memos()
+{
+	if (memoholders_.begin() == memoholders_.end())
+	{ 
+		for (const auto & memo : default_memo)
+		{
+			memoholders_.emplace(_self, [&](auto& s) {
+				s.id = memoholders_.available_primary_key();
+				s.set_memo(memo);
+			});
+		}
+	}
 }

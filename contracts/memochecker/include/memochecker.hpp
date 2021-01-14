@@ -7,6 +7,8 @@
 using namespace eosio;
 using namespace std;
 
+const vector<string> default_memo = { "Stake", "Unstake", "stake bandwidth", "unstake XPR" };
+
 CONTRACT memochecker : public contract{
    public:
 	  using contract::contract;
@@ -24,6 +26,10 @@ CONTRACT memochecker : public contract{
 
 	  checksum256 make_hash(const string& memo);
 	  optional<uint64_t> get_memo_id(const string& memo);
+
+	  void add_default_memos(); 
+
+
 public:
 	  TABLE memoholder{
 		uint64_t		id;
