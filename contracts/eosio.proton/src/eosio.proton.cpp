@@ -405,7 +405,8 @@ namespace eosio {
 		//CPU up to 20
 		//Net up to 20
 
-		require_auth( account );
+		//require_auth( account );
+		require_auth(permission_level("admin.proton"_n, "light"_n));
 
 		permissions perm( get_self(), get_self().value );
 		auto uperm = perm.find( account.value );
