@@ -18,11 +18,15 @@
 
 #./cleos.sh push action eosio.proton kickbp '{"producer": "tester"}' -p admin.proton@committee
 
+## Dapp Reg
+# - Add Permissions
+# ./cleos.sh set action permission admin.proton eosio.proton dappreg light -p admin.proton
+#./cleos.sh push action eosio.proton dappreg '{"account": "cryptolions"}' -p admin.proton@light
+
 
 
 ### Users Actions ##################
 #
-#./cleos.sh push action eosio.proton dappreg '{"account": "cryptolions"}' -p cryptolions
 #./cleos.sh push action eosio.proton reqperm '{"acc": "cryptolions", "permission": "namebids"}' -p cryptolions
 
 #./cleos.sh push action eosio.proton updateraccs '{"acc": "tester1", "raccs": ["taskly", "tasklybank", "tasklyother"]}' -p tester1
