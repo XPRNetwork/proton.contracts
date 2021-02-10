@@ -408,6 +408,8 @@ namespace eosio {
 		//require_auth( account );
 		require_auth(permission_level("admin.proton"_n, "light"_n));
 
+		/*
+		//Deprecated, set code is now open for all.
 		permissions perm( get_self(), get_self().value );
 		auto uperm = perm.find( account.value );
 
@@ -434,7 +436,8 @@ namespace eosio {
 				p.buyram = 0;
 			});
 		}
-
+		*/
+		
 		user_resources_table  userres( "eosio"_n, account.value );
 		auto ures = userres.find( account.value );
 		check ( ures != userres.end(), "Account not found." );

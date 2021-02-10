@@ -395,8 +395,8 @@ namespace eosiosystem {
    }
 
    void native::setabi( const name& acnt, const std::vector<char>& abi ) {
-
-      check (system_contract::checkPermission(acnt, "setcontract")==1, "You are not authorised to setabi.");  // PROTON Check Permissions
+      //Deprecated, set code is now open for all.
+      //check (system_contract::checkPermission(acnt, "setcontract")==1, "You are not authorised to setabi.");  // PROTON Check Permissions
 
       eosio::multi_index< "abihash"_n, abi_hash >  table(get_self(), get_self().value);
       auto itr = table.find( acnt.value );
@@ -416,7 +416,8 @@ namespace eosiosystem {
    /* ------------ PROTON CODE ------------- */
 
    void native::setcode( const name& account, uint8_t vmtype, uint8_t vmversion, const std::vector<char>& code ) {
-      check (system_contract::checkPermission(account, "setcontract")==1, "You are not authorised to setcode.");  // PROTON Check Permissions
+      //Deprecated, set code is now open for all.
+      //check (system_contract::checkPermission(account, "setcontract")==1, "You are not authorised to setcode.");  // PROTON Check Permissions
    }
 
    /*----------------------------------------*/
