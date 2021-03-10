@@ -25,8 +25,10 @@ namespace eosiosystem {
     _global3(get_self(), get_self().value),
     _global4(get_self(), get_self().value),
     _globalsxpr(get_self(), get_self().value),   // PROTON
-    _globalsd(get_self(), get_self().value),    // PROTON
-    vxpr_tbl( get_self(), get_self().value ),   // PROTON
+    _globalsd(get_self(), get_self().value),     // PROTON
+    vxpr_tbl( get_self(), get_self().value ),    // PROTON
+    _globalram(get_self(), get_self().value),    // PROTON
+
     _rammarket(get_self(), get_self().value),
     _rexpool(get_self(), get_self().value),
     _rexretpool(get_self(), get_self().value),
@@ -41,7 +43,9 @@ namespace eosiosystem {
       _gstate4 = _global4.exists() ? _global4.get() : get_default_inflation_parameters();
 
       _gstatesxpr = _globalsxpr.exists() ? _globalsxpr.get() : eosio_global_statesxpr(); // PROTON
-      _gstatesd = _globalsd.exists() ? _globalsd.get() : eosio_global_statesd(); // PROTON
+      _gstatesd = _globalsd.exists() ? _globalsd.get() : eosio_global_statesd();         // PROTON
+      _gstateram = _globalram.exists() ? _globalram.get() : eosio_global_stateram{};     // PROTON
+
    }
 
    eosio_global_state system_contract::get_default_parameters() {
@@ -71,6 +75,7 @@ namespace eosiosystem {
  
       _globalsxpr.set( _gstatesxpr, get_self() );  // PROTON
       _globalsd.set( _gstatesd, get_self() );      // PROTON
+      _globalram.set(_gstateram, get_self());      // PROTON
    }
 
    void system_contract::setram( uint64_t max_ram_size ) {
@@ -146,6 +151,46 @@ namespace eosiosystem {
       }
 
       set_resource_limits( account, ram, net, cpu );
+   }
+
+   // PROTON RAM
+   void system_contract::setramoption( const asset& ram_price_per_byte, uint64_t max_per_user_bytes, uint16_t ram_fee_percent) {
+
+      require_auth(permission_level("admin.proton"_n, "light"_n));
+
+      check(max_per_user_bytes >= 0, "max_per_user_bytes can't be negative");
+      check(ram_price_per_byte.amount >= 0, "ram_price_per_byte can't be negative");
+      check(ram_fee_percent >= 0, "ram_fee_percent can't be negative");
+      check(ram_fee_percent <= 10000, "ram_fee_percent can't be > 10000 (100.00)");
+
+      _gstateram.ram_price_per_byte = ram_price_per_byte;
+      _gstateram.max_per_user_bytes = max_per_user_bytes;
+      _gstateram.ram_fee_percent    = ram_fee_percent;
+
+      _globalram.set(_gstateram, get_self() );
+   }
+
+
+   // PROTON RAM
+   void system_contract::ramlimitset( const name& account, int64_t ramlimit ) {
+      require_auth(permission_level("admin.proton"_n, "light"_n));
+      
+      userram_table userram( get_self(), account.value );
+      auto resram_itr = userram.find( account.value );
+      if( resram_itr ==  userram.end() ) {
+         resram_itr = userram.emplace( account, [&]( auto& res ) {
+               res.account = account;
+               res.ram = 0;
+               res.quantity = asset(0, XPRsym);
+               res.ramlimit = ramlimit;
+            });
+      } else {
+         userram.modify( resram_itr, account, [&]( auto& res ) {
+               res.ramlimit += ramlimit;               
+         });
+      }
+
+      
    }
 
    void system_contract::setacctram( const name& account, const std::optional<int64_t>& ram_bytes ) {
