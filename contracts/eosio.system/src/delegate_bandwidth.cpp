@@ -22,16 +22,173 @@ namespace eosiosystem {
    using eosio::time_point_sec;
    using eosio::token;
 
+
+   // PROTON RAM
+   void system_contract::buyrambytes( const name& payer, const name& receiver, uint32_t bytes ) {  
+       check(!(_gstateram.ram_price_per_byte.amount == 0), "Wrong price per byte. Buy RAM is not configured");
+       check(!(bytes == 0), "parameter bytes cannot be zero");
+       
+       int64_t cost = _gstateram.ram_price_per_byte.amount * bytes;
+       int64_t costwfee = 100 * cost /  (100 - (double)_gstateram.ram_fee_percent / (double)ram_fee_precision ) ;
+
+       buyram(payer, receiver, asset{ costwfee, _gstateram.ram_price_per_byte.symbol });
+   }
+
+   // PROTON RAM
+   void system_contract::buyram( const name& payer, const name& receiver, const asset& quant ){
+      require_auth(payer);
+      //update_ram_supply();
+      check(quant.symbol == _gstateram.ram_price_per_byte.symbol, "must buy ram with " + _gstateram.ram_price_per_byte.symbol.code().to_string());
+      check(quant.amount > 0, "must purchase a positive amount");    
+      update_ram_supply();
+
+      check(quant.symbol == _gstateram.ram_price_per_byte.symbol, "Buy ram using " + _gstateram.ram_price_per_byte.symbol.code().to_string());
+      check(quant.amount > 0, "must purchase a positive amount");
+
+      auto fee = quant;
+      fee.amount *= ((double)_gstateram.ram_fee_percent / (double)ram_fee_precision) / 100;
+
+      auto quant_after_fee = quant;
+      quant_after_fee.amount -= fee.amount;
+      {
+         token::transfer_action transfer_act{ token_account, { {payer, active_permission}, {ram_account, active_permission} } };
+         transfer_act.send( payer, ram_account, quant_after_fee, "buy ram" );
+      }
+      if ( fee.amount > 0 ) {
+         token::transfer_action transfer_act{ token_account, { {payer, active_permission} } };
+         transfer_act.send( payer, ramfee_account, fee, "ram fee" );
+      }
+
+      int64_t bytes_out = quant_after_fee.amount / _gstateram.ram_price_per_byte.amount;
+
+      const auto& market = _rammarket.get(ramcore_symbol.raw(), "ram market does not exist");
+
+      check ( market.base.balance.amount >= bytes_out, "Out of RAM" );
+         
+  
+      _rammarket.modify( market, same_payer, [&]( auto& es ) {
+         es.base.balance  -= asset(bytes_out, ram_symbol);
+      });
+
+      check( bytes_out > 0, "must reserve a positive amount" );
+
+      _gstate.total_ram_bytes_reserved += uint64_t(bytes_out);
+      _gstateram.total_ram             += bytes_out;
+      _gstateram.total_xpr             += quant_after_fee.amount;
+
+      user_resources_table  userres( get_self(), receiver.value );  
+      auto res_itr = userres.find( receiver.value );
+      if( res_itr ==  userres.end() ) {
+         res_itr = userres.emplace( get_self(), [&]( auto& res ) {
+               res.owner = receiver;
+               res.net_weight = asset( 0, core_symbol() );
+               res.cpu_weight = asset( 0, core_symbol() );
+               res.ram_bytes = bytes_out;
+            });
+      } else {
+         userres.modify( res_itr, receiver, [&]( auto& res ) {
+               res.ram_bytes += bytes_out;
+            });
+      }
+
+      userram_table userram( get_self(), receiver.value );
+      auto resram_itr = userram.find( receiver.value );
+      if( resram_itr ==  userram.end() ) {
+         resram_itr = userram.emplace( get_self(), [&]( auto& res ) {
+               res.account = receiver;
+               res.ram = bytes_out;
+               res.quantity = quant_after_fee;
+               res.ramlimit = 0;
+            });
+      } else {
+         userram.modify( resram_itr, get_self(), [&]( auto& res ) {
+               res.ram += bytes_out;
+               res.quantity += quant_after_fee;
+            });
+      }
+
+      check(!(res_itr->ram_bytes > _gstateram.max_per_user_bytes + resram_itr->ramlimit),
+           "Maximum allowed to buy: " + to_string(_gstateram.max_per_user_bytes + resram_itr->ramlimit) + " bytes");
+
+
+      auto voter_itr = _voters.find( res_itr->owner.value );
+      if( voter_itr == _voters.end() || !has_field( voter_itr->flags1, voter_info::flags1_fields::ram_managed ) ) {
+         int64_t ram_bytes, net, cpu;
+         get_resource_limits( res_itr->owner, ram_bytes, net, cpu );
+         set_resource_limits( res_itr->owner, res_itr->ram_bytes + ram_gift_bytes, net, cpu );
+      }
+   }
+
+
+   // PROTON RAM
+   void system_contract::sellram( const name& account, int64_t bytes ) {
+      require_auth( account );
+      update_ram_supply();
+      
+      check( bytes > 0, "cannot sell negative byte" );
+
+      user_resources_table  userres( get_self(), account.value );
+      auto res_itr = userres.find( account.value );
+      check( res_itr != userres.end(), "no resource row" );
+      check( res_itr->ram_bytes >= bytes, "insufficient quota" );
+
+      userram_table userram( get_self(), account.value );
+      auto resram_itr = userram.find( account.value );
+      check( resram_itr != userram.end(), "no purchased ram" );
+      check( resram_itr->ram >= bytes, "insufficient purchased quota" );
+      
+      asset tokens_out = asset(0, _gstateram.ram_price_per_byte.symbol);
+
+      tokens_out.amount = bytes * resram_itr->quantity.amount / resram_itr->ram;
+
+      auto itr = _rammarket.find(ramcore_symbol.raw());
+      _rammarket.modify( itr, same_payer, [&]( auto& es ) {
+          //tokens_out = es.direct_convert(asset(bytes, ram_symbol), _gstateram.ram_price_per_byte.symbol);
+          es.base.balance  += asset(bytes, ram_symbol);
+      });
+
+      check( tokens_out.amount > 1, "token amount received from selling ram is too low" );
+
+      _gstate.total_ram_bytes_reserved -= static_cast<decltype(_gstate.total_ram_bytes_reserved)>(bytes); // bytes > 0 is asserted above
+      _gstateram.total_ram             -= bytes;
+      _gstateram.total_xpr             -= tokens_out.amount;
+      //// this shouldn't happen, but just in case it does we should prevent it
+      check( _gstateram.total_ram >= 0, "error, attempt to unstake more tokens than previously staked" );
+
+      userres.modify( res_itr, account, [&]( auto& res ) {
+          res.ram_bytes -= bytes;
+      });
+
+      auto voter_itr = _voters.find( res_itr->owner.value );
+      if( voter_itr == _voters.end() || !has_field( voter_itr->flags1, voter_info::flags1_fields::ram_managed ) ) {
+         int64_t ram_bytes, net, cpu;
+         get_resource_limits( res_itr->owner, ram_bytes, net, cpu );
+         set_resource_limits( res_itr->owner, res_itr->ram_bytes + ram_gift_bytes, net, cpu );
+      }
+
+      userram.modify( resram_itr, account, [&]( auto& res ) {
+          res.ram -= bytes;
+          res.quantity -= tokens_out;
+      });
+
+      {
+         token::transfer_action transfer_act{ token_account, { {ram_account, active_permission}, {account, active_permission} } };
+         transfer_act.send( ram_account, account, asset(tokens_out), "sell ram" );
+      }
+   }
+
+
+   
    /**
     *  This action will buy an exact amount of ram and bill the payer the current market price.
     */
-   void system_contract::buyrambytes( const name& payer, const name& receiver, uint32_t bytes ) {
+   void system_contract::buyrambsys( const name& payer, const name& receiver, uint32_t bytes ) {
       auto itr = _rammarket.find(ramcore_symbol.raw());
       const int64_t ram_reserve   = itr->base.balance.amount;
       const int64_t eos_reserve   = itr->quote.balance.amount;
       const int64_t cost          = exchange_state::get_bancor_input( ram_reserve, eos_reserve, bytes );
       const int64_t cost_plus_fee = cost / double(0.995);
-      buyram( payer, receiver, asset{ cost_plus_fee, core_symbol() } );
+      buyramsys( payer, receiver, asset{ cost_plus_fee, core_symbol() } );
    }
 
 
@@ -43,7 +200,7 @@ namespace eosiosystem {
     *  RAM is a scarce resource whose supply is defined by global properties max_ram_size. RAM is
     *  priced using the bancor algorithm such that price-per-byte with a constant reserve ratio of 100:1.
     */
-   void system_contract::buyram( const name& payer, const name& receiver, const asset& quant )
+   void system_contract::buyramsys( const name& payer, const name& receiver, const asset& quant )
    {
       require_auth( payer );
 
@@ -114,7 +271,7 @@ namespace eosiosystem {
     *  tomorrow. Overall this will result in the market balancing the supply and demand
     *  for RAM over time.
     */
-   void system_contract::sellram( const name& account, int64_t bytes ) {
+   void system_contract::sellramsys( const name& account, int64_t bytes ) {
       require_auth( account );
 
       check (system_contract::checkPermission(account, "sellram")==1, "You are not authorised to sellram.");  // PROTON Check Permissions
@@ -330,14 +487,14 @@ namespace eosiosystem {
          } /// end if is_delegating_to_self || is_undelegating
 
          if ( need_deferred_trx ) {
-			// PROTON (from deferred to inline)
+            // PROTON (from deferred to inline)
             action(
                permission_level{ from, active_permission },
                get_self(),
                "refund"_n,
                from
             ).send();
-			/*
+            /*
             eosio::transaction out;
             out.actions.emplace_back( permission_level{from, active_permission},
                                       get_self(), "refund"_n,
@@ -346,7 +503,7 @@ namespace eosiosystem {
             out.delay_sec = refund_delay_sec;
             eosio::cancel_deferred( from.value ); // TODO: Remove this line when replacing deferred trxs is fixed
             out.send( from.value, from, true );
-			*/
+         */
          } else {
             //eosio::cancel_deferred( from.value );
          }

@@ -82,6 +82,7 @@ namespace eosiosystem {
    static constexpr int64_t  pay_factor_precision          = 10000;
    static constexpr int64_t  default_inflation_pay_factor  = 50000;   // producers pay share = 10000 / 50000 = 20% of the inflation
    static constexpr int64_t  default_votepay_factor        = 40000;   // per-block pay share = 10000 / 40000 = 25% of the producer pay
+   static constexpr int64_t  ram_fee_precision             = 100;     // PROTON RAM Logic // 2 decimals
 
 
    /**
@@ -436,7 +437,7 @@ namespace eosiosystem {
 
    typedef eosio::multi_index< "refundsxpr"_n, xpr_refund_request >  xpr_refunds_table;
 
-   
+  
    // PROTON
    struct [[eosio::table("globalsxpr"), eosio::contract("eosio.system")]] eosio_global_statesxpr {
       eosio_global_statesxpr() { }
@@ -479,14 +480,35 @@ namespace eosiosystem {
    };
    typedef eosio::singleton< "globalsd"_n, eosio_global_statesd > global_statesd_singleton;
    
-   /*
    
-   globalspr {
-       poolspr
-       processedspr
-       processQspr
+   // PROTON RAM
+   struct [[eosio::table("globalram"), eosio::contract("eosio.system")]] eosio_global_stateram {
+       eosio_global_stateram() { }
+       asset     ram_price_per_byte     = { 200, symbol{"XPR", 4} };   // 0.02 XPR per byte
+       uint64_t  max_per_user_bytes     = 3 * 1024 * 1024;             // 3 MB per user
+       uint16_t  ram_fee_percent        = 10'00;                       // ram fee percent . 10'00 is 10 %
+       uint64_t  total_ram              = 0;                           // total ram purchased with XPR
+       uint64_t  total_xpr              = 0;                           // total ram purchased with XPR
 
-   */
+
+       EOSLIB_SERIALIZE(eosio_global_stateram, (ram_price_per_byte)(max_per_user_bytes)(ram_fee_percent)(total_ram)(total_xpr))
+   };
+   typedef eosio::singleton< "globalram"_n, eosio_global_stateram > global_stateram_singleton;
+
+   // PROTON RAM
+   struct [[eosio::table, eosio::contract("eosio.system")]] userram {
+      name                account;
+      uint64_t            ram;
+      eosio::asset        quantity;
+      uint64_t            ramlimit;
+
+      uint64_t  primary_key()const { return account.value; }
+
+      // explicit serialization macro is not necessary, used here only to improve compilation time
+      EOSLIB_SERIALIZE( userram, (account)(ram)(quantity)(ramlimit) )
+
+   };
+   typedef eosio::multi_index< "usersram"_n, userram > userram_table;
    
    // `rex_pool` structure underlying the rex pool table. A rex pool table entry is defined by:
    // - `version` defaulted to zero,
@@ -655,6 +677,7 @@ namespace eosiosystem {
          global_state2_singleton       _global2;
          global_state3_singleton       _global3;
          global_state4_singleton       _global4;
+         global_stateram_singleton     _globalram;      // PROTON
          global_statesxpr_singleton    _globalsxpr;     // PROTON
          global_statesd_singleton      _globalsd;       // PROTON
          voters_xpr_table              vxpr_tbl;        // PROTON
@@ -662,6 +685,7 @@ namespace eosiosystem {
          eosio_global_state2           _gstate2;
          eosio_global_state3           _gstate3;
          eosio_global_state4           _gstate4;
+         eosio_global_stateram         _gstateram;      // PROTON
          eosio_global_statesxpr        _gstatesxpr;     // PROTON
          eosio_global_statesd          _gstatesd;       // PROTON
          rammarket                     _rammarket;
@@ -1162,8 +1186,52 @@ namespace eosiosystem {
          void undelegatebw( const name& from, const name& receiver,
                             const asset& unstake_net_quantity, const asset& unstake_cpu_quantity );
 
+
+
+
+         // PROTON RAM CHANGE:
+         // old actions `buyrambytes/buyram/sellram` renamed to `buyrambsys/buyramsys/sellramsys`
          /**
-          * Buy ram action, increases receiver's ram quota based upon current price and quantity of
+          * Buy ram action, increases receiver's ram quota based upon current price and quantity of SYS
+          * tokens provided. An inline transfer from receiver to system contract of
+          * tokens will be executed.
+          *
+          * @param payer - the ram buyer,
+          * @param receiver - the ram receiver,
+          * @param quant - the quntity of tokens to buy ram with.
+          */
+         [[eosio::action]]
+         void buyramsys( const name& payer, const name& receiver, const asset& quant );
+
+
+         // PROTON RAM CHANGE
+         /**
+          * Buy a specific amount of ram bytes action. Increases receiver's ram in quantity of bytes provided.
+          * An inline transfer from receiver to system contract of tokens will be executed.
+          *
+          * @param payer - the ram buyer,
+          * @param receiver - the ram receiver,
+          * @param bytes - the quntity of ram to buy specified in bytes.
+          */
+         [[eosio::action]]
+         void buyrambsys( const name& payer, const name& receiver, uint32_t bytes );
+
+
+         // PROTON RAM CHANGE
+         /**
+          * Sell ram action, reduces quota by bytes and then performs an inline transfer of tokens
+          * to receiver based upon the average purchase price of the original quota.
+          *
+          * @param account - the ram seller account,
+          * @param bytes - the amount of ram to sell in bytes.
+          */
+         [[eosio::action]]
+         void sellramsys( const name& account, int64_t bytes );
+
+
+         // PROTON RAM CHANGE
+         /**
+          * Buy ram action, increases receiver's ram quota based upon fixed price and quantity of XPR
           * tokens provided. An inline transfer from receiver to system contract of
           * tokens will be executed.
           *
@@ -1174,9 +1242,11 @@ namespace eosiosystem {
          [[eosio::action]]
          void buyram( const name& payer, const name& receiver, const asset& quant );
 
+
+         // PROTON RAM CHANGE
          /**
           * Buy a specific amount of ram bytes action. Increases receiver's ram in quantity of bytes provided.
-          * An inline transfer from receiver to system contract of tokens will be executed.
+          * An inline transfer from payer to system contract of XPR tokens will be executed.
           *
           * @param payer - the ram buyer,
           * @param receiver - the ram receiver,
@@ -1185,15 +1255,40 @@ namespace eosiosystem {
          [[eosio::action]]
          void buyrambytes( const name& payer, const name& receiver, uint32_t bytes );
 
+
+         // PROTON RAM CHANGE
          /**
           * Sell ram action, reduces quota by bytes and then performs an inline transfer of tokens
-          * to receiver based upon the average purchase price of the original quota.
+          * to receiver based upon the fixed price.
           *
           * @param account - the ram seller account,
           * @param bytes - the amount of ram to sell in bytes.
           */
          [[eosio::action]]
          void sellram( const name& account, int64_t bytes );
+
+
+         // PROTON RAM
+         /**
+          * Seе ram options
+          *
+          * @param ram_price_per_byte - ram price per byte in XPR,
+          * @param max_per_user_bytes - the amount of ram allowed for user.
+          */
+         [[eosio::action]]
+         void setramoption( const asset& ram_price_per_byte, uint64_t max_per_user_bytes, uint16_t ram_fee_percent);
+
+
+         // PROTON RAM
+         /**
+          * Extend ramlimit for account
+          *
+          * @param account,
+          * @param bytes
+          */
+         [[eosio::action]]
+         void ramlimitset( const name& account, int64_t ramlimit );
+
 
          /**
           * Refund action, this action is called after the delegation-period to claim all pending
@@ -1433,6 +1528,10 @@ namespace eosiosystem {
          using buyram_action = eosio::action_wrapper<"buyram"_n, &system_contract::buyram>;
          using buyrambytes_action = eosio::action_wrapper<"buyrambytes"_n, &system_contract::buyrambytes>;
          using sellram_action = eosio::action_wrapper<"sellram"_n, &system_contract::sellram>;
+         using buyramsys_action = eosio::action_wrapper<"buyramsys"_n, &system_contract::buyramsys>;              // PROTON
+         using buyrambsys_action = eosio::action_wrapper<"buyrambsys"_n, &system_contract::buyrambsys>;           // PROTON
+         using sellramsys_action = eosio::action_wrapper<"sellramsys"_n, &system_contract::sellramsys>;           // PROTON
+
          using refund_action = eosio::action_wrapper<"refund"_n, &system_contract::refund>;
          using regproducer_action = eosio::action_wrapper<"regproducer"_n, &system_contract::regproducer>;
          using regproducer2_action = eosio::action_wrapper<"regproducer2"_n, &system_contract::regproducer2>;
@@ -1459,6 +1558,7 @@ namespace eosiosystem {
          using voterclaim_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;           // PROTON
          using voterclaimst_action = eosio::action_wrapper<"voterclaim"_n, &system_contract::voterclaim>;         // PROTON
          using vrwrdsharing_action = eosio::action_wrapper<"vrwrdsharing"_n, &system_contract::vrwrdsharing>;     // PROTON
+         using setramoption_action = eosio::action_wrapper<"setramoption"_n, &system_contract::setramoption>;     // PROTON
 
 
          static uint8_t checkPermission(name acc, std::string permission);                                        // PROTON

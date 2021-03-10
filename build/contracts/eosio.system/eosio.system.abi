@@ -245,6 +245,24 @@
             ]
         },
         {
+            "name": "buyrambsys",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payer",
+                    "type": "name"
+                },
+                {
+                    "name": "receiver",
+                    "type": "name"
+                },
+                {
+                    "name": "bytes",
+                    "type": "uint32"
+                }
+            ]
+        },
+        {
             "name": "buyrambytes",
             "base": "",
             "fields": [
@@ -259,6 +277,24 @@
                 {
                     "name": "bytes",
                     "type": "uint32"
+                }
+            ]
+        },
+        {
+            "name": "buyramsys",
+            "base": "",
+            "fields": [
+                {
+                    "name": "payer",
+                    "type": "name"
+                },
+                {
+                    "name": "receiver",
+                    "type": "name"
+                },
+                {
+                    "name": "quant",
+                    "type": "asset"
                 }
             ]
         },
@@ -587,6 +623,32 @@
                 {
                     "name": "votepay_factor",
                     "type": "int64"
+                }
+            ]
+        },
+        {
+            "name": "eosio_global_stateram",
+            "base": "",
+            "fields": [
+                {
+                    "name": "ram_price_per_byte",
+                    "type": "asset"
+                },
+                {
+                    "name": "max_per_user_bytes",
+                    "type": "uint64"
+                },
+                {
+                    "name": "ram_fee_percent",
+                    "type": "uint16"
+                },
+                {
+                    "name": "total_ram",
+                    "type": "uint64"
+                },
+                {
+                    "name": "total_xpr",
+                    "type": "uint64"
                 }
             ]
         },
@@ -1031,6 +1093,20 @@
             ]
         },
         {
+            "name": "ramlimitset",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "ramlimit",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
             "name": "refund",
             "base": "",
             "fields": [
@@ -1419,6 +1495,20 @@
             ]
         },
         {
+            "name": "sellramsys",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "bytes",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
             "name": "sellrex",
             "base": "",
             "fields": [
@@ -1581,6 +1671,24 @@
                 {
                     "name": "max_ram_size",
                     "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "setramoption",
+            "base": "",
+            "fields": [
+                {
+                    "name": "ram_price_per_byte",
+                    "type": "asset"
+                },
+                {
+                    "name": "max_per_user_bytes",
+                    "type": "uint64"
+                },
+                {
+                    "name": "ram_fee_percent",
+                    "type": "uint16"
                 }
             ]
         },
@@ -1807,6 +1915,28 @@
             ]
         },
         {
+            "name": "userram",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "ram",
+                    "type": "uint64"
+                },
+                {
+                    "name": "quantity",
+                    "type": "asset"
+                },
+                {
+                    "name": "ramlimit",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "voteprodsys",
             "base": "",
             "fields": [
@@ -2016,9 +2146,19 @@
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Buy RAM\nsummary: '{{nowrap payer}} buys RAM on behalf of {{nowrap receiver}} by paying {{nowrap quant}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\n{{payer}} buys RAM on behalf of {{receiver}} by paying {{quant}}. This transaction will incur a 0.5% fee out of {{quant}} and the amount of RAM delivered will depend on market rates."
         },
         {
+            "name": "buyrambsys",
+            "type": "buyrambsys",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: buyrambsys action\nsummary: 'buyrambsys action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\nBuy RAM bytes for SYS tokens"
+        },
+        {
             "name": "buyrambytes",
             "type": "buyrambytes",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Buy RAM\nsummary: '{{nowrap payer}} buys {{nowrap bytes}} bytes of RAM on behalf of {{nowrap receiver}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\n{{payer}} buys approximately {{bytes}} bytes of RAM on behalf of {{receiver}} by paying market rates for RAM. This transaction will incur a 0.5% fee and the cost will depend on market rates."
+        },
+        {
+            "name": "buyramsys",
+            "type": "buyramsys",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: buyramsys action\nsummary: 'buyramsys action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\nBuy RAM for SYS tokens"
         },
         {
             "name": "buyrex",
@@ -2126,6 +2266,11 @@
             "ricardian_contract": "--\nspec_version: \"0.2.0\"\ntitle: REX action\nsummary: 'REX action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/rex.png#d229837fa62a464b9c71e06060aa86179adf0b3f4e3b8c4f9702f4f4b0c340a8\n---\nREX action"
         },
         {
+            "name": "ramlimitset",
+            "type": "ramlimitset",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: ramlimitset action\nsummary: 'ramlimitset action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\nSet RAM limit for account"
+        },
+        {
             "name": "refund",
             "type": "refund",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Claim Unstaked Tokens\nsummary: 'Return previously unstaked tokens to {{nowrap owner}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nReturn previously unstaked tokens to {{owner}} after the unstaking period has elapsed."
@@ -2174,6 +2319,11 @@
             "name": "sellram",
             "type": "sellram",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Sell RAM From Account\nsummary: 'Sell unused RAM from {{nowrap account}}'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\n\nSell {{bytes}} bytes of unused RAM from account {{account}} at market price. This transaction will incur a 0.5% fee on the proceeds which depend on market rates."
+        },
+        {
+            "name": "sellramsys",
+            "type": "sellramsys",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: sellramsys action\nsummary: 'sellramsys action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\nSell RAM for SYS tokens"
         },
         {
             "name": "sellrex",
@@ -2229,6 +2379,11 @@
             "name": "setram",
             "type": "setram",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: Configure the Available RAM\nsummary: 'Configure the available RAM'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\n{{$action.account}} configures the available RAM to {{max_ram_size}} bytes."
+        },
+        {
+            "name": "setramoption",
+            "type": "setramoption",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setramoption action\nsummary: 'setramoption action'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\n\nSET RAM Options"
         },
         {
             "name": "setramrate",
@@ -2386,6 +2541,13 @@
             "key_types": []
         },
         {
+            "name": "globalram",
+            "type": "eosio_global_stateram",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
             "name": "globalsd",
             "type": "eosio_global_statesd",
             "index_type": "i64",
@@ -2493,6 +2655,13 @@
         {
             "name": "userres",
             "type": "user_resources",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "usersram",
+            "type": "userram",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

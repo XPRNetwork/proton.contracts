@@ -884,3 +884,55 @@ At the time of voting the full weight of voter’s staked (CPU + NET) tokens wil
 {{/if}}
 
 
+<h1 class="contract">buyramsys</h1>
+---
+spec_version: "0.2.0"
+title: buyramsys action
+summary: 'buyramsys action'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+Buy RAM for SYS tokens
+
+<h1 class="contract">buyrambsys</h1>
+---
+spec_version: "0.2.0"
+title: buyrambsys action
+summary: 'buyrambsys action'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+Buy RAM bytes for SYS tokens
+
+
+<h1 class="contract">sellramsys</h1>
+---
+spec_version: "0.2.0"
+title: sellramsys action
+summary: 'sellramsys action'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+Sell RAM for SYS tokens
+
+
+<h1 class="contract">setramoption</h1>
+---
+spec_version: "0.2.0"
+title: setramoption action
+summary: 'setramoption action'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+SET RAM Options
+
+
+<h1 class="contract">ramlimitset</h1>
+---
+spec_version: "0.2.0"
+title: ramlimitset action
+summary: 'ramlimitset action'
+icon: @ICON_BASE_URL@/@ADMIN_ICON_URI@
+---
+
+Set RAM limit for account
