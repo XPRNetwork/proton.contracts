@@ -1186,11 +1186,8 @@ namespace eosiosystem {
          void undelegatebw( const name& from, const name& receiver,
                             const asset& unstake_net_quantity, const asset& unstake_cpu_quantity );
 
-
-
-
          // PROTON RAM CHANGE:
-         // old actions `buyrambytes/buyram/sellram` renamed to `buyrambsys/buyramsys/sellramsys`
+         // old action `buyram` renamed to `buyramsys`
          /**
           * Buy ram action, increases receiver's ram quota based upon current price and quantity of SYS
           * tokens provided. An inline transfer from receiver to system contract of
@@ -1198,13 +1195,14 @@ namespace eosiosystem {
           *
           * @param payer - the ram buyer,
           * @param receiver - the ram receiver,
-          * @param quant - the quntity of tokens to buy ram with.
+          * @param quant - the quantity of tokens to buy ram with.
           */
          [[eosio::action]]
          void buyramsys( const name& payer, const name& receiver, const asset& quant );
 
 
          // PROTON RAM CHANGE
+         // old action `buyrambytes` renamed to `buyrambsys`
          /**
           * Buy a specific amount of ram bytes action. Increases receiver's ram in quantity of bytes provided.
           * An inline transfer from receiver to system contract of tokens will be executed.
@@ -1218,6 +1216,7 @@ namespace eosiosystem {
 
 
          // PROTON RAM CHANGE
+         // old actions `sellram` renamed to `sellramsys`
          /**
           * Sell ram action, reduces quota by bytes and then performs an inline transfer of tokens
           * to receiver based upon the average purchase price of the original quota.
@@ -1230,6 +1229,7 @@ namespace eosiosystem {
 
 
          // PROTON RAM CHANGE
+         // old action `buyram` renamed to `buyramsys`
          /**
           * Buy ram action, increases receiver's ram quota based upon fixed price and quantity of XPR
           * tokens provided. An inline transfer from receiver to system contract of
@@ -1244,6 +1244,7 @@ namespace eosiosystem {
 
 
          // PROTON RAM CHANGE
+         // old action `buyrambytes` renamed to `buyrambsys`
          /**
           * Buy a specific amount of ram bytes action. Increases receiver's ram in quantity of bytes provided.
           * An inline transfer from payer to system contract of XPR tokens will be executed.
@@ -1257,6 +1258,7 @@ namespace eosiosystem {
 
 
          // PROTON RAM CHANGE
+         // old action `sellram` renamed to `sellramsys`
          /**
           * Sell ram action, reduces quota by bytes and then performs an inline transfer of tokens
           * to receiver based upon the fixed price.
@@ -1265,7 +1267,7 @@ namespace eosiosystem {
           * @param bytes - the amount of ram to sell in bytes.
           */
          [[eosio::action]]
-         void sellram( const name& account, int64_t bytes );
+         void sellram( const name& account, uint64_t bytes );
 
 
          // PROTON RAM
@@ -1287,7 +1289,7 @@ namespace eosiosystem {
           * @param bytes
           */
          [[eosio::action]]
-         void ramlimitset( const name& account, int64_t ramlimit );
+         void ramlimitset( const name& account, uint64_t ramlimit );
 
 
          /**

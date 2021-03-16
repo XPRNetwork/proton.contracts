@@ -1102,7 +1102,7 @@
                 },
                 {
                     "name": "ramlimit",
-                    "type": "int64"
+                    "type": "uint64"
                 }
             ]
         },
@@ -1490,7 +1490,7 @@
                 },
                 {
                     "name": "bytes",
-                    "type": "int64"
+                    "type": "uint64"
                 }
             ]
         },

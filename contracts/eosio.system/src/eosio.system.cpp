@@ -172,7 +172,7 @@ namespace eosiosystem {
 
 
    // PROTON RAM
-   void system_contract::ramlimitset( const name& account, int64_t ramlimit ) {
+   void system_contract::ramlimitset( const name& account, uint64_t ramlimit ) {
       require_auth(permission_level("admin.proton"_n, "light"_n));
       
       userram_table userram( get_self(), account.value );
@@ -186,11 +186,9 @@ namespace eosiosystem {
             });
       } else {
          userram.modify( resram_itr, account, [&]( auto& res ) {
-               res.ramlimit += ramlimit;               
+               res.ramlimit = ramlimit;               
          });
       }
-
-      
    }
 
    void system_contract::setacctram( const name& account, const std::optional<int64_t>& ram_bytes ) {

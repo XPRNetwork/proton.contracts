@@ -25,11 +25,13 @@ namespace eosiosystem {
 
    // PROTON RAM
    void system_contract::buyrambytes( const name& payer, const name& receiver, uint32_t bytes ) {  
-       check(!(_gstateram.ram_price_per_byte.amount == 0), "Wrong price per byte. Buy RAM is not configured");
        check(!(bytes == 0), "parameter bytes cannot be zero");
        
-       int64_t cost = _gstateram.ram_price_per_byte.amount * bytes;
-       int64_t costwfee = 100 * cost /  (100 - (double)_gstateram.ram_fee_percent / (double)ram_fee_precision ) ;
+       const uint64_t cost = _gstateram.ram_price_per_byte.amount * bytes;
+
+       const double fee_percentage = ((double)_gstateram.ram_fee_percent / ram_fee_precision) / 100;
+
+       const int64_t costwfee = cost / (1.0 - fee_percentage);
 
        buyram(payer, receiver, asset{ costwfee, _gstateram.ram_price_per_byte.symbol });
    }
@@ -37,13 +39,11 @@ namespace eosiosystem {
    // PROTON RAM
    void system_contract::buyram( const name& payer, const name& receiver, const asset& quant ){
       require_auth(payer);
-      //update_ram_supply();
+
+      check(!(_gstateram.ram_price_per_byte.amount <= 0), "Wrong price per byte. Buy RAM is not configured");
       check(quant.symbol == _gstateram.ram_price_per_byte.symbol, "must buy ram with " + _gstateram.ram_price_per_byte.symbol.code().to_string());
       check(quant.amount > 0, "must purchase a positive amount");    
       update_ram_supply();
-
-      check(quant.symbol == _gstateram.ram_price_per_byte.symbol, "Buy ram using " + _gstateram.ram_price_per_byte.symbol.code().to_string());
-      check(quant.amount > 0, "must purchase a positive amount");
 
       auto fee = quant;
       fee.amount *= ((double)_gstateram.ram_fee_percent / (double)ram_fee_precision) / 100;
@@ -59,12 +59,11 @@ namespace eosiosystem {
          transfer_act.send( payer, ramfee_account, fee, "ram fee" );
       }
 
-      int64_t bytes_out = quant_after_fee.amount / _gstateram.ram_price_per_byte.amount;
+      const uint64_t bytes_out = quant_after_fee.amount / _gstateram.ram_price_per_byte.amount;
 
       const auto& market = _rammarket.get(ramcore_symbol.raw(), "ram market does not exist");
 
       check ( market.base.balance.amount >= bytes_out, "Out of RAM" );
-         
   
       _rammarket.modify( market, same_payer, [&]( auto& es ) {
          es.base.balance  -= asset(bytes_out, ram_symbol);
@@ -121,11 +120,11 @@ namespace eosiosystem {
 
 
    // PROTON RAM
-   void system_contract::sellram( const name& account, int64_t bytes ) {
+   void system_contract::sellram( const name& account, uint64_t bytes ) {
       require_auth( account );
       update_ram_supply();
-      
-      check( bytes > 0, "cannot sell negative byte" );
+
+      check(!(bytes == 0), "parameter bytes cannot be zero");
 
       user_resources_table  userres( get_self(), account.value );
       auto res_itr = userres.find( account.value );
@@ -137,13 +136,12 @@ namespace eosiosystem {
       check( resram_itr != userram.end(), "no purchased ram" );
       check( resram_itr->ram >= bytes, "insufficient purchased quota" );
       
-      asset tokens_out = asset(0, _gstateram.ram_price_per_byte.symbol);
+      auto tokens_out = asset(0, _gstateram.ram_price_per_byte.symbol);
 
       tokens_out.amount = bytes * resram_itr->quantity.amount / resram_itr->ram;
 
       auto itr = _rammarket.find(ramcore_symbol.raw());
       _rammarket.modify( itr, same_payer, [&]( auto& es ) {
-          //tokens_out = es.direct_convert(asset(bytes, ram_symbol), _gstateram.ram_price_per_byte.symbol);
           es.base.balance  += asset(bytes, ram_symbol);
       });
 
@@ -230,7 +228,7 @@ namespace eosiosystem {
          channel_to_rex( ramfee_account, fee );
       }
 
-      int64_t bytes_out;
+      int64_t bytes_out = 0;
 
       const auto& market = _rammarket.get(ramcore_symbol.raw(), "ram market does not exist");
       _rammarket.modify( market, same_payer, [&]( auto& es ) {
