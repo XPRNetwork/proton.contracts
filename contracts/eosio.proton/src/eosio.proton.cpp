@@ -500,6 +500,21 @@ namespace eosio {
 			perm.modify( itr, get_self(), [&]( auto& p ){
 				p.regprod = 3; 
 			});
+		} else {
+			perm.emplace( get_self(), [&]( auto& p ){
+				p.acc = producer;
+				p.createacc = 0;
+				p.vote = 0;
+				p.regprod = 3;
+				p.regproxy = 0;
+				p.setcontract = 0;
+				p.namebids = 0;
+				p.rex = 0;
+				p.delegate = 0;
+				p.undelegate = 0;
+				p.sellram = 0;
+				p.buyram = 0;
+			});	
 		}
 	}
 
