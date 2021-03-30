@@ -79,7 +79,8 @@ namespace eosiosystem {
    void system_contract::regproducer( const name& producer, const eosio::public_key& producer_key, const std::string& url, uint16_t location ) {
       require_auth( producer );
 
-      check (checkPermission(producer, "regprod")==1, "You are not authorised to register as producer");  // PROTON Check Permissions
+      // if not disabled after kickbp, allow regproducer
+      check (checkPermission(producer, "regprod") != 3, "You are not authorised to register as producer");  // PROTON Check Permissions
 
       check( url.size() < 512, "url too long" );
 
