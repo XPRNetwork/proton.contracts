@@ -377,9 +377,6 @@ namespace eosiosystem {
                             ignore<authority> active ) {
 
       if( creator != get_self()  && creator != "proton"_n) {
-
-         check (system_contract::checkPermission(creator, "createacc")==1, "You are not authorised to create accounts");  // PROTON Check Permissions
-
          uint64_t tmp = newact.value >> 4;
          bool has_dot = false;
          bool has_dot_after_char = false; // PROTON
@@ -406,7 +403,7 @@ namespace eosiosystem {
            tmp >>= 5;
          }
          check (!has_dot_after_char, "The character '.' in account names is not allowed.");      // PROTON
-         check (newact.to_string().size() > 2, "Minimum 3 character length.");  // PROTON
+         check (newact.to_string().size() > 3, "Minimum 4 character length.");  // PROTON
 
          // PROTON
          /*
@@ -426,8 +423,7 @@ namespace eosiosystem {
          */
       }
 
-      user_resources_table  userres( get_self(), newact.value );
-
+      user_resources_table userres( get_self(), newact.value );
       userres.emplace( newact, [&]( auto& res ) {
         res.owner = newact;
         res.net_weight = asset( 0, system_contract::get_core_symbol() );
@@ -435,6 +431,20 @@ namespace eosiosystem {
       });
 
       set_resource_limits( newact, 0, 0, 0 );
+
+      auto act = action(
+         permission_level{ "wlcm.proton"_n, "newacc"_n },
+         "eosio"_n,
+         "delegatebw"_n,
+         std::make_tuple(
+            "wlcm.proton"_n,
+            newact,
+            asset(default_new_account_net_sys, SYSsym),
+            asset(default_new_account_cpu_sys, SYSsym),
+            0
+         )
+      );
+      act.send();
    }
 
    void native::setabi( const name& acnt, const std::vector<char>& abi ) {
