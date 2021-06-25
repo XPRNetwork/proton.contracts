@@ -385,9 +385,9 @@ namespace eosiosystem {
            tmp >>= 5;
          }
 
-         check(creator == newact.suffix(), "only suffix may create this account");  // PROTON
-         check(!has_dot, "The character '.' in account names is not allowed.");  // PROTON
-         check(newact.to_string().size() > 3, "Minimum 4 character length.");  // PROTON
+         check (creator == newact.suffix(), "only suffix may create this account");  // PROTON
+         check (!has_dot, "The character '.' in account names is not allowed.");  // PROTON
+         check (newact.to_string().size() > 3, "Minimum 4 character length.");  // PROTON
 
          // PROTON
          /*
@@ -407,7 +407,8 @@ namespace eosiosystem {
          */
       }
 
-      user_resources_table userres( get_self(), newact.value );
+      user_resources_table  userres( get_self(), newact.value );
+
       userres.emplace( newact, [&]( auto& res ) {
         res.owner = newact;
         res.net_weight = asset( 0, system_contract::get_core_symbol() );
