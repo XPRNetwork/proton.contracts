@@ -401,6 +401,26 @@ namespace eosio {
 		dconfig.set( _dcstate, get_self() );
 	}
 
+	void eosioproton::newaccres(name account){
+		eosiosystem::del_bandwidth_table del_tbl( get_self(), "wlcm.proton"_n.value );
+		auto itr = del_tbl.find( account.value );
+		check (itr == del_tbl.end(), "Account has already received default resources");
+
+		auto act = action(
+			permission_level{ "wlcm.proton"_n, "newacc"_n },
+			"eosio"_n,
+			"delegatebw"_n,
+			std::make_tuple(
+				"wlcm.proton"_n,
+				account,
+				asset(100000, SYSsym),
+				asset(100000, SYSsym),
+				0
+			)
+		);
+		act.send();
+	}
+
 	void eosioproton::dappreg(name account){
 		//Set setcode permission
 		//Buys up to 2MB RAM

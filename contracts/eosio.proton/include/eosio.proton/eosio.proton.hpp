@@ -13,9 +13,10 @@
 #include <eosio/asset.hpp>
 #include <eosio/singleton.hpp>
 
-
 using namespace eosio;
 using namespace std;
+
+#include <eosio.system/eosio.system.hpp> //PROTON
 
 #define SYSsym symbol("SYS", 4)  // PROTON
 
@@ -153,6 +154,17 @@ namespace eosio {
 			[[eosio::action]]
 			void updateac(name acc, vector<tuple<name, string>> ac);
 			using updateac_action = eosio::action_wrapper<"updateac"_n, &eosioproton::updateac>;
+
+
+			/**
+			* New account minimum resources
+			*
+			* Gives minimum resources to new account
+			* 
+			* @param account
+			*/		
+			[[eosio::action]]
+			void newaccres(name account);
 
 			/**
 			* Dapp Reg

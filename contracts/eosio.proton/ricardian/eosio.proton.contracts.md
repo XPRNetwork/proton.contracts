@@ -128,6 +128,18 @@ icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/i
 Admin action to set resource thresholds.
 
 
+<h1 class="contract">newaccres</h1>
+
+---
+spec_version: "0.2.0"
+title: newaccres
+summary: 'newaccres'
+icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f
+---
+
+Give new account {{account}} default resources
+
+
 
 <h1 class="contract">dappreg</h1>
 
