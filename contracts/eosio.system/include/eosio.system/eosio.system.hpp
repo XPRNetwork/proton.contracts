@@ -83,9 +83,6 @@ namespace eosiosystem {
    static constexpr int64_t  default_inflation_pay_factor  = 50000;   // producers pay share = 10000 / 50000 = 20% of the inflation
    static constexpr int64_t  default_votepay_factor        = 40000;   // per-block pay share = 10000 / 40000 = 25% of the producer pay
    static constexpr int64_t  ram_fee_precision             = 100;     // PROTON RAM Logic // 2 decimals
-   static constexpr int64_t  default_new_account_net_sys   = 100000;     // PROTON // SYS 4 decimals
-   static constexpr int64_t  default_new_account_cpu_sys   = 100000;     // PROTON // SYS 4 decimals
-
 
    /**
     * eosio.system contract

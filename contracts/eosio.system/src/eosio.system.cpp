@@ -376,34 +376,18 @@ namespace eosiosystem {
                             ignore<authority> owner,
                             ignore<authority> active ) {
 
-      if( creator != get_self()  && creator != "proton"_n) {
+      if (creator != get_self() && creator != "proton"_n) {
          uint64_t tmp = newact.value >> 4;
          bool has_dot = false;
-         bool has_dot_after_char = false; // PROTON
-         bool was_char = false;  // PROTON
-         static const char* charmap = ".12345abcdefghijklmnopqrstuvwxyz"; // PROTON
 
          for( uint32_t i = 0; i < 12; ++i ) {
-           has_dot |= !(tmp & 0x1f);;
-
-           if (was_char && !(tmp & 0x1f)) { // PROTON
-               has_dot_after_char = true; // PROTON
-           }
-
-           char c = charmap[tmp & (i == 0 ? 0x0f : 0x1f)];  // PROTON
-           if ( c >= '1' && c <= '5') { // PROTON
-               //has_num = true; // PROTON
-               was_char = true;  // PROTON
-           }  // PROTON
-
-           if (c >= 'a' && c <= 'z') {  // PROTON
-               was_char = true;  // PROTON
-           }  // PROTON
-
+           has_dot |= !(tmp & 0x1f);
            tmp >>= 5;
          }
-         check (!has_dot_after_char, "The character '.' in account names is not allowed.");      // PROTON
-         check (newact.to_string().size() > 3, "Minimum 4 character length.");  // PROTON
+
+         check(creator == newact.suffix(), "only suffix may create this account");  // PROTON
+         check(!has_dot, "The character '.' in account names is not allowed.");  // PROTON
+         check(newact.to_string().size() > 3, "Minimum 4 character length.");  // PROTON
 
          // PROTON
          /*
@@ -431,20 +415,6 @@ namespace eosiosystem {
       });
 
       set_resource_limits( newact, 0, 0, 0 );
-
-      auto act = action(
-         permission_level{ "wlcm.proton"_n, "newacc"_n },
-         "eosio"_n,
-         "delegatebw"_n,
-         std::make_tuple(
-            "wlcm.proton"_n,
-            newact,
-            asset(default_new_account_net_sys, SYSsym),
-            asset(default_new_account_cpu_sys, SYSsym),
-            0
-         )
-      );
-      act.send();
    }
 
    void native::setabi( const name& acnt, const std::vector<char>& abi ) {
