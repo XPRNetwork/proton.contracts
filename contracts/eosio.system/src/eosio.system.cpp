@@ -378,15 +378,22 @@ namespace eosiosystem {
 
       if (creator != get_self() && creator != "proton"_n) {
          uint64_t tmp = newact.value >> 4;
-         bool has_dot = false;
+         bool has_dot_or_less_than_12_chars = false;  // PROTON
 
          for( uint32_t i = 0; i < 12; ++i ) {
-           has_dot |= !(tmp & 0x1f);
+           has_dot_or_less_than_12_chars |= !(tmp & 0x1f);  // PROTON
            tmp >>= 5;
          }
 
-         check (creator == newact.suffix(), "only suffix may create this account");  // PROTON
-         check (!has_dot, "The character '.' in account names is not allowed.");  // PROTON
+         // PROTON
+         if (has_dot_or_less_than_12_chars) {
+            name suffix = newact.suffix();
+            bool has_dot = suffix != newact;
+            if (has_dot) {
+               check (creator == suffix, "only suffix may create this account");
+            }
+         }
+
          check (newact.to_string().size() > 3, "Minimum 4 character length.");  // PROTON
 
          // PROTON

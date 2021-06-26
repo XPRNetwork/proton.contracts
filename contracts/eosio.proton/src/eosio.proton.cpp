@@ -414,7 +414,7 @@ namespace eosio {
 				"wlcm.proton"_n,
 				account,
 				asset(100000, SYSsym),
-				asset(100000, SYSsym),
+				asset(10000, SYSsym),
 				0
 			)
 		);
