@@ -116,6 +116,7 @@ icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/i
 Removes user info data for {{acc}}
 
 <h1 class="contract">newaccres</h1>
+
 ---
 spec_version: "0.2.0"
 title: newaccres
