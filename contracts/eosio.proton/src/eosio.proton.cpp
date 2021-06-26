@@ -413,8 +413,8 @@ namespace eosio {
 			std::make_tuple(
 				"wlcm.proton"_n,
 				account,
-				asset(10000, SYSsym),
-				asset(100000, SYSsym),
+				asset(10000, SYSsym), // NET
+				asset(100000, SYSsym), // CPU
 				0
 			)
 		);
