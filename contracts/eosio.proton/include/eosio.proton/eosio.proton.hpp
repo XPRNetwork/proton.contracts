@@ -155,7 +155,6 @@ namespace eosio {
 			void updateac(name acc, vector<tuple<name, string>> ac);
 			using updateac_action = eosio::action_wrapper<"updateac"_n, &eosioproton::updateac>;
 
-
 			/**
 			* New account minimum resources
 			*
@@ -166,31 +165,6 @@ namespace eosio {
 			[[eosio::action]]
 			void newaccres(name account);
 			using newaccres_action = eosio::action_wrapper<"newaccres"_n, &eosioproton::newaccres>;
-
-			/**
-			* Dapp Reg
-			*
-			* Gives specified account permission to set contracts, and raises their resources up to specified level.
-			* (Depreciated)
-			* 
-			* @param account
-			*/		
-			[[eosio::action]]
-			void dappreg(name account);
-			using dappreg_action = eosio::action_wrapper<"dappreg"_n, &eosioproton::dappreg>;
-
-			/**
-			* Set Dapp Configuration
-			*
-			* Admin action to set resource thresholds
-			*
-			* @param RAM
-			* @param CPU
-			* @param NET
-			*/		
-			[[eosio::action]]
-			void setdappconf(uint64_t ram, uint64_t cpu, uint64_t net);
-			using setdappconf_action = eosio::action_wrapper<"setdappconf"_n, &eosioproton::setdappconf>;
 
 			/**
 			* Kick BP
@@ -370,19 +344,6 @@ namespace eosio {
 		};
 
 		typedef eosio::multi_index< "kycproviders"_n, kyc_providers_list > kycproviders;
-
-
-		// Config singleton
-		TABLE dappconf {
-			dappconf(){}
-			uint64_t dappram = 2 * 1024 * 1024;
-			uint64_t dappcpu = 200000;
-			uint64_t dappnet = 200000;
-
-			EOSLIB_SERIALIZE( dappconf, (dappram)(dappcpu)(dappnet))
-		};
-		typedef eosio::singleton< "dappconf"_n, dappconf> dappconfig;
-		dappconf _dcstate;
 
 		//add singelton for producer pay config
 	};

@@ -115,19 +115,6 @@ icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
 ---
 Removes user info data for {{acc}}
 
-
-
-<h1 class="contract">setdappconf</h1>
-
----
-spec_version: "0.2.0"
-title: setdappconf
-summary: 'setdappconf'
-icon: @ICON_BASE_URL@/@RESOURCE_ICON_URI@
----
-Admin action to set resource thresholds.
-
-
 <h1 class="contract">newaccres</h1>
 
 ---
@@ -138,20 +125,6 @@ icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
 ---
 
 Give resources to new account
-
-
-<h1 class="contract">dappreg</h1>
-
----
-spec_version: "0.2.0"
-title: dappreg
-summary: 'dappreg'
-icon: @ICON_BASE_URL@/@ACCOUNT_ICON_URI@
----
-
-Give {{account}} permission to set contracts, and raise their resources up to a ceiling level.  (Depreciated) 
-
-
 
 
 <h1 class="contract">kickbp</h1>
