@@ -401,6 +401,26 @@ namespace eosio {
 		dconfig.set( _dcstate, get_self() );
 	}
 
+	void eosioproton::newaccres(name account){
+		eosiosystem::del_bandwidth_table del_tbl( "eosio"_n, "wlcm.proton"_n.value );
+		auto itr = del_tbl.find( account.value );
+		check (itr == del_tbl.end(), "Account has already received default resources");
+
+		auto act = action(
+			permission_level{ "wlcm.proton"_n, "newacc"_n },
+			"eosio"_n,
+			"delegatebw"_n,
+			std::make_tuple(
+				"wlcm.proton"_n,
+				account,
+				asset(10000, SYSsym), // NET
+				asset(100000, SYSsym), // CPU
+				0
+			)
+		);
+		act.send();
+	}
+
 	void eosioproton::dappreg(name account){
 		//Set setcode permission
 		//Buys up to 2MB RAM
@@ -440,7 +460,7 @@ namespace eosio {
 		}
 		*/
 		
-		user_resources_table  userres( "eosio"_n, account.value );
+		eosiosystem::user_resources_table  userres( "eosio"_n, account.value );
 		auto ures = userres.find( account.value );
 		check ( ures != userres.end(), "Account not found." );
 
@@ -655,5 +675,5 @@ namespace eosio {
 
 }
 
-EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
+EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(newaccres)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
 

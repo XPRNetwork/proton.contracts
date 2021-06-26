@@ -13,9 +13,10 @@
 #include <eosio/asset.hpp>
 #include <eosio/singleton.hpp>
 
-
 using namespace eosio;
 using namespace std;
+
+#include <eosio.system/eosio.system.hpp> //PROTON
 
 #define SYSsym symbol("SYS", 4)  // PROTON
 
@@ -153,6 +154,18 @@ namespace eosio {
 			[[eosio::action]]
 			void updateac(name acc, vector<tuple<name, string>> ac);
 			using updateac_action = eosio::action_wrapper<"updateac"_n, &eosioproton::updateac>;
+
+
+			/**
+			* New account minimum resources
+			*
+			* Gives minimum resources to new account
+			* 
+			* @param account
+			*/		
+			[[eosio::action]]
+			void newaccres(name account);
+			using newaccres_action = eosio::action_wrapper<"newaccres"_n, &eosioproton::newaccres>;
 
 			/**
 			* Dapp Reg
@@ -359,21 +372,7 @@ namespace eosio {
 		typedef eosio::multi_index< "kycproviders"_n, kyc_providers_list > kycproviders;
 
 
-		struct [[eosio::table]] user_resources {
-			name          owner;
-			asset         net_weight;
-			asset         cpu_weight;
-			int64_t       ram_bytes = 0;
-
-			bool is_empty()const { return net_weight.amount == 0 && cpu_weight.amount == 0 && ram_bytes == 0; }
-			uint64_t primary_key()const { return owner.value; }
-
-			// explicit serialization macro is not necessary, used here only to improve compilation time
-			EOSLIB_SERIALIZE( user_resources, (owner)(net_weight)(cpu_weight)(ram_bytes) )
-		};
-		typedef eosio::multi_index< "userres"_n, user_resources > user_resources_table;
-
-
+		// Config singleton
 		TABLE dappconf {
 			dappconf(){}
 			uint64_t dappram = 2 * 1024 * 1024;
@@ -386,7 +385,6 @@ namespace eosio {
 		dappconf _dcstate;
 
 		//add singelton for producer pay config
-
 	};
 
 } /// namespace eosio
