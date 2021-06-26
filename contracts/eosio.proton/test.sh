@@ -8,7 +8,6 @@
 #ALL PERMISSIONS: ["createacc",1],["vote",1],["regprod",1],["regproxy",1],["setcontract",1],["namebids",1],["rex",1],["delegate",1],["undelegate",1],["sellram",1],["buyram",1]]
 #
 #./cleos.sh push action eosio.proton setperm '{"name": "cryptoloins", "perms": [["regprod",1]]}' -p eosio.proton@active
-#./cleos.sh push action eosio.proton setdappconf '[2097152, 200000, 200000]' -p eosio.proton
 
 #./cleos.sh push action eosio.proton setuserava '{"acc": "tester", "ava": "ava_base64"}' -p wlcm.proton@update
 #./cleos.sh push action eosio.proton setusername '{"acc": "tester", "name": "Bohdan CryptoLions"}' -p wlcm.proton@update
@@ -17,12 +16,6 @@
 #./cleos.sh push action eosio.proton remove '{"acc": "tester"}' -p wlcm.proton@update
 
 #./cleos.sh push action eosio.proton kickbp '{"producer": "tester"}' -p admin.proton@committee
-
-## Dapp Reg
-# - Add Permissions
-# ./cleos.sh set action permission admin.proton eosio.proton dappreg light -p admin.proton
-#./cleos.sh push action eosio.proton dappreg '{"account": "cryptolions"}' -p admin.proton@light
-
 
 
 ### Users Actions ##################
@@ -92,8 +85,6 @@
 #
 #./cleos.sh get table eosio.proton eosio.proton usersinfo
 #./cleos.sh get table eosio.proton eosio.proton permissions
-#./cleos.sh get table eosio.proton eosio.proton dappconf
-
 #./cleos.sh get table eosio.proton eosio.proton kycproviders
 
 

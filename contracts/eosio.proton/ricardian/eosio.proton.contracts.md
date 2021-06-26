@@ -115,21 +115,7 @@ icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/i
 ---
 Removes user info data for {{acc}}
 
-
-
-<h1 class="contract">setdappconf</h1>
-
----
-spec_version: "0.2.0"
-title: setdappconf
-summary: 'setdappconf'
-icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19
----
-Admin action to set resource thresholds.
-
-
 <h1 class="contract">newaccres</h1>
-
 ---
 spec_version: "0.2.0"
 title: newaccres
@@ -138,20 +124,6 @@ icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/i
 ---
 
 Give resources to new account
-
-
-<h1 class="contract">dappreg</h1>
-
----
-spec_version: "0.2.0"
-title: dappreg
-summary: 'dappreg'
-icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f
----
-
-Give {{account}} permission to set contracts, and raise their resources up to a ceiling level.  (Depreciated) 
-
-
 
 
 <h1 class="contract">kickbp</h1>

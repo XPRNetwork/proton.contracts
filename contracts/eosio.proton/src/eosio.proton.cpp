@@ -384,23 +384,6 @@ namespace eosio {
 
 	}
 
-
-	void eosioproton::setdappconf(uint64_t ram, uint64_t cpu, uint64_t net){
-		require_auth( get_self() );
-		dappconfig dconfig(get_self(), get_self().value);
-		_dcstate = dconfig.exists() ? dconfig.get() : dappconf{};
-
-		check (ram > 0 && cpu > 0 && net > 0, "Action parameters should be positive numbers");
-		check (cpu < 100000000 && net < 100000000, "Bad values from CPU and NET");  // Max 10 000.0000 possible for CPU and NET
-		check (ram < uint64_t( 64 * 1024 * 1024 ) , "To much RAM"); //64 mb max limit for config
-
-		_dcstate.dappram = ram;
-		_dcstate.dappcpu = cpu;
-		_dcstate.dappnet = net;
-
-		dconfig.set( _dcstate, get_self() );
-	}
-
 	void eosioproton::newaccres(name account){
 		eosiosystem::del_bandwidth_table del_tbl( "eosio"_n, "wlcm.proton"_n.value );
 		auto itr = del_tbl.find( account.value );
@@ -419,95 +402,6 @@ namespace eosio {
 			)
 		);
 		act.send();
-	}
-
-	void eosioproton::dappreg(name account){
-		//Set setcode permission
-		//Buys up to 2MB RAM
-		//CPU up to 20
-		//Net up to 20
-
-		//require_auth( account );
-		require_auth(permission_level("admin.proton"_n, "light"_n));
-
-		/*
-		//Deprecated, set code is now open for all.
-		permissions perm( get_self(), get_self().value );
-		auto uperm = perm.find( account.value );
-
-		if ( uperm != perm.end() ) {
-			check ( uperm->setcontract != 4 , "Sorry, account banned." );
-			//check ( uperm->setcontract != 1, "Already registered" );
-
-			perm.modify( uperm, get_self(), [&]( auto& p ){
-				 p.setcontract = 1;
-			});
-		} else {
-			perm.emplace( get_self(), [&]( auto& p ){
-				p.acc = account;
-				p.createacc = 0;
-				p.vote = 0;
-				p.regprod = 0;
-				p.regproxy = 0;
-				p.setcontract = 1;
-				p.namebids = 0;
-				p.rex = 0;
-				p.delegate = 0;
-				p.undelegate = 0;
-				p.sellram = 0;
-				p.buyram = 0;
-			});
-		}
-		*/
-		
-		eosiosystem::user_resources_table  userres( "eosio"_n, account.value );
-		auto ures = userres.find( account.value );
-		check ( ures != userres.end(), "Account not found." );
-
-		dappconfig dconfig(get_self(), get_self().value);
-		if (dconfig.exists()){
-			dconfig.get();
-		} else {
-			dappconf{};
-			dconfig.set( _dcstate, get_self() );
-		}
-
-		asset cpu = ures->cpu_weight;
-		asset net = ures->net_weight;
-		uint64_t ram = ures->ram_bytes;
-
-		int64_t addCpu = 0;
-		int64_t addNet = 0;
-
-		int64_t addRam = _dcstate.dappram - ram - 8; // -8 bytes to feet bancor algo
-		if (_dcstate.dappcpu > cpu.amount)
-			addCpu = _dcstate.dappcpu - cpu.amount;
-		if (_dcstate.dappnet > net.amount)
-			addNet = _dcstate.dappnet - net.amount;
-
-		if (addRam > 0){
-			auto act = action(
-				permission_level{ "wlcm.proton"_n, "newacc"_n },
-				"eosio"_n,
-				"buyrambytes"_n,
-				std::make_tuple( "wlcm.proton"_n, account, addRam )
-			);
-			act.send();
-		}
-
-		if (addCpu + addNet > 0) {
-			auto act = action(
-				permission_level{ "wlcm.proton"_n, "newacc"_n },
-				"eosio"_n,
-				"delegatebw"_n,
-				std::make_tuple( "wlcm.proton"_n,
-					account,
-					asset(addNet, SYSsym),
-					asset(addCpu, SYSsym),
-					0 )
-			);
-			act.send();
-		}
 	}
    
 	void eosioproton::kickbp( name producer ){
@@ -675,5 +569,4 @@ namespace eosio {
 
 }
 
-EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(newaccres)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
-
+EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(newaccres)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
