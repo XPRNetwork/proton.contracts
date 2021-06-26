@@ -402,7 +402,7 @@ namespace eosio {
 	}
 
 	void eosioproton::newaccres(name account){
-		eosiosystem::del_bandwidth_table del_tbl( get_self(), "wlcm.proton"_n.value );
+		eosiosystem::del_bandwidth_table del_tbl( "eosio"_n, "wlcm.proton"_n.value );
 		auto itr = del_tbl.find( account.value );
 		check (itr == del_tbl.end(), "Account has already received default resources");
 
@@ -460,7 +460,7 @@ namespace eosio {
 		}
 		*/
 		
-		user_resources_table  userres( "eosio"_n, account.value );
+		eosiosystem::user_resources_table  userres( "eosio"_n, account.value );
 		auto ures = userres.find( account.value );
 		check ( ures != userres.end(), "Account not found." );
 
@@ -675,5 +675,5 @@ namespace eosio {
 
 }
 
-EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
+EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(newaccres)(dappreg)(setdappconf)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
 
