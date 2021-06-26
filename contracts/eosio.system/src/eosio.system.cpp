@@ -376,37 +376,25 @@ namespace eosiosystem {
                             ignore<authority> owner,
                             ignore<authority> active ) {
 
-      if( creator != get_self()  && creator != "proton"_n) {
-
-         check (system_contract::checkPermission(creator, "createacc")==1, "You are not authorised to create accounts");  // PROTON Check Permissions
-
+      if (creator != get_self() && creator != "proton"_n) {
          uint64_t tmp = newact.value >> 4;
-         bool has_dot = false;
-         bool has_dot_after_char = false; // PROTON
-         bool was_char = false;  // PROTON
-         static const char* charmap = ".12345abcdefghijklmnopqrstuvwxyz"; // PROTON
+         bool has_dot_or_less_than_12_chars = false;  // PROTON
 
          for( uint32_t i = 0; i < 12; ++i ) {
-           has_dot |= !(tmp & 0x1f);;
-
-           if (was_char && !(tmp & 0x1f)) { // PROTON
-               has_dot_after_char = true; // PROTON
-           }
-
-           char c = charmap[tmp & (i == 0 ? 0x0f : 0x1f)];  // PROTON
-           if ( c >= '1' && c <= '5') { // PROTON
-               //has_num = true; // PROTON
-               was_char = true;  // PROTON
-           }  // PROTON
-
-           if (c >= 'a' && c <= 'z') {  // PROTON
-               was_char = true;  // PROTON
-           }  // PROTON
-
+           has_dot_or_less_than_12_chars |= !(tmp & 0x1f);  // PROTON
            tmp >>= 5;
          }
-         check (!has_dot_after_char, "The character '.' in account names is not allowed.");      // PROTON
-         check (newact.to_string().size() > 2, "Minimum 3 character length.");  // PROTON
+
+         // PROTON
+         if (has_dot_or_less_than_12_chars) {
+            name suffix = newact.suffix();
+            bool has_dot = suffix != newact;
+            if (has_dot) {
+               check (creator == suffix, "only suffix may create this account");
+            }
+         }
+
+         check (newact.to_string().size() > 3, "Minimum 4 character length.");  // PROTON
 
          // PROTON
          /*

@@ -2,7 +2,8 @@ add_contract(eosio.proton eosio.proton ${CMAKE_CURRENT_SOURCE_DIR}/src/eosio.pro
 
 target_include_directories(eosio.proton
    PUBLIC
-   ${CMAKE_CURRENT_SOURCE_DIR}/include)
+   ${CMAKE_CURRENT_SOURCE_DIR}/include
+   ${CMAKE_CURRENT_SOURCE_DIR}/../eosio.system/include)
 
 set_target_properties(eosio.proton
    PROPERTIES
