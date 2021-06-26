@@ -570,4 +570,3 @@ namespace eosio {
 }
 
 EOSIO_DISPATCH( eosio::eosioproton, (setperm)(setperm2)(remove)(reqperm)(setusername)(setuserava)(userverify)(newaccres)(updateraccs)(updateaacts)(updateac)(kickbp)(addkyc)(updatekyc)(removekyc)(addkycprov)(rmvkycprov)(blkycprov))
-

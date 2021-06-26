@@ -155,7 +155,6 @@ namespace eosio {
 			void updateac(name acc, vector<tuple<name, string>> ac);
 			using updateac_action = eosio::action_wrapper<"updateac"_n, &eosioproton::updateac>;
 
-
 			/**
 			* New account minimum resources
 			*
