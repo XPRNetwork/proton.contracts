@@ -10,7 +10,6 @@
 ##-----------------------------------------------
 
 ### Deploy
-#./cleos.sh push action eosio.proton dappreg '["stake.proton"]' -p stake.proton
 #./cleos.sh set contract stake.proton ./build/memochecker -p stake.proton
 
 ### Add memo
