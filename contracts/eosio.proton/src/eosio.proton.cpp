@@ -118,7 +118,9 @@ namespace eosio {
 
 	void eosioproton::setuserava(name acc, std::string ava ){
 
-		require_auth(permission_level("wlcm.proton"_n, "update"_n));
+		if (!has_auth(acc)) {
+			require_auth(permission_level("wlcm.proton"_n, "update"_n));
+		}
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
@@ -145,15 +147,15 @@ namespace eosio {
 
 	void eosioproton::setusername(name acc, std::string name ){
 		
-		require_auth(permission_level("wlcm.proton"_n, "update"_n));
+		if (!has_auth(acc)) {
+			require_auth(permission_level("wlcm.proton"_n, "update"_n));
+		}
 		require_recipient( acc );
 		check( is_account( acc ), "Account does not exist.");
 
 		usersinfo usrinf( get_self(), get_self().value );
 		auto existing = usrinf.find( acc.value );
 
-		
-		
 		if ( existing != usrinf.end() ) {
 			check (existing->verified == false, "Sorry, username cannot be changed after KYC verification");
 
