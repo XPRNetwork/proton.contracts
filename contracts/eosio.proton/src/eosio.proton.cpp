@@ -404,6 +404,22 @@ namespace eosio {
 			)
 		);
 		act.send();
+
+		// Add in userinfo if not present
+		usersinfo usrinf( get_self(), get_self().value );
+		auto existing = usrinf.find( account.value );
+
+		if ( existing == usrinf.end() ) {
+			usrinf.emplace( get_self(), [&]( auto& p ){
+				p.acc = account;
+				p.name = "";
+				p.avatar = "";
+				p.verified = false;	
+				p.verifiedon = 0;
+				p.verifier = ""_n;
+				p.date = eosio::current_time_point().sec_since_epoch();
+			});
+		}
 	}
    
 	void eosioproton::kickbp( name producer ){
