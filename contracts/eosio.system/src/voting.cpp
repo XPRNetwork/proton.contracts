@@ -80,7 +80,7 @@ namespace eosiosystem {
       require_auth( producer );
 
       // if not disabled after kickbp, allow regproducer
-      check (checkPermission(producer, "regprod") != 3, "You are not authorised to register as producer");  // PROTON Check Permissions
+      check (checkPermission(producer, "regprod") == 1, "You are not authorised to register as producer");  // PROTON Check Permissions
 
       check( url.size() < 512, "url too long" );
 
@@ -91,6 +91,9 @@ namespace eosiosystem {
       require_auth( producer );
       check( url.size() < 512, "url too long" );
 
+      //PROTON
+      check (checkPermission(producer, "regprod") == 1, "You are not authorised to register as producer");  // PROTON Check Permissions
+	   
       std::visit( [&](auto&& auth ) {
          check( auth.is_valid(), "invalid producer authority" );
       }, producer_authority );
