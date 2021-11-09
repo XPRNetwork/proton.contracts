@@ -699,6 +699,14 @@ namespace eosiosystem {
                   s.startqualif = std::nullopt;
                });
             }
+		 
+            if ( itr->startqualif != std::nullopt || itr->startstake != std::nullopt ) {
+               vxpr_tbl.modify(itr, get_self(), [&](auto& s) {
+                  s.startstake = std::nullopt;
+                  s.startqualif = std::nullopt;
+               });
+	    }
+		 
             itr++;
          }
 
