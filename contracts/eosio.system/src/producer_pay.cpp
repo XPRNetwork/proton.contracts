@@ -91,6 +91,9 @@ namespace eosiosystem {
                                           "overflow in calculating new tokens to be issued; inflation rate is too high" );
          int64_t new_tokens = (additional_inflation < 0.0) ? 0 : static_cast<int64_t>(additional_inflation);
 
+         int64_t to_yieldfarms = new_tokens * 1 / 4;           // PROTON 1% from 4% inflation to yield_farm
+         new_tokens = new_tokens - to_yieldfarms;              // PROTON
+
          int64_t to_producers     = (new_tokens * uint128_t(pay_factor_precision)) / _gstate4.inflation_pay_factor;
 
          int64_t savings         = new_tokens - to_producers;  //PROTON
@@ -114,6 +117,11 @@ namespace eosiosystem {
                   _gstatesd.pool += to_savings;  //PROTON
                   
                }
+
+               if( to_yieldfarms > 0 ) { //PROTON
+                  transfer_act.send( get_self(), yieldfarms_account, asset(to_yieldfarms, XPRsym), "yield farms bucket" ); //PROTON
+               } //PROTON
+
 
                if( to_cfund > 0 ) { //PROTON
                   transfer_act.send( get_self(), cfund_account, asset(to_cfund, XPRsym), "fund committee bucket" ); //PROTON

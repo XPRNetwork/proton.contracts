@@ -700,6 +700,7 @@ namespace eosiosystem {
          static constexpr eosio::name active_permission{"active"_n};
          static constexpr eosio::name proton_account{"eosio.proton"_n};       // PROTON
          static constexpr eosio::name cfund_account{"cfund.proton"_n};        // PROTON
+		 static constexpr eosio::name yieldfarms_account{"yield.farms"_n};    // PROTON
          static constexpr eosio::name xpr_stake_account{"stake.proton"_n};    // PROTON
  
          static constexpr eosio::name token_account{"eosio.token"_n};
