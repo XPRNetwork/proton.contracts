@@ -58,6 +58,34 @@
             ]
         },
         {
+            "name": "dappconf",
+            "base": "",
+            "fields": [
+                {
+                    "name": "dappram",
+                    "type": "uint64"
+                },
+                {
+                    "name": "dappcpu",
+                    "type": "uint64"
+                },
+                {
+                    "name": "dappnet",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "dappreg",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                }
+            ]
+        },
+        {
             "name": "kickbp",
             "base": "",
             "fields": [
@@ -112,16 +140,6 @@
                 {
                     "name": "blisted",
                     "type": "bool"
-                }
-            ]
-        },
-        {
-            "name": "newaccres",
-            "base": "",
-            "fields": [
-                {
-                    "name": "account",
-                    "type": "name"
                 }
             ]
         },
@@ -238,6 +256,24 @@
                 {
                     "name": "kyc_provider",
                     "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "setdappconf",
+            "base": "",
+            "fields": [
+                {
+                    "name": "ram",
+                    "type": "uint64"
+                },
+                {
+                    "name": "cpu",
+                    "type": "uint64"
+                },
+                {
+                    "name": "net",
+                    "type": "uint64"
                 }
             ]
         },
@@ -382,6 +418,28 @@
             ]
         },
         {
+            "name": "user_resources",
+            "base": "",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "name"
+                },
+                {
+                    "name": "net_weight",
+                    "type": "asset"
+                },
+                {
+                    "name": "cpu_weight",
+                    "type": "asset"
+                },
+                {
+                    "name": "ram_bytes",
+                    "type": "int64"
+                }
+            ]
+        },
+        {
             "name": "userinfo",
             "base": "",
             "fields": [
@@ -467,14 +525,14 @@
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: blkycprov\nsummary: 'blkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nBlacklists KYC provider {{kyc_provider}}"
         },
         {
+            "name": "dappreg",
+            "type": "dappreg",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: dappreg\nsummary: 'dappreg'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nGive {{account}} permission to set contracts, and raise their resources up to a ceiling level.  (Depreciated)"
+        },
+        {
             "name": "kickbp",
             "type": "kickbp",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: kickbp\nsummary: 'kickbp'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/admin.png#9bf1cec664863bd6aaac0f814b235f8799fb02c850e9aa5da34e8a004bd6518e\n---\nRemoves the ability of account {{producer}} to register as a block producer. This is probably called from kickbp in eosio.system."
-        },
-        {
-            "name": "newaccres",
-            "type": "newaccres",
-            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: newaccres\nsummary: 'newaccres'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\n\nGive resources to new account"
         },
         {
             "name": "remove",
@@ -495,6 +553,11 @@
             "name": "rmvkycprov",
             "type": "rmvkycprov",
             "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: rmvkycprov\nsummary: 'rmvkycprov'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/account.png#3d55a2fc3a5c20b456f5657faf666bc25ffd06f4836c5e8256f741149b0b294f\n---\nRemoves KYC provider {{kyc_provider}}"
+        },
+        {
+            "name": "setdappconf",
+            "type": "setdappconf",
+            "ricardian_contract": "---\nspec_version: \"0.2.0\"\ntitle: setdappconf\nsummary: 'setdappconf'\nicon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/icons/resource.png#3830f1ce8cb07f7757dbcf383b1ec1b11914ac34a1f9d8b065f07600fa9dac19\n---\nAdmin action to set resource thresholds."
         },
         {
             "name": "setperm",
@@ -544,6 +607,13 @@
     ],
     "tables": [
         {
+            "name": "dappconf",
+            "type": "dappconf",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
             "name": "kycproviders",
             "type": "kyc_providers_list",
             "index_type": "i64",
@@ -553,6 +623,13 @@
         {
             "name": "permissions",
             "type": "permission",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "userres",
+            "type": "user_resources",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
