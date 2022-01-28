@@ -91,8 +91,8 @@ namespace eosiosystem {
                                           "overflow in calculating new tokens to be issued; inflation rate is too high" );
          int64_t new_tokens = (additional_inflation < 0.0) ? 0 : static_cast<int64_t>(additional_inflation);
 
-         int64_t to_yieldfarms = new_tokens / 4;           // PROTON 1% from 4% inflation to yield_farm
-         new_tokens = new_tokens - to_yieldfarms;              // PROTON
+         int64_t to_yieldfarms = new_tokens / 4;               //PROTON 1% from 4% inflation to yield_farm
+         new_tokens = new_tokens - to_yieldfarms;              //PROTON
 
          int64_t to_producers     = (new_tokens * uint128_t(pay_factor_precision)) / _gstate4.inflation_pay_factor;
 
