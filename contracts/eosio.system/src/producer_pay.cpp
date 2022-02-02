@@ -91,11 +91,14 @@ namespace eosiosystem {
                                           "overflow in calculating new tokens to be issued; inflation rate is too high" );
          int64_t new_tokens = (additional_inflation < 0.0) ? 0 : static_cast<int64_t>(additional_inflation);
 
-         int64_t to_producers     = (new_tokens * uint128_t(pay_factor_precision)) / _gstate4.inflation_pay_factor;
+         int64_t to_yieldfarms = new_tokens / 4;                 //PROTON 1% from 4% inflation to yield_farm
+         int64_t bpandsavings  = new_tokens - to_yieldfarms;     //PROTON
 
-         int64_t savings         = new_tokens - to_producers;  //PROTON
-         int64_t to_savings      = 2 * savings / 3;            //PROTON
-         int64_t to_cfund        = savings - to_savings;       //PROTON
+         int64_t to_producers     = (bpandsavings * uint128_t(pay_factor_precision)) / _gstate4.inflation_pay_factor;
+
+         int64_t savings         = bpandsavings - to_producers;  //PROTON
+         int64_t to_savings      = 2 * savings / 3;              //PROTON
+         int64_t to_cfund        = savings - to_savings;         //PROTON
 
          int64_t to_per_block_pay = (to_producers * uint128_t(pay_factor_precision)) / _gstate4.votepay_factor;
          int64_t to_per_vote_pay  = to_producers - to_per_block_pay;
@@ -114,6 +117,11 @@ namespace eosiosystem {
                   _gstatesd.pool += to_savings;  //PROTON
                   
                }
+
+               if( to_yieldfarms > 0 ) { //PROTON
+                  transfer_act.send( get_self(), yieldfarms_account, asset(to_yieldfarms, XPRsym), "deposit rewards" ); //PROTON
+               } //PROTON
+
 
                if( to_cfund > 0 ) { //PROTON
                   transfer_act.send( get_self(), cfund_account, asset(to_cfund, XPRsym), "fund committee bucket" ); //PROTON
