@@ -62,8 +62,10 @@ namespace eosio {
 		tokens tokens_( get_self(), get_self().value );
 		auto itr = tokens_.require_find( id, string("id: " + to_string( id ) + " cannot be found").c_str() );
 
-		require_auth( tcontract );
-		require_auth( itr->tcontract );
+		if(!has_auth("admin.proton"_n)){
+			require_auth( tcontract );
+			require_auth( itr->tcontract );
+		}
 		
 		require_recipient( tcontract );
 
