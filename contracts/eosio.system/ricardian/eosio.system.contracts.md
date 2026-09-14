@@ -823,7 +823,7 @@ icon: https://raw.githubusercontent.com/EOSIO/eosio.contracts/master/contracts/i
 ---
 {{from}} unstakes from {{receiver}} {{unstake_xpr_quantity}}.
 
-The quantity will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 14 day period without further unstaking by {{from}}. After the uninterrupted 14 day period passes, the system will attempt to automatically return the funds to {{from}}’s regular token balance. However, this automatic refund may occasionally fail which will then require {{from}} to manually claim the funds with the refundxpr action.
+The quantity will be removed from the vote weight of {{receiver}} and will be made available to {{from}} after an uninterrupted 14 day period without further unstaking by {{from}}. After the unstake period passes, the funds are returned to {{from}}'s regular token balance by the refundxpr action, which may be called by {{from}} or by any other account (for example an automated keeper). The previous automatic on-chain refund no longer exists.
 
 
 <h1 class="contract">refundxpr</h1>
