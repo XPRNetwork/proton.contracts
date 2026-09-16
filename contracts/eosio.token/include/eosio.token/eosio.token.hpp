@@ -134,6 +134,25 @@ namespace eosio {
          typedef eosio::multi_index< "accounts"_n, account > accounts;
          typedef eosio::multi_index< "stat"_n, currency_stats > stats;
 
+         // Shared, network-wide blocklist contract (account `blocklist`) — the same
+         // source of truth read by xtokens. This contract only READS it; membership
+         // is managed centrally on the `blocklist` contract (adduser / removeuser).
+         // A listed account cannot SEND (the sender is checked, matching xtokens;
+         // the recipient is intentionally not checked, to avoid breaking inline
+         // system/third-party payouts to a listed account). Core system accounts are
+         // always exempt — see is_blocklisted().
+         static constexpr name BLOCKLIST_CONTRACT = "blocklist"_n;
+
+         struct blocklist_row {
+            name     account_name;
+
+            uint64_t primary_key()const { return account_name.value; }
+            EOSLIB_SERIALIZE( blocklist_row, (account_name) )
+         };
+         typedef eosio::multi_index< "blocklist"_n, blocklist_row > blocklist_table;
+
+         bool is_blocklisted( const name& account )const;
+
          void sub_balance( const name& owner, const asset& value );
          void add_balance( const name& owner, const asset& value, const name& ram_payer );
    };
