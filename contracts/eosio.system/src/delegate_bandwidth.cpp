@@ -649,8 +649,6 @@ namespace eosiosystem {
          //create/update/delete refund
          auto xpr_balance = xpr_quantity;
  
-         auto need_deferred_trx = false;
-
          const auto is_undelegating = xpr_balance.amount  < 0;
          const auto is_delegating_to_self = (from == receiver);
 
@@ -675,8 +673,6 @@ namespace eosiosystem {
 
                if ( req->is_empty() ) {
                   xpr_refunds_tbl.erase( req );
-               } else {
-                  need_deferred_trx = true;
                }
             } else if ( xpr_balance.amount < 0 ) { //need to create refund
                xpr_refunds_tbl.emplace( from, [&]( xpr_refund_request& r ) {
@@ -689,22 +685,14 @@ namespace eosiosystem {
                   }
                   r.request_time = current_time_point();
                });
-               need_deferred_trx = true;
             }
          } 
 
-         if ( need_deferred_trx ) {
-            eosio::transaction out;
-            out.actions.emplace_back( permission_level{from, active_permission},
-                                      get_self(), "refundxpr"_n,
-                                      from
-            );
-            out.delay_sec = _gstatesxpr.unstake_period; //refund_delay_sec;
-            eosio::cancel_deferred( from.value );       // TODO: Remove this line when replacing deferred trxs is fixed
-            out.send( from.value, from, true );
-         } else {
-            eosio::cancel_deferred( from.value );
-         }
+         // Refund delivery is no longer scheduled here. Deferred transactions are not
+         // executed on Leap 5+/Spring, so the previous send_deferred() never fired (and
+         // would throw once DISABLE_DEFERRED_TRXS is activated). A matured refund is
+         // delivered by `refundxpr`, which is permissionless so a keeper bot (or the
+         // owner) can trigger it once `unstake_period` has elapsed.
 
          auto transfer_amount = xpr_balance;
          if ( 0 < transfer_amount.amount ) {
@@ -718,7 +706,16 @@ namespace eosiosystem {
 
 
    void system_contract::refundxpr( const name& owner ) {
-      require_auth( owner );
+      // Intentionally permissionless: any account (e.g. a keeper bot) may deliver a
+      // MATURED refund to its owner. Safe because the payout destination is fixed to
+      // req->owner (below), the unstake_period check still applies, and re-staking
+      // already nets against a pending refund (see updstakexpr).
+      //
+      // The inline transfer still lists {owner, active} (without require_auth): this
+      // contract is privileged, so inline authorization is not checked, and listing the
+      // owner keeps eosio.token's RAM-payer rule (payer = has_auth(to) ? to : from)
+      // billing a fresh balance row to the owner rather than to stake.proton. This is
+      // the same pattern as bidrefund / upstream reference-contracts.
 
       xpr_refunds_table xpr_refunds_tbl( get_self(), owner.value );
       auto req = xpr_refunds_tbl.require_find( owner.value, string("refund request not found").c_str() );

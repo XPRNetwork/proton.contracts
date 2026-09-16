@@ -51,15 +51,10 @@ namespace eosiosystem {
                });
          }
 
-         eosio::transaction t;
-         t.actions.emplace_back( permission_level{current->high_bidder, active_permission},
-                                 get_self(), "bidrefund"_n,
-                                 std::make_tuple( current->high_bidder, newname )
-         );
-         t.delay_sec = 0;
-         uint128_t deferred_id = (uint128_t(newname.value) << 64) | current->high_bidder.value;
-         eosio::cancel_deferred( deferred_id );
-         t.send( deferred_id, bidder );
+         // The outbid bidder's refund is recorded above and claimed via `bidrefund`.
+         // A deferred bidrefund used to be scheduled here; deferred transactions are not
+         // executed on Leap 5+/Spring (and would throw once DISABLE_DEFERRED_TRXS is
+         // activated). This matches upstream reference-contracts, which do not schedule it.
 
          bids.modify( current, bidder, [&]( auto& b ) {
             b.high_bidder = bidder;
