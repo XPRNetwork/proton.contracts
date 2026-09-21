@@ -688,11 +688,14 @@ namespace eosiosystem {
             }
          } 
 
-         // Refund delivery is no longer scheduled here. Deferred transactions are not
-         // executed on Leap 5+/Spring, so the previous send_deferred() never fired (and
-         // would throw once DISABLE_DEFERRED_TRXS is activated). A matured refund is
-         // delivered by `refundxpr`, which is permissionless so a keeper bot (or the
-         // owner) can trigger it once `unstake_period` has elapsed.
+         // Refund delivery is no longer scheduled here. Producers running Leap 5+/Spring
+         // do not execute deferred transactions, so the previous send_deferred() has been
+         // a silent no-op on this chain since 2025-11-01: the refundsxpr row was created
+         // and then nothing delivered it. (Note the intrinsic does not throw; in Leap
+         // 5.0.3 send_deferred/cancel_deferred simply return once DISABLE_DEFERRED_TRXS
+         // is activated. The behavioural change at activation is that transactions with
+         // delay_sec > 0 are rejected.) A matured refund is delivered by `refundxpr`
+         // once `unstake_period` has elapsed. The unstake period itself is unchanged.
 
          auto transfer_amount = xpr_balance;
          if ( 0 < transfer_amount.amount ) {
@@ -706,10 +709,18 @@ namespace eosiosystem {
 
 
    void system_contract::refundxpr( const name& owner ) {
-      // Intentionally permissionless: any account (e.g. a keeper bot) may deliver a
-      // MATURED refund to its owner. Safe because the payout destination is fixed to
-      // req->owner (below), the unstake_period check still applies, and re-staking
-      // already nets against a pending refund (see updstakexpr).
+      // No require_auth(owner): any account (e.g. a keeper bot) may deliver a MATURED
+      // refund to its owner, which restores automatic delivery now that the deferred
+      // scheduling is gone. The payout destination is fixed to req->owner (below), the
+      // unstake_period check is unchanged, the row is erased before the transfer so a
+      // second call fails, and re-staking already nets against a pending refund (see
+      // updstakexpr). The caller pays CPU/NET.
+      //
+      // NOTE: the auth model here is a governance decision for the chain's maintainers,
+      // not a settled one. An alternative, discussed in the pull request, is to let only
+      // the owner claim for a grace period after maturity and allow third-party delivery
+      // only after that, so the owner keeps first refusal. That is a one-line addition
+      // to the check below.
       //
       // The inline transfer still lists {owner, active} (without require_auth): this
       // contract is privileged, so inline authorization is not checked, and listing the
