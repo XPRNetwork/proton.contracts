@@ -89,8 +89,8 @@ namespace eosio {
           * - proposed transaction is not expired,
           * - and approval accounts are not found in invalidations table.
           *
-          * If all preconditions are met the transaction is executed as a deferred transaction,
-          * and the proposal is erased from the proposals table.
+          * If all preconditions are met the proposed actions are dispatched as inline
+          * actions, and the proposal is erased from the proposals table.
           *
           * @param proposer - The account proposing a transaction
           * @param proposal_name - The name of the proposal (should be an existing proposal)

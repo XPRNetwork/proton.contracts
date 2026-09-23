@@ -1165,10 +1165,8 @@ namespace eosiosystem {
           * left to delegate.
           * This will cause an immediate reduction in net/cpu bandwidth of the
           * receiver.
-          * A transaction is scheduled to send the tokens back to `from` after
-          * the staking period has passed. If existing transaction is scheduled, it
-          * will be canceled and a new transaction issued that has the combined
-          * undelegated amount.
+          * An inline `refund` action returns the tokens to `from`. If a refund
+          * request is already pending, the amounts are combined into it.
           * The `from` account loses voting power as a result of this call and
           * all producer tallies are updated.
           *
@@ -1179,12 +1177,11 @@ namespace eosiosystem {
           * @param unstake_net_quantity - tokens to be unstaked from NET bandwidth,
           * @param unstake_cpu_quantity - tokens to be unstaked from CPU bandwidth,
           *
-          * @post Unstaked tokens are transferred to `from` liquid balance via a
-          *    deferred transaction with a delay of 3 days.
-          * @post If called during the delay period of a previous `undelegatebw`
-          *    action, pending action is canceled and timer is reset.
+          * @post Unstaked tokens are returned to `from` liquid balance by an inline
+          *    `refund` action. `refund_delay_sec` is 0 on this chain, so there is no wait.
+          * @post If a previous unstake is still pending, the amounts are merged into the
+          *    existing refund request and its `request_time` is reset.
           * @post All producers `from` account has voted for will have their votes updated immediately.
-          * @post Bandwidth and storage for the deferred transaction are billed to `from`.
           */
          [[eosio::action]]
          void undelegatebw( const name& from, const name& receiver,

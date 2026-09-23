@@ -52,12 +52,12 @@ namespace eosiosystem {
          }
 
          // The outbid bidder's refund is recorded above and claimed via `bidrefund`.
-         // A deferred bidrefund used to be scheduled here; producers running Leap 5+/Spring
-         // do not execute deferred transactions, so that scheduling has been a silent
-         // no-op. (The intrinsic does not throw once DISABLE_DEFERRED_TRXS is activated;
-         // it returns. The behavioural change at activation is the rejection of
-         // transactions with delay_sec > 0.) This matches upstream reference-contracts,
-         // which do not schedule a refund here either.
+         // A deferred bidrefund used to be scheduled here; this chain runs Leap 5.0.3,
+         // which does not execute deferred transactions, so that entry was created and
+         // then discarded at expiry without ever running. DISABLE_DEFERRED_TRXS is not
+         // activated on this chain, so the intrinsic did schedule; only execution was
+         // missing. This matches upstream reference-contracts, which do not schedule a
+         // refund here either.
 
          bids.modify( current, bidder, [&]( auto& b ) {
             b.high_bidder = bidder;
