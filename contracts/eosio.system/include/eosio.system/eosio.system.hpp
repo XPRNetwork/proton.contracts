@@ -1084,8 +1084,11 @@ namespace eosiosystem {
 
          // PROTON refund XPR
          /**
-          * Refund XPR action, this action is called after the delegation-period to claim all pending
-          * unstaked tokens belonging to owner.
+          * Refund XPR action: delivers `owner`'s pending unstaked XPR once the unstake
+          * period has elapsed. Permissionless — any account (e.g. a keeper bot) may call
+          * it; the payout always goes to `owner` and the unstake-period check still
+          * applies. (The old deferred auto-refund is gone: deferred transactions are not
+          * executed on Leap 5+/Spring.)
           *
           * @param owner - the owner of the tokens claimed.
           */
