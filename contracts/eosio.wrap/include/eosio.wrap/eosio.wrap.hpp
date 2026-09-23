@@ -30,8 +30,12 @@ namespace eosio {
           * @param trx - the transaction to be executed.
           *
           * @pre Requires authorization of eosio.wrap which needs to be a privileged account.
+          * @pre The wrapped transaction must have `delay_sec` of 0 and no context-free
+          *    actions.
           *
-          * @post Deferred transaction RAM usage is billed to 'executer'
+          * @post The wrapped actions are dispatched as inline actions of the calling
+          *    transaction, sharing its CPU/NET budget. A failure in any of them reverts
+          *    `exec`.
           */
          [[eosio::action]]
          void exec( ignore<name> executer, ignore<transaction> trx );
