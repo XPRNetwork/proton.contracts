@@ -27,8 +27,6 @@ void wrap::exec( ignore<name>, ignore<transaction> ) {
    std::vector<action> actions;
 
    _ds >> trx_header;
-   check( trx_header.expiration >= eosio::time_point_sec(current_time_point()),
-          "transaction expired" );
    check( trx_header.delay_sec.value == 0,
           "`delay_sec` is not supported; the wrapped actions are executed inline" );
    _ds >> context_free_actions;
