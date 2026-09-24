@@ -42,10 +42,9 @@ The naming convention is codeaccount::actionname followed by a list of paramters
    - **receiver** account to whose benefit tokens have been staked
    - **unstake\_net\_quantity** tokens to be unstaked from NET bandwidth
    - **unstake\_cpu\_quantity** tokens to be unstaked from CPU bandwidth
-   - Unstaked tokens are transferred to `from` liquid balance via a deferred transaction with a delay of 3 days.
-   - If called during the delay period of a previous `undelegatebw` action, pending action is canceled and timer is reset.
+   - Unstaked tokens are returned to `from` liquid balance by an inline `refund` action. `refund_delay_sec` is 0 on this chain, so there is no wait.
+   - If a previous unstake is still pending, the amounts are merged into the existing refund request and its `request_time` is reset.
    - All producers `from` account has voted for will have their votes updated immediately.
-   - Bandwidth and storage for the deferred transaction are billed to `from`.
 
 ## eosio::onblock header
    - This special action is triggered when a block is applied by a given producer, and cannot be generated from

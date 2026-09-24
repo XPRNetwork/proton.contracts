@@ -9,7 +9,8 @@
 #include <eosio.token/eosio.token.hpp>
 
 #include "name_bidding.cpp"
-// Unfortunately, this is needed until CDT fixes the duplicate symbol error with eosio::send_deferred
+// name_bidding.cpp is compiled as part of this translation unit rather than listed
+// separately in CMakeLists.txt.
 
 namespace eosiosystem {
 
@@ -424,7 +425,7 @@ namespace eosiosystem {
          //create/update/delete refund
          auto net_balance = stake_net_delta;
          auto cpu_balance = stake_cpu_delta;
-         bool need_deferred_trx = false;
+         bool need_refund_action = false;
 
 
          // net and cpu are same sign by assertions in delegatebw and undelegatebw
@@ -459,9 +460,9 @@ namespace eosiosystem {
 
                if ( req->is_empty() ) {
                   refunds_tbl.erase( req );
-                  need_deferred_trx = false;
+                  need_refund_action = false;
                } else {
-                  need_deferred_trx = true;
+                  need_refund_action = true;
                }
             } else if ( net_balance.amount < 0 || cpu_balance.amount < 0 ) { //need to create refund
                refunds_tbl.emplace( from, [&]( refund_request& r ) {
@@ -480,30 +481,20 @@ namespace eosiosystem {
                   }
                   r.request_time = current_time_point();
                });
-               need_deferred_trx = true;
+               need_refund_action = true;
             } // else stake increase requested with no existing row in refunds_tbl -> nothing to do with refunds_tbl
          } /// end if is_delegating_to_self || is_undelegating
 
-         if ( need_deferred_trx ) {
-            // PROTON (from deferred to inline)
+         if ( need_refund_action ) {
+            // PROTON: delivered inline rather than scheduled. `refund` re-checks
+            // request_time against refund_delay_sec, which is 0 for SYS, so the
+            // immediate inline call satisfies it.
             action(
                permission_level{ from, active_permission },
                get_self(),
                "refund"_n,
                from
             ).send();
-            /*
-            eosio::transaction out;
-            out.actions.emplace_back( permission_level{from, active_permission},
-                                      get_self(), "refund"_n,
-                                      from
-            );
-            out.delay_sec = refund_delay_sec;
-            eosio::cancel_deferred( from.value ); // TODO: Remove this line when replacing deferred trxs is fixed
-            out.send( from.value, from, true );
-         */
-         } else {
-            //eosio::cancel_deferred( from.value );
          }
 
          auto transfer_amount = net_balance + cpu_balance;
@@ -688,14 +679,14 @@ namespace eosiosystem {
             }
          } 
 
-         // Refund delivery is no longer scheduled here. Producers running Leap 5+/Spring
-         // do not execute deferred transactions, so the previous send_deferred() has been
-         // a silent no-op on this chain since 2025-11-01: the refundsxpr row was created
-         // and then nothing delivered it. (Note the intrinsic does not throw; in Leap
-         // 5.0.3 send_deferred/cancel_deferred simply return once DISABLE_DEFERRED_TRXS
-         // is activated. The behavioural change at activation is that transactions with
-         // delay_sec > 0 are rejected.) A matured refund is delivered by `refundxpr`
-         // once `unstake_period` has elapsed. The unstake period itself is unchanged.
+         // Refund delivery is no longer scheduled here. This chain runs Leap 5.0.3, which
+         // does not execute deferred transactions. The previous send_deferred() was not a
+         // no-op: it created a real generated_transaction row (RAM billed to `from`, with
+         // delay_sec = unstake_period honoured), which was then discarded at expiry -- ten
+         // minutes after delay_until -- without ever running, leaving the refundsxpr row
+         // for the owner to claim. DISABLE_DEFERRED_TRXS is not activated on this chain,
+         // so the intrinsic did schedule; only execution was missing. A matured refund is
+         // delivered by `refundxpr`. The unstake period itself is unchanged.
 
          auto transfer_amount = xpr_balance;
          if ( 0 < transfer_amount.amount ) {
@@ -712,15 +703,22 @@ namespace eosiosystem {
       // No require_auth(owner): any account (e.g. a keeper bot) may deliver a MATURED
       // refund to its owner, which restores automatic delivery now that the deferred
       // scheduling is gone. The payout destination is fixed to req->owner (below), the
-      // unstake_period check is unchanged, the row is erased before the transfer so a
-      // second call fails, and re-staking already nets against a pending refund (see
-      // updstakexpr). The caller pays CPU/NET.
+      // unstake_period check is unchanged, and re-staking already nets against a pending
+      // refund (see updstakexpr). The caller pays CPU/NET.
+      //
+      // Double delivery is not possible: this action erases the row, and the transfer
+      // below is an inline action that only dispatches once this action has returned, so
+      // any second refundxpr finds no row and fails on require_find.
       //
       // NOTE: the auth model here is a governance decision for the chain's maintainers,
-      // not a settled one. An alternative, discussed in the pull request, is to let only
-      // the owner claim for a grace period after maturity and allow third-party delivery
-      // only after that, so the owner keeps first refusal. That is a one-line addition
-      // to the check below.
+      // not a settled one. Third-party delivery lets the caller choose *when* an owner is
+      // paid, which (a) fires eosio.token's require_recipient(to), so an owner that is a
+      // contract has its transfer handler invoked at a moment it did not choose, (b) makes
+      // the owner pay RAM for a fresh balance row, and (c) removes the owner's option to
+      // net the pending refund against a re-stake. An alternative, discussed in the pull
+      // request, is to let only the owner claim for a grace period after maturity and
+      // allow third-party delivery only after that, so the owner keeps first refusal.
+      // That is a one-line addition to the check below.
       //
       // The inline transfer still lists {owner, active} (without require_auth): this
       // contract is privileged, so inline authorization is not checked, and listing the
