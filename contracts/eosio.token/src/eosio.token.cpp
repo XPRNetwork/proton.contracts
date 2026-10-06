@@ -85,6 +85,9 @@ void token::transfer( const name&    from,
     check( from != to, "cannot transfer to self" );
     require_auth( from );
     check( is_account( to ), "to account does not exist");
+
+    check( !is_blocklisted( from ), "Sender is blocklisted, transfer cannot be performed" );
+
     auto sym = quantity.symbol.code();
     stats statstable( get_self(), sym.raw() );
     const auto& st = statstable.get( sym.raw() );
@@ -157,6 +160,26 @@ void token::close( const name& owner, const symbol& symbol )
    check( it != acnts.end(), "Balance row already deleted or never existed. Action won't have any effect." );
    check( it->balance.amount == 0, "Cannot close because the balance is not zero." );
    acnts.erase( it );
+}
+
+bool token::is_blocklisted( const name& account )const
+{
+   // Never treat core system accounts as blocklisted — freezing any of these would
+   // halt staking, RAM, REX, producer/voter pay and account funding chain-wide.
+   // This is an explicit allow-list: do NOT use a `prefix()=="eosio"` rule, because
+   // `eosio.<suffix>` names can be created by whoever owns `<suffix>`.
+   static const name SYSTEM_ACCOUNTS[] = {
+      "eosio"_n, "eosio.token"_n, "eosio.ram"_n, "eosio.ramfee"_n, "eosio.stake"_n,
+      "eosio.bpay"_n, "eosio.vpay"_n, "eosio.names"_n, "eosio.saving"_n, "eosio.rex"_n,
+      "eosio.wrap"_n, "eosio.msig"_n, "eosio.proton"_n, "stake.proton"_n
+   };
+   for( const auto& s : SYSTEM_ACCOUNTS ) {
+      if( account == s ) return false;
+   }
+
+   // Read the shared, network-wide blocklist contract (same list xtokens honours).
+   blocklist_table bl( BLOCKLIST_CONTRACT, BLOCKLIST_CONTRACT.value );
+   return bl.find( account.value ) != bl.end();
 }
 
 } /// namespace eosio
